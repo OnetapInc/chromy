@@ -1,0 +1,18 @@
+{
+  "name": "chromy",
+  "version": "0.1.0",
+  "description": "library for controlling headless chrome.",
+  "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "yamada <yamada@enty.jp>",
+  "license": "MIT",
+  "dependencies": {
+    "chrome-remote-interface": "^0.22.0",
+    "lighthouse": "^1.6.5"
+  }
+}
