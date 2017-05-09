@@ -1,7 +1,7 @@
 {
   "name": "chromy",
   "version": "0.1.0",
-  "description": "library for controlling headless chrome.",
+  "description": "library for controlling chrome by nightmarejs like API.",
   "main": "src/index.js",
   "directories": {
     "test": "test"
@@ -9,9 +9,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OnetapInc/chromy.git"
+  },
+  "bugs": "https://github.com/OnetapInc/chromy/issues",
   "author": "yamada <yamada@enty.jp>",
   "license": "MIT",
   "dependencies": {
+    "async-chain-proxy": "^0.1.0",
     "chrome-remote-interface": "^0.22.0",
     "lighthouse": "^1.6.5"
   }

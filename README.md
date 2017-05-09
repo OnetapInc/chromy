@@ -1,7 +1,6 @@
 # chromy
 
-chromy is a controller for headless mode chrome.  
-chromy means headless in japanese language.
+chromy is a library for operating chrome.  
 
 ## Installation
 
@@ -12,7 +11,49 @@ npm i chromy
 ## Usage
 
 ```js
->> <amp-img src="./spec/data/rect.jpg" width="100" height="100" layout="responsive"></amp-img>
+const Chromy = require('./src')
+
+let chromy = new Chromy()
+chromy.chain()
+      .goto('http://example.com/')
+      .evaluate(() => {
+        return document.querySelectorAll('*').length
+      })
+      .result((r) => console.log(r))
+      .end()
+      .then(() => chromy.close())
+```
+
+## API
+
+##### .goto(url)
+
+##### .evaluate(func)
+
+##### .result(func)
+
+##### .end()
+
+##### .wait(msec | selector)
+
+##### .sleep(msec)
+
+##### .type(selector, text)
+
+##### .click(selector)
+
+##### .defineFunction(func)
+
+```
+function outerFunc () {
+  return 'VALUE'
+}
+chromy.chain()
+      .defineFunction(outerFunc)
+      .evaluate(() => {
+        outerFunc()
+      })
+      .end()
 ```
 
 ## Contributing
