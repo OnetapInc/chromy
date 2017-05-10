@@ -10,6 +10,8 @@ const {
   createChromeLauncher
 } = require('./util')
 
+let startedChromyInstanceCount = 0
+
 class Chromy {
   constructor (options = {}) {
     const defaults = {
@@ -29,18 +31,26 @@ class Chromy {
   }
 
   async start () {
+    if (this.client !== null) {
+      return
+    }
     const result = await this.launcher.run()
     const exitHandler = async err => {
-      await this.close()
-      process.exit(-1)
+      const success = await this.close()
+      if (success) {
+        if (startedChromyInstanceCount === 0) {
+          process.exit(1)
+        }
+      }
     }
     process.on('SIGINT', exitHandler.bind(null))
     process.on('unhandledRejection', exitHandler.bind(null))
     process.on('rejectionHandled', exitHandler.bind(null))
     process.on('uncaughtException', exitHandler.bind(null))
-    return new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
       CDP(this.cdpOptions, async (client) => {
         this.client = client
+        startedChromyInstanceCount++
         const {Network, Page, Runtime} = client
         await Network.enable()
         await Page.enable()
@@ -58,9 +68,14 @@ class Chromy {
   }
 
   async close () {
+    if (this.client === null) {
+      return false
+    }
     await this.client.close()
     await this.launcher.kill()
     this.client = null
+    startedChromyInstanceCount--
+    return true
   }
 
   async userAgent (ua) {
