@@ -1,20 +1,20 @@
-const { ChromeLauncher } = require('lighthouse/lighthouse-cli/chrome-launcher')
+const {ChromeLauncher} = require('lighthouse/lighthouse-cli/chrome-launcher')
 
 // borrow from: http://qiita.com/saekis/items/c2b41cd8940923863791
 function escapeHtml (string) {
-  if(typeof string !== 'string') {
-    return string;
+  if (typeof string !== 'string') {
+    return string
   }
-  return string.replace(/[&'`"<>]/g, function(match) {
+  return string.replace(/[&'`"<>]/g, function (match) {
     return {
       '&': '&amp;',
-      "'": '&#x27;',
+      '\'': '&#x27;',
       '`': '&#x60;',
       '"': '&quot;',
       '<': '&lt;',
-      '>': '&gt;',
+      '>': '&gt;'
     }[match]
-  });
+  })
 }
 
 function createChromeLauncher (options) {

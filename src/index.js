@@ -1,8 +1,6 @@
 const CDP = require('chrome-remote-interface')
-const { ChromeLauncher } = require('lighthouse/lighthouse-cli/chrome-launcher')
 const chainProxy = require('async-chain-proxy')
 const {
-  functionToSource,
   functionToEvaluatingSource
 } = require('./functionToSource')
 const {
@@ -26,7 +24,7 @@ class Chromy {
     this.launcher = createChromeLauncher(this.options)
   }
 
-  chain (options={}) {
+  chain (options = {}) {
     return chainProxy(this, options)
   }
 
@@ -34,8 +32,8 @@ class Chromy {
     if (this.client !== null) {
       return
     }
-    const result = await this.launcher.run()
-    const exitHandler = async err => {
+    await this.launcher.run()
+    const exitHandler = async _ => {
       const success = await this.close()
       if (success) {
         if (startedChromyInstanceCount === 0) {
@@ -51,7 +49,7 @@ class Chromy {
       CDP(this.cdpOptions, async (client) => {
         this.client = client
         startedChromyInstanceCount++
-        const {Network, Page, Runtime} = client
+        const {Network, Page} = client
         await Network.enable()
         await Page.enable()
         if ('userAgent' in this.options) {
@@ -100,7 +98,7 @@ class Chromy {
 
   async evaluate (expr) {
     let e = expr
-    if (typeof(e) === 'function') {
+    if ((typeof e) === 'function') {
       e = functionToEvaluatingSource(expr)
     }
     const result = await this.client.Runtime.evaluate({expression: e})
@@ -115,7 +113,7 @@ class Chromy {
 
   async defineFunction (func) {
     let e = func
-    if (typeof(e) === 'function') {
+    if ((typeof e) === 'function') {
       e = func.toString()
     }
     const result = await this.client.Runtime.evaluate({expression: e})
@@ -126,15 +124,15 @@ class Chromy {
   }
 
   async sleep (msec) {
-		await new Promise((resolve,reject) => {
-			setTimeout(() => {
-				resolve()
-			}, msec)
-		})
-	}
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve()
+      }, msec)
+    })
+  }
 
   async wait (cond) {
-    if (typeof(cond) === 'number') {
+    if ((typeof cond) === 'number') {
       await this.sleep(cond)
     } else {
       let check = null
@@ -167,7 +165,7 @@ class Chromy {
   }
 
   async type (expr, value) {
-    return await this.evaluate('document.querySelectorAll("' + expr + '").forEach(n => n.value = "' + escapeHtml(value) +'")')
+    return await this.evaluate('document.querySelectorAll("' + expr + '").forEach(n => n.value = "' + escapeHtml(value) + '")')
   }
 
   async click (expr) {

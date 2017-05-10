@@ -1,13 +1,14 @@
 {
   "name": "chromy",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "library for controlling chrome by nightmarejs like API.",
   "main": "src/index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --ext .js src"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,12 @@
     "async-chain-proxy": "^0.1.0",
     "chrome-remote-interface": "^0.22.0",
     "lighthouse": "^1.6.5"
+  },
+  "devDependencies": {
+    "eslint": "^3.14.1",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-friendly-formatter": "^2.0.7",
+    "eslint-plugin-promise": "^3.4.0",
+    "eslint-plugin-standard": "^2.0.1"
   }
 }
