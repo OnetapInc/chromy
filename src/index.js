@@ -17,6 +17,9 @@ class Chromy {
       waitTimeout: 5000
     }
     this.options = Object.assign(defaults, options)
+    this.cdpOptions = {
+      port: this.options.port
+    }
     this.client = null
     this.launcher = createChromeLauncher(this.options)
   }
@@ -36,7 +39,7 @@ class Chromy {
     process.on('rejectionHandled', exitHandler.bind(null))
     process.on('uncaughtException', exitHandler.bind(null))
     return new Promise((resolve, reject) => {
-      CDP(async (client) => {
+      CDP(this.cdpOptions, async (client) => {
         this.client = client
         const {Network, Page, Runtime} = client
         await Network.enable()
