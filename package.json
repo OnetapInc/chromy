@@ -1,6 +1,6 @@
 {
   "name": "chromy",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "library for controlling chrome by nightmarejs like API.",
   "main": "src/index.js",
   "directories": {

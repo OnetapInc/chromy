@@ -145,7 +145,7 @@ class Chromy {
     const result = []
     for (let funcName in module) {
       let func = module[funcName]
-      let src = `function ${funcName} () { return (${func.toString()})() }`.trim()
+      let src = `function ${funcName} () { return (${func.toString()})(...arguments) }`.trim()
       result.push(src)
     }
     return result

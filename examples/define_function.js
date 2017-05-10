@@ -7,7 +7,7 @@ async function main () {
         .goto('http://example.com/')
         .defineFunction([funcs.A, funcs.B])
         .evaluate(() => {
-          return B()
+          return B('INPUT')
         })
         .result((r) => console.log(r))
         .end()
@@ -18,7 +18,7 @@ async function main () {
         .goto('http://example.com/')
         .defineFunction(funcs)
         .evaluate(() => {
-          return B()
+          return B('INPUT')
         })
         .result((r) => console.log(r))
         .end()

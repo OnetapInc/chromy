@@ -1,9 +1,9 @@
-function A () {
-  return 'A'
+function A (arg) {
+  return arg
 }
 
-function B () {
-  return A()
+function B (arg) {
+  return A(arg)
 }
 
 exports.A = A
