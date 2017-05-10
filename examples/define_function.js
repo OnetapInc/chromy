@@ -11,6 +11,7 @@ async function main () {
         })
         .result((r) => console.log(r))
         .end()
+        .then(() => chromy.close())
         .catch(e => console.log(e))
 
   await chromy.chain()
@@ -21,9 +22,8 @@ async function main () {
         })
         .result((r) => console.log(r))
         .end()
+        .then(() => chromy.close())
         .catch(e => console.log(e))
-
-  await chromy.close()
 }
 
 main()

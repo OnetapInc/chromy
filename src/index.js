@@ -21,7 +21,7 @@ class Chromy {
       port: this.options.port
     }
     this.client = null
-    this.launcher = createChromeLauncher(this.options)
+    this.launcher = null
   }
 
   chain (options = {}) {
@@ -31,6 +31,9 @@ class Chromy {
   async start () {
     if (this.client !== null) {
       return
+    }
+    if (this.launcher === null) {
+      this.launcher = createChromeLauncher(this.options)
     }
     await this.launcher.run()
     const exitHandler = async _ => {
@@ -70,8 +73,11 @@ class Chromy {
       return false
     }
     await this.client.close()
-    await this.launcher.kill()
     this.client = null
+    if (this.launcher !== null) {
+      await this.launcher.kill()
+      this.launcher = null
+    }
     startedChromyInstanceCount--
     return true
   }
