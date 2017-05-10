@@ -52,9 +52,10 @@ class Chromy {
       CDP(this.cdpOptions, async (client) => {
         this.client = client
         startedChromyInstanceCount++
-        const {Network, Page} = client
+        const {Network, Page, Console} = client
         await Network.enable()
         await Page.enable()
+        await Console.enable()
         if ('userAgent' in this.options) {
           await this.userAgent(this.options.userAgent)
         }
@@ -92,6 +93,10 @@ class Chromy {
    */
   async headers (headers) {
     return await this.client.Network.setExtraHTTPHeaders({'headers': headers})
+  }
+
+  async console (callback) {
+    this.client.Console.messageAdded((payload) => callback.apply(this, [payload.message]))
   }
 
   async goto (url) {
