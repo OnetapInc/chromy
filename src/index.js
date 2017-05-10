@@ -111,14 +111,36 @@ class Chromy {
     return result.result
   }
 
-  async defineFunction (func) {
-    let e = func
-    if ((typeof e) === 'function') {
-      e = func.toString()
+  /**
+   * define function
+   *
+   * @param func {(function|string|Array.<function>|Array.<string>)}
+   * @returns {Promise.<void>}
+   */
+  async defineFunction (def) {
+    let funcs = []
+    if (Array.isArray(def)) {
+      funcs = def
+    } else if ((typeof def) === 'object') {
+      funcs = this._moduleToFunctionSources(def)
+    } else {
+      funcs.push(def)
     }
-    const result = await this.client.Runtime.evaluate({expression: e})
-    if (!result.result) {
-      return null
+    for (let i = 0;i < funcs.length; i++) {
+      let f = funcs[i]
+      if ((typeof f) === 'function') {
+        f = f.toString()
+      }
+      await this.client.Runtime.evaluate({expression: f})
+    }
+  }
+
+  _moduleToFunctionSources (module) {
+    const result = []
+    for (let funcName in module) {
+      let func = module[funcName]
+      let src = `function ${funcName} () { return (${func.toString()})() }`.trim()
+      result.push(src)
     }
     return result
   }
