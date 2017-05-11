@@ -1,6 +1,6 @@
 const Chromy = require('../src')
 
-let chromy = new Chromy({visible:true})
+let chromy = new Chromy()
 chromy.chain()
       .start()
       .console((msg) => {

@@ -1,6 +1,6 @@
 # chromy
 
-chromy is a library for operating chrome.  
+chromy is a library for operating chrome. 
 
 ## Installation
 
@@ -11,8 +11,10 @@ npm i chromy
 ## Usage
 
 ```js
-const Chromy = require('./src')
+const Chromy = require('chromy')
 
+// not headless
+// let chromy = new Chromy({visible:true})
 let chromy = new Chromy()
 chromy.chain()
       .goto('http://example.com/')
@@ -55,6 +57,12 @@ chromy.chain()
       })
       .end()
 ```
+
+##### .screenshot()
+
+##### .pdf()
+
+##### .console(func)
 
 ## Contributing
 

@@ -204,6 +204,19 @@ class Chromy {
   async click (expr) {
     return await this.evaluate('document.querySelectorAll("' + expr + '").forEach(n => n.click())')
   }
+
+  async screenshot (format = 'png', quality = undefined, fromSurface = true) {
+    if (['png', 'jpeg'].indexOf(format) === -1) {
+      throw new Error('format is invalid.')
+    }
+    const {data} = await this.client.Page.captureScreenshot({format: format, quality: quality, fromSurface: fromSurface})
+    return Buffer.from(data, 'base64')
+  }
+
+  async pdf (options = {}) {
+    const {data} = await this.client.Page.printToPDF(options)
+    return Buffer.from(data, 'base64')
+  }
 }
 
 module.exports = Chromy
