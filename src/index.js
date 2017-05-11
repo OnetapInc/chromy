@@ -1,5 +1,6 @@
 const CDP = require('chrome-remote-interface')
 const chainProxy = require('async-chain-proxy')
+const uuidV4 = require('uuid/v4');
 const {
   functionToEvaluatingSource
 } = require('./functionToSource')
@@ -9,6 +10,14 @@ const {
 } = require('./util')
 
 let startedChromyInstanceCount = 0
+
+function makeSendToChromy (uuid) {
+  return `
+  function () {
+    console.info('${uuid}:' + JSON.stringify(arguments))
+  }
+  `
+}
 
 class Chromy {
   constructor (options = {}) {
@@ -22,6 +31,7 @@ class Chromy {
     }
     this.client = null
     this.launcher = null
+    this.messagePrefix = null
   }
 
   chain (options = {}) {
@@ -96,7 +106,37 @@ class Chromy {
   }
 
   async console (callback) {
-    this.client.Console.messageAdded((payload) => callback.apply(this, [payload.message]))
+    this.client.Console.messageAdded((payload) => {
+      try {
+        const msg = payload.message.text
+        const pre = this.messagePrefix
+        if (typeof msg !== 'undefined') {
+          if (pre === null || msg.substring(0, pre.length + 1) !== pre + ':') {
+            callback.apply(this, [msg])
+          }
+        }
+      } catch (e) {
+        console.warn(e)
+      }
+    })
+  }
+
+  async receiveMessage (callback) {
+    const uuid = uuidV4()
+    this.messagePrefix = uuid
+    const f = makeSendToChromy(this.messagePrefix)
+    this.defineFunction({sendToChromy: f})
+    this.client.Console.messageAdded((payload) => {
+      try {
+        const msg = payload.message.text
+        if (msg && msg.substring(0, uuid.length + 1) === uuid + ':') {
+          const data = JSON.parse(msg.substring(uuid.length + 1))
+          callback.apply(this, [data])
+        }
+      } catch (e) {
+        console.warn(e)
+      }
+    })
   }
 
   async goto (url) {

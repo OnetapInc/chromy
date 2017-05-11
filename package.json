@@ -20,7 +20,8 @@
   "dependencies": {
     "async-chain-proxy": "^0.1.0",
     "chrome-remote-interface": "^0.22.0",
-    "lighthouse": "^1.6.5"
+    "lighthouse": "^1.6.5",
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
     "eslint": "^3.14.1",

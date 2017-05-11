@@ -51,6 +51,7 @@ function outerFunc () {
   return 'VALUE'
 }
 chromy.chain()
+      .goto('http://example.com')
       .defineFunction(outerFunc)
       .evaluate(() => {
         outerFunc()
@@ -63,6 +64,21 @@ chromy.chain()
 ##### .pdf()
 
 ##### .console(func)
+
+##### .receiveMessage(func)
+
+receive a message from browser.
+
+```
+chromy.chain()
+      .goto('http://example.com')
+      .receiveMessage((msg) => {
+        console.log(msg[0].value)
+      })
+      .evaluate(() => {
+        sendToChromy({value: 'foo'})
+      })
+```
 
 ## Contributing
 
