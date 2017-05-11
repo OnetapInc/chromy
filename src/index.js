@@ -137,7 +137,7 @@ class Chromy {
     } else {
       funcs.push(def)
     }
-    for (let i = 0;i < funcs.length; i++) {
+    for (let i = 0; i < funcs.length; i++) {
       let f = funcs[i]
       if ((typeof f) === 'function') {
         f = f.toString()
