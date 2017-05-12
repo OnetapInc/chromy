@@ -87,7 +87,6 @@ class Chromy {
   }
 
   static async cleanup () {
-    console.log('cleanup', instances.length)
     const copy = instances
     for (let i in copy) {
       await copy[i].close()
