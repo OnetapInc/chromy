@@ -46,18 +46,6 @@ class Chromy {
       this.launcher = createChromeLauncher(this.options)
     }
     await this.launcher.run()
-    const exitHandler = async _ => {
-      const success = await this.close()
-      if (success) {
-        if (startedChromyInstanceCount === 0) {
-          process.exit(1)
-        }
-      }
-    }
-    process.on('SIGINT', exitHandler.bind(null))
-    process.on('unhandledRejection', exitHandler.bind(null))
-    process.on('rejectionHandled', exitHandler.bind(null))
-    process.on('uncaughtException', exitHandler.bind(null))
     await new Promise((resolve, reject) => {
       CDP(this.cdpOptions, async (client) => {
         this.client = client
