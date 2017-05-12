@@ -9,6 +9,8 @@ const {
   createChromeLauncher
 } = require('./util')
 
+let instances = []
+let instanceId = 1
 let startedChromyInstanceCount = 0
 
 function makeSendToChromy (uuid) {
@@ -32,6 +34,7 @@ class Chromy {
     this.client = null
     this.launcher = null
     this.messagePrefix = null
+    this.instanceId = instanceId++
   }
 
   chain (options = {}) {
@@ -46,6 +49,7 @@ class Chromy {
       this.launcher = createChromeLauncher(this.options)
     }
     await this.launcher.run()
+    instances.push(this)
     await new Promise((resolve, reject) => {
       CDP(this.cdpOptions, async (client) => {
         this.client = client
@@ -78,7 +82,16 @@ class Chromy {
       this.launcher = null
     }
     startedChromyInstanceCount--
+    instances = instances.filter(i => i.instanceId !== this.instanceId)
     return true
+  }
+
+  static async cleanup () {
+    console.log('cleanup', instances.length)
+    const copy = instances
+    for (let i in copy) {
+      await copy[i].close()
+    }
   }
 
   async userAgent (ua) {

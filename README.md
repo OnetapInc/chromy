@@ -69,7 +69,7 @@ chromy.chain()
 
 receive a message from browser.
 
-```
+```js
 chromy.chain()
       .goto('http://example.com')
       .receiveMessage((msg) => {
@@ -78,6 +78,17 @@ chromy.chain()
       .evaluate(() => {
         sendToChromy({value: 'foo'})
       })
+```
+
+##### static cleanup()
+
+close all browsers.
+
+```js
+process.on('SIGINT', async () => {
+  await Chromy.cleanup()
+  process.exit(1)
+})
 ```
 
 ## Contributing
