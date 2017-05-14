@@ -1,6 +1,6 @@
 const CDP = require('chrome-remote-interface')
 const chainProxy = require('async-chain-proxy')
-const uuidV4 = require('uuid/v4');
+const uuidV4 = require('uuid/v4')
 const {
   functionToEvaluatingSource
 } = require('./functionToSource')
@@ -11,7 +11,6 @@ const {
 
 let instances = []
 let instanceId = 1
-let startedChromyInstanceCount = 0
 
 function makeSendToChromy (uuid) {
   return `
@@ -53,7 +52,6 @@ class Chromy {
     await new Promise((resolve, reject) => {
       CDP(this.cdpOptions, async (client) => {
         this.client = client
-        startedChromyInstanceCount++
         const {Network, Page, Console} = client
         await Network.enable()
         await Page.enable()
@@ -81,7 +79,6 @@ class Chromy {
       await this.launcher.kill()
       this.launcher = null
     }
-    startedChromyInstanceCount--
     instances = instances.filter(i => i.instanceId !== this.instanceId)
     return true
   }
@@ -112,7 +109,7 @@ class Chromy {
         const pre = this.messagePrefix
         if (typeof msg !== 'undefined') {
           if (pre === null || msg.substring(0, pre.length + 1) !== pre + ':') {
-            callback.apply(this, [msg])
+            callback.apply(this, [msg, payload.message])
           }
         }
       } catch (e) {

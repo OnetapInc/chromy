@@ -4,8 +4,9 @@ let chromy = new Chromy()
 chromy.chain()
       .start()
       .goto('http://example.com/')
-      .console((msg) => {
-        console.log(msg)
+      .console((msg, obj) => {
+        console.log(msg) // text
+        console.log(obj) // object incuding all parameters.
       })
       .receiveMessage((params) => {
         console.log(params)
