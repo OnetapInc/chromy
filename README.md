@@ -34,6 +34,21 @@ chromy.chain()
 
 ##### .result(func)
 
+result() receive a result of previous directive.
+
+```js
+chromy.chain()
+      .goto('http://example.com')
+      .evaluate(() => {
+        return document.querySelectorAll('*').length
+      })
+      .result((length) => {
+        // length is a result of evaluate() directive.
+        console.log(length)
+      }
+      .end()
+```
+
 ##### .end()
 
 ##### .wait(msec | selector)
@@ -46,7 +61,7 @@ chromy.chain()
 
 ##### .defineFunction(func)
 
-```
+```js
 function outerFunc () {
   return 'VALUE'
 }
@@ -59,11 +74,32 @@ chromy.chain()
       .end()
 ```
 
-##### .screenshot()
+##### .screenshot(format = 'png', quality = 100, fromSurface = true)
+
+It export a current screen as an image data. 
+`format` must be eather 'png' or 'jpeg'.
+
+See examples: [examples/screenshot.js]
 
 ##### .pdf()
 
+It export a current screen as a PDF data. 
+
+See examples: [examples/screenshot.js]
+
 ##### .console(func)
+
+```js
+chromy.chain()
+      .goto('http://example.com')
+      .console((text) => {
+        console.log(text)
+      })
+      .evaluate(() => {
+        console.log('HEY')
+      })
+      .end()
+```
 
 ##### .receiveMessage(func)
 
