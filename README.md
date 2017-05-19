@@ -1,6 +1,6 @@
-# chromy
+# Chromy
 
-chromy is a library for operating chrome. 
+Chromy is a library for operating headless chrome. 
 
 ## Installation
 
@@ -29,14 +29,19 @@ chromy.chain()
 You can also use async/await interfaces like this:
 
 ```js
-// You dont't need to call such methods: chain(), end()
-let chromy = new Chromy()
-await chromy.goto('http://example.com/')
-await chromy.evaluate(() => {
-        return document.querySelectorAll('*').length
-      })
-await chromy.result((r) => console.log(r))
-await chromy.close()
+const Chromy = require('./src')
+
+async function main () {
+  let chromy = new Chromy()
+  await chromy.goto('http://example.com/')
+  const result = await chromy.evaluate(() => {
+          return document.querySelectorAll('*').length
+        })
+  console.log(result)
+  await chromy.close()
+}
+
+main()
 ```
 
 ## API
