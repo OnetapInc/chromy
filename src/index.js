@@ -92,10 +92,9 @@ class Chromy {
   }
 
   static async cleanup () {
-    const copy = instances
-    for (let i in copy) {
-      await copy[i].close()
-    }
+    const copy = [].concat(instances)
+    const promises = copy.map(i => i.close())
+    await Promise.all(promises)
   }
 
   async userAgent (ua) {
@@ -104,7 +103,7 @@ class Chromy {
 
   /**
    * Example:
-   * night.headers({'X-Requested-By': 'foo'})
+   * chromy.headers({'X-Requested-By': 'foo'})
    */
   async headers (headers) {
     return await this.client.Network.setExtraHTTPHeaders({'headers': headers})
@@ -144,14 +143,20 @@ class Chromy {
     })
   }
 
-  async goto (url) {
+  async goto (url, options) {
+    const defaultOptions = {
+      waitLoadEvent: true
+    }
+    options = Object.assign(defaultOptions, options)
     if (this.client === null) {
       await this.start()
     }
     try {
       this._waitFinish(this.options.gotoTimeout, async () => {
         await this.client.Page.navigate({url: url})
-        await this.client.Page.loadEventFired()
+        if ( options.waitLoadEvent ) {
+          await this.client.Page.loadEventFired()
+        }
       })
     } catch (e) {
       if (e instanceof TimeoutError) {
@@ -173,6 +178,9 @@ class Chromy {
     }
     try {
       let result = await this._waitFinish(this.options.evaluateTimeout, async () => {
+        if (!this.client) {
+          return null
+        }
         return await this.client.Runtime.evaluate({expression: e})
       })
       if (!result || !result.result) {
