@@ -26,6 +26,19 @@ chromy.chain()
       .then(() => chromy.close())
 ```
 
+You can also use async/await interfaces like this:
+
+```js
+// You dont't need to call such methods: chain(), end()
+let chromy = new Chromy()
+await chromy.goto('http://example.com/')
+await chromy.evaluate(() => {
+        return document.querySelectorAll('*').length
+      })
+await chromy.result((r) => console.log(r))
+await chromy.close()
+```
+
 ## API
 
 ##### Chromy(options)
