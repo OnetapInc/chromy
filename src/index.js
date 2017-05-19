@@ -2,6 +2,7 @@ const CDP = require('chrome-remote-interface')
 const chainProxy = require('async-chain-proxy')
 const uuidV4 = require('uuid/v4')
 const {
+  TimeoutError,
   GotoTimeoutError,
   WaitTimeoutError,
   EvaluateTimeoutError,
@@ -147,20 +148,17 @@ class Chromy {
     if (this.client === null) {
       await this.start()
     }
-    const startTime = Date.now()
-    let fired = false
-    const f = (async () => {
-      await this.client.Page.navigate({url: url})
-      await this.client.Page.loadEventFired()
-      fired = true
-    })
-    f.apply()
-    while (!fired) {
-      const now = Date.now()
-      if ((now - startTime) > this.options.gotoTimeout) {
+    try {
+      this._waitFinish(this.options.gotoTimeout, async () => {
+        await this.client.Page.navigate({url: url})
+        await this.client.Page.loadEventFired()
+      })
+    } catch (e) {
+      if (e instanceof TimeoutError) {
         throw new GotoTimeoutError('goto() timeout')
+      } else {
+        throw e
       }
-      await this.sleep(50)
     }
   }
 
@@ -173,25 +171,53 @@ class Chromy {
     if ((typeof e) === 'function') {
       e = functionToEvaluatingSource(expr)
     }
-    const startTime = Date.now()
+    try {
+      let result = await this._waitFinish(this.options.evaluateTimeout, async () => {
+        return await this.client.Runtime.evaluate({expression: e})
+      })
+      if (!result || !result.result) {
+        return null
+      }
+      if (result.result.type === 'string') {
+        return JSON.parse(result.result.value)
+      }
+      return result.result.value
+    } catch (e) {
+      if (e instanceof TimeoutError) {
+        throw new EvaluateTimeoutError('evaluate() timeout')
+      } else {
+        throw e
+      }
+    }
+  }
+
+  async _waitFinish (timeout, callback) {
+    const start = Date.now()
+    let finished = false
+    let error = null
     let result = null
     const f = (async () => {
-      result = await this.client.Runtime.evaluate({expression: e})
+      try {
+        result = await callback.apply()
+        finished = true
+        return result
+      } catch (e) {
+        error = e
+        finished = true
+      }
     })
     f.apply()
-    while (result === null) {
+    while (!finished) {
       const now = Date.now()
-      if ((now - startTime) > this.options.evaluateTimeout) {
-        throw new EvaluateTimeoutError('evaluate() timeout')
+      if ((now - start) > timeout) {
+        throw new TimeoutError('timeout')
       }
       await this.sleep(50)
     }
-    if (!result || !result.result) {
-      return null
+    if (error !== null) {
+      throw error
     }
-    if (result.result.type === 'string') {
-      return JSON.parse(result.result.value)
-    }
+    return result
   }
 
   /**
@@ -239,34 +265,55 @@ class Chromy {
   async wait (cond) {
     if ((typeof cond) === 'number') {
       await this.sleep(cond)
+    } else if ((typeof cond) === 'function') {
+      await this._waitFunction(cond)
     } else {
-      let check = null
-      let startTime = Date.now()
-      await new Promise((resolve, reject) => {
-        check = () => {
-          setTimeout(async () => {
-            try {
-              const now = Date.now()
-              if (now - startTime > this.options.waitTimeout) {
-                reject(new WaitTimeoutError('wait() timeout'))
-                return
-              }
-              const result = await this.evaluate(functionToEvaluatingSource(() => {
-                return document.querySelector('?')
-              }, {'?': escapeHtml(cond)}))
-              if (result) {
-                resolve(result)
-              } else {
-                check()
-              }
-            } catch (e) {
-              reject(e)
-            }
-          }, 50)
-        }
-        check()
-      })
+      await this._waitSelector(cond)
     }
+  }
+
+  // wait for func to return true.
+  async _waitFunction (func) {
+    await this._waitFinish(this.options.evaluateTimeout, async () => {
+      while (true) {
+        let r = await this._waitFinish(1000, () => {
+          return this.evaluate(func)
+        })
+        if (r) {
+          break
+        }
+        await this.sleep(50)
+      }
+    })
+  }
+
+  async _waitSelector (selector) {
+    let check = null
+    let startTime = Date.now()
+    await new Promise((resolve, reject) => {
+      check = () => {
+        setTimeout(async () => {
+          try {
+            const now = Date.now()
+            if (now - startTime > this.options.waitTimeout) {
+              reject(new WaitTimeoutError('wait() timeout'))
+              return
+            }
+            const result = await this.evaluate(functionToEvaluatingSource(() => {
+              return document.querySelector('?')
+            }, {'?': escapeHtml(selector)}))
+            if (result) {
+              resolve(result)
+            } else {
+              check()
+            }
+          } catch (e) {
+            reject(e)
+          }
+        }, 50)
+      }
+      check()
+    })
   }
 
   async type (expr, value) {

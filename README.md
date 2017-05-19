@@ -59,9 +59,21 @@ chromy.chain()
 
 ##### .end()
 
-##### .wait(msec | selector)
+##### .wait(msec)
+
+alias for .sleep(msec)
+
+##### .wait(selector)
+
+wait until selector you specified appear in a DOM tree.
+
+##### .wait(func)
+
+wait until function you supplied is evaluated as true.
 
 ##### .sleep(msec)
+
+wait for milli seconds you specified.
 
 ##### .type(selector, text)
 
