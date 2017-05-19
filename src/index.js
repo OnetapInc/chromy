@@ -164,6 +164,10 @@ class Chromy {
     }
   }
 
+  async reload (ignoreCache, scriptToEvaluateOnLoad) {
+    await this.client.Page.reload({ignoreCache, scriptToEvaluateOnLoad})
+  }
+
   async evaluate (expr) {
     let e = expr
     if ((typeof e) === 'function') {
