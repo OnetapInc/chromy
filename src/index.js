@@ -2,6 +2,11 @@ const CDP = require('chrome-remote-interface')
 const chainProxy = require('async-chain-proxy')
 const uuidV4 = require('uuid/v4')
 const {
+  GotoTimeoutError,
+  WaitTimeoutError,
+  EvaluateTimeoutError,
+} = require('./error')
+const {
   functionToEvaluatingSource
 } = require('./functionToSource')
 const {
@@ -24,7 +29,9 @@ class Chromy {
   constructor (options = {}) {
     const defaults = {
       port: 9222,
-      waitTimeout: 5000
+      waitTimeout: 30000,
+      gotoTimeout: 30000,
+      evaluateTimeout: 30000
     }
     this.options = Object.assign(defaults, options)
     this.cdpOptions = {
@@ -140,8 +147,21 @@ class Chromy {
     if (this.client === null) {
       await this.start()
     }
-    await this.client.Page.navigate({url: url})
-    await this.client.Page.loadEventFired()
+    const startTime = Date.now()
+    let fired = false
+    const f = (async () => {
+      await this.client.Page.navigate({url: url})
+      await this.client.Page.loadEventFired()
+      fired = true
+    })
+    f.apply()
+    while (!fired) {
+      const now = Date.now()
+      if ((now - startTime) > this.options.gotoTimeout) {
+        throw new GotoTimeoutError('goto() timeout')
+      }
+      await this.sleep(50)
+    }
   }
 
   async evaluate (expr) {
@@ -149,12 +169,24 @@ class Chromy {
     if ((typeof e) === 'function') {
       e = functionToEvaluatingSource(expr)
     }
-    const result = await this.client.Runtime.evaluate({expression: e})
-    if (!result.result) {
-      return null
-    }
-    if (result.result.type === 'string') {
-      return JSON.parse(result.result.value)
+    const startTime = Date.now()
+    let result = null
+    const f = (async () => {
+      result = await this.client.Runtime.evaluate({expression: e})
+      if (!result.result) {
+        return null
+      }
+      if (result.result.type === 'string') {
+        return JSON.parse(result.result.value)
+      }
+    })
+    f.apply()
+    while (result === null) {
+      const now = Date.now()
+      if ((now - startTime) > this.options.evaluateTimeout) {
+        throw new EvaluateTimeoutError('evaluate() timeout')
+      }
+      await this.sleep(50)
     }
     return result.result
   }
@@ -213,7 +245,7 @@ class Chromy {
             try {
               const now = Date.now()
               if (now - startTime > this.options.waitTimeout) {
-                reject(new Error('wait() timeout'))
+                reject(new WaitTimeoutError('wait() timeout'))
                 return
               }
               const result = await this.evaluate(functionToEvaluatingSource(() => {
