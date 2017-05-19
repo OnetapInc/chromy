@@ -152,7 +152,7 @@ class Chromy {
       await this.start()
     }
     try {
-      this._waitFinish(this.options.gotoTimeout, async () => {
+      await this._waitFinish(this.options.gotoTimeout, async () => {
         await this.client.Page.navigate({url: url})
         if ( options.waitLoadEvent ) {
           await this.client.Page.loadEventFired()
