@@ -173,12 +173,6 @@ class Chromy {
     let result = null
     const f = (async () => {
       result = await this.client.Runtime.evaluate({expression: e})
-      if (!result.result) {
-        return null
-      }
-      if (result.result.type === 'string') {
-        return JSON.parse(result.result.value)
-      }
     })
     f.apply()
     while (result === null) {
@@ -188,7 +182,12 @@ class Chromy {
       }
       await this.sleep(50)
     }
-    return result.result
+    if (!result || !result.result) {
+      return null
+    }
+    if (result.result.type === 'string') {
+      return JSON.parse(result.result.value)
+    }
   }
 
   /**
