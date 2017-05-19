@@ -28,6 +28,14 @@ chromy.chain()
 
 ## API
 
+##### Chromy(options)
+
+options.visible(default: false): If set to true, chrome is launched in visible mode.
+options.port(default: 9222): --remote-debugging-port
+options.waitTimeout(default: 30000): If wait() does not be finished in a specified time WaitTimeoutError will be throwed.
+options.gotoTimeout(default: 30000): If goto() does not be finished in a specified time GotoTimeoutError will be throwed.
+options.evaluateTimeout(default: 30000): If evaluate() does not be finished in a specified time EvaluateTimeError will be throwed.
+
 ##### .goto(url)
 
 ##### .evaluate(func)
