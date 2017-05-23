@@ -3,7 +3,7 @@ const Chromy = require('../src')
 let chromy = new Chromy()
 chromy.chain()
       .start()
-      .goto('http://example.com/')
+      .goto('file://' + __dirname + '/pages/index.html')
       .console((msg, obj) => {
         console.log(msg) // text
         console.log(obj) // object incuding all parameters.

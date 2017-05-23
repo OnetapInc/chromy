@@ -174,6 +174,20 @@ class Chromy {
     })
   }
 
+  async forward () {
+    const f = 'window.history.forward()'
+    const promise = this.waitLoadEvent()
+    await this.client.Runtime.evaluate({expression: f})
+    await promise
+  }
+
+  async back () {
+    const f = 'window.history.back()'
+    const promise = this.waitLoadEvent()
+    await this.client.Runtime.evaluate({expression: f})
+    await promise
+  }
+
   async reload (ignoreCache, scriptToEvaluateOnLoad) {
     await this.client.Page.reload({ignoreCache, scriptToEvaluateOnLoad})
   }
@@ -335,8 +349,17 @@ class Chromy {
     return await this.evaluate('document.querySelectorAll("' + expr + '").forEach(n => n.value = "' + escapeHtml(value) + '")')
   }
 
-  async click (expr) {
-    return await this.evaluate('document.querySelectorAll("' + expr + '").forEach(n => n.click())')
+  async click (expr, inputOptions = {}) {
+    const defaults = {waitLoadEvent: false}
+    const options = Object.assign(defaults, inputOptions)
+    let promise = null
+    if (options.waitLoadEvent) {
+      promise = this.waitLoadEvent()
+    }
+    await this.evaluate('document.querySelectorAll("' + expr + '").forEach(n => n.click())')
+    if (promise !== null) {
+      await promise
+    }
   }
 
   async screenshot (format = 'png', quality = undefined, fromSurface = true) {

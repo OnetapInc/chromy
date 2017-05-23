@@ -66,6 +66,14 @@ waitLoadEvent(default: true): If set to false, goto() doesn't wait until load ev
 
 wait until a load event is fired.
 
+##### .forward()
+
+go forward to the next page and wait until load event is fired.
+
+##### .back()
+
+go back to the previous page and wait until load event is fired.
+
 ##### .evaluate(func)
 
 ##### .result(func)
@@ -105,7 +113,11 @@ wait for milli seconds you specified.
 
 ##### .type(selector, text)
 
-##### .click(selector)
+##### .click(selector, options)
+
+###### options
+
+waitLoadEvent(Default:false): If set to true, wait until load event is fired after click event is fired.
 
 ##### .defineFunction(func)
 

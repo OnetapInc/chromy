@@ -2,7 +2,7 @@ const Chromy = require('../src')
 
 let chromy = new Chromy()
 chromy.chain()
-      .goto('http://example.com/')
+      .goto('file://' + __dirname + '/pages/index.html')
       .evaluate(() => {
         return document.querySelectorAll('*').length
       })

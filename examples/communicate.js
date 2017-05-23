@@ -5,7 +5,7 @@ const Chromy = require('../src')
 let chromy = new Chromy()
 chromy.chain()
       .start()
-      .goto('http://example.com/')
+      .goto('file://' + __dirname + '/pages/index.html')
       .receiveMessage((params) => {
         // receive a parameters passed by sendToChromy()
         console.log(params)
