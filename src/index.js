@@ -32,6 +32,7 @@ class Chromy {
       port: 9222,
       waitTimeout: 30000,
       gotoTimeout: 30000,
+      loadTimeout: 30000,
       evaluateTimeout: 30000
     }
     this.options = Object.assign(defaults, options)
@@ -165,6 +166,12 @@ class Chromy {
         throw e
       }
     }
+  }
+
+  async waitLoadEvent () {
+    await this._waitFinish(this.options.loadTimeout, async () => {
+      await this.client.Page.loadEventFired()
+    })
   }
 
   async reload (ignoreCache, scriptToEvaluateOnLoad) {

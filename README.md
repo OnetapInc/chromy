@@ -48,14 +48,23 @@ main()
 
 ##### Chromy(options)
 
-options:  
+###### options  
+
 visible(default: false): If set to true, chrome is launched in visible mode.  
 port(default: 9222): --remote-debugging-port  
 waitTimeout(default: 30000): If wait() does not be finished in a specified time WaitTimeoutError will be throwed.  
 gotoTimeout(default: 30000): If goto() does not be finished in a specified time GotoTimeoutError will be throwed.  
 evaluateTimeout(default: 30000): If evaluate() does not be finished in a specified time EvaluateTimeError will be throwed.
 
-##### .goto(url)
+##### .goto(url, options)
+
+###### options
+
+waitLoadEvent(default: true): If set to false, goto() doesn't wait until load event is fired.
+
+##### .waitLoadEvent()
+
+wait until a load event is fired.
 
 ##### .evaluate(func)
 
