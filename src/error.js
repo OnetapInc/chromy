@@ -1,28 +1,28 @@
 class TimeoutError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = 'TimeoutError';
+  constructor (message) {
+    super(message)
+    this.name = 'TimeoutError'
   }
 }
 
 class GotoTimeoutError extends TimeoutError {
-  constructor(message) {
-    super(message);
-    this.name = 'GotoTimeoutError';
+  constructor (message) {
+    super(message)
+    this.name = 'GotoTimeoutError'
   }
 }
 
 class WaitTimeoutError extends TimeoutError {
-  constructor(message) {
-    super(message);
-    this.name = 'WaitTimeoutError';
+  constructor (message) {
+    super(message)
+    this.name = 'WaitTimeoutError'
   }
 }
 
 class EvaluateTimeoutError extends TimeoutError {
-  constructor(message) {
-    super(message);
-    this.name = 'WaitTimeoutError';
+  constructor (message) {
+    super(message)
+    this.name = 'WaitTimeoutError'
   }
 }
 

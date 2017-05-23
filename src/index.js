@@ -5,7 +5,7 @@ const {
   TimeoutError,
   GotoTimeoutError,
   WaitTimeoutError,
-  EvaluateTimeoutError,
+  EvaluateTimeoutError
 } = require('./error')
 const {
   functionToEvaluatingSource
@@ -155,7 +155,7 @@ class Chromy {
     try {
       await this._waitFinish(this.options.gotoTimeout, async () => {
         await this.client.Page.navigate({url: url})
-        if ( options.waitLoadEvent ) {
+        if (options.waitLoadEvent) {
           await this.client.Page.loadEventFired()
         }
       })
@@ -211,7 +211,7 @@ class Chromy {
     let finished = false
     let error = null
     let result = null
-    const f = (async () => {
+    const f = async () => {
       try {
         result = await callback.apply()
         finished = true
@@ -220,7 +220,7 @@ class Chromy {
         error = e
         finished = true
       }
-    })
+    }
     f.apply()
     while (!finished) {
       const now = Date.now()
