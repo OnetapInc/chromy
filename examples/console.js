@@ -8,12 +8,8 @@ chromy.chain()
         console.log(msg) // text
         console.log(obj) // object incuding all parameters.
       })
-      .receiveMessage((params) => {
-        console.log(params)
-      })
       .evaluate(() => {
         console.log('message')
-        sendToChromy('param1', {hoge: 'value'})
       })
       .end()
       .then(_ => chromy.close())

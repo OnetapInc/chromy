@@ -29,7 +29,7 @@ chromy.chain()
 You can also use async/await interfaces like this:
 
 ```js
-const Chromy = require('./src')
+const Chromy = require('chromy')
 
 async function main () {
   let chromy = new Chromy()
@@ -142,7 +142,13 @@ chromy.chain()
 
 ##### .receiveMessage(func)
 
-receive a message from browser.
+receive a message from browser.  
+
+You can communicate with a browser by using receiveMessage() and sendToChromy().
+sendToChromy() is a special function to communicate with Chromy.
+When you call receiveMessage() at the first time, sendToChromy() is defined in a browser automatically.
+A listner function passed to receiveMessage() receives parameters when sendToChromy() is executed in a browser.
+
 
 ```js
 chromy.chain()
