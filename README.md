@@ -44,6 +44,26 @@ async function main () {
 main()
 ```
 
+### Mobile Emulation
+
+Chromy provide mobile emulation.  
+The emulation will change screen resolution, density, userAgent and provide touch emulation.
+
+```js
+const Chromy = require('chromy')
+
+let chromy = new Chromy()
+chromy.chain()
+      .emulate('iPhone6')
+      .goto('http://example.com/')
+      .evaluate(() => {
+        return navigator.userAgent
+      })
+      .result(console.log)
+      .end()
+      .then(() => chromy.close())
+```
+
 ## API
 
 ##### Chromy(options)

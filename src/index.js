@@ -440,12 +440,15 @@ class Chromy {
       fitWindow: false,
       scale: device.pageScaleFactor
     })
+    const platform = device.mobile ? 'mobile' : 'desktop'
+    await this.client.Emulation.setTouchEmulationEnabled({enabled: true, configuration: platform})
     await this.userAgent(device.userAgent)
     this.emulateMode = true
   }
 
   async clearEmulate () {
     await this.client.Emulation.clearDeviceMetricsOverride()
+    await this.client.Emulation.setTouchEmulationEnabled({enabled: false})
     if (this.userAgentBeforeEmulate) {
       await this.userAgent(this.userAgentBeforeEmulate)
     }
