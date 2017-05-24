@@ -1,6 +1,7 @@
 const CDP = require('chrome-remote-interface')
 const chainProxy = require('async-chain-proxy')
 const uuidV4 = require('uuid/v4')
+const devices = require('./devices')
 const {
   TimeoutError,
   GotoTimeoutError,
@@ -42,6 +43,8 @@ class Chromy {
     this.client = null
     this.launcher = null
     this.messagePrefix = null
+    this.emulateMode = false
+    this.userAgentBeforeEmulate = null
     this.instanceId = instanceId++
   }
 
@@ -109,6 +112,7 @@ class Chromy {
   }
 
   async userAgent (ua) {
+    await this.checkStart()
     return await this.client.Network.setUserAgentOverride({'userAgent': ua})
   }
 
@@ -117,10 +121,12 @@ class Chromy {
    * chromy.headers({'X-Requested-By': 'foo'})
    */
   async headers (headers) {
+    await this.checkStart()
     return await this.client.Network.setExtraHTTPHeaders({'headers': headers})
   }
 
   async console (callback) {
+    await this.checkStart()
     this.client.Console.messageAdded((payload) => {
       try {
         const msg = payload.message.text
@@ -137,6 +143,7 @@ class Chromy {
   }
 
   async receiveMessage (callback) {
+    await this.checkStart()
     const uuid = uuidV4()
     this.messagePrefix = uuid
     const f = makeSendToChromy(this.messagePrefix)
@@ -159,9 +166,7 @@ class Chromy {
       waitLoadEvent: true
     }
     options = Object.assign(defaultOptions, options)
-    if (this.client === null) {
-      await this.start()
-    }
+    await this.checkStart()
     try {
       await this._waitFinish(this.options.gotoTimeout, async () => {
         await this.client.Page.navigate({url: url})
@@ -418,6 +423,39 @@ class Chromy {
   async pdf (options = {}) {
     const {data} = await this.client.Page.printToPDF(options)
     return Buffer.from(data, 'base64')
+  }
+
+  async emulate (deviceName) {
+    await this.checkStart()
+
+    if (!this.emulateMode) {
+      this.userAgentBeforeEmulate = await this.evaluate('return navigator.userAgent')
+    }
+    const device = devices[deviceName]
+    await this.client.Emulation.setDeviceMetricsOverride({
+      width: device.width,
+      height: device.height,
+      deviceScaleFactor: device.deviceScaleFactor,
+      mobile: device.mobile,
+      fitWindow: false,
+      scale: device.pageScaleFactor
+    })
+    await this.userAgent(device.userAgent)
+    this.emulateMode = true
+  }
+
+  async clearEmulate () {
+    await this.client.Emulation.clearDeviceMetricsOverride()
+    if (this.userAgentBeforeEmulate) {
+      await this.userAgent(this.userAgentBeforeEmulate)
+    }
+    this.emulateMode = false
+  }
+
+  async checkStart () {
+    if (this.client === null) {
+      await this.start()
+    }
   }
 }
 
