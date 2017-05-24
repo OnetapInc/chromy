@@ -18,9 +18,18 @@ function escapeHtml (string) {
 }
 
 function createChromeLauncher (options) {
-  const flags = ['--disable-gpu']
+  const flags = []
+  flags.push('--disable-gpu')
   if (!options.visible) {
     flags.push('--headless')
+  }
+  if (options.additionalChromeFlags && Array.isArray(options.additionalChromeFlags)) {
+    options.additionalChromeFlags.forEach(f => {
+      if (f.indexOf('--') === -1) {
+        throw new Error('chrome flag must start "--". flag: ' + f)
+      }
+      flags.push(f)
+    })
   }
   return new ChromeLauncher({
     port: options.port,

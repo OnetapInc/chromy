@@ -35,7 +35,7 @@ class Chromy {
       loadTimeout: 30000,
       evaluateTimeout: 30000
     }
-    this.options = Object.assign(defaults, options)
+    this.options = Object.assign(Object.assign({}, defaults), options)
     this.cdpOptions = {
       port: this.options.port
     }
@@ -59,12 +59,22 @@ class Chromy {
     await this.launcher.run()
     instances.push(this)
     await new Promise((resolve, reject) => {
-      CDP(this.cdpOptions, async (client) => {
+      const actualCdpOptions = Object.assign({}, this.cdpOptions)
+      Object.assign(actualCdpOptions, {
+        target: (targets) => {
+          return targets.filter(t => t.type === 'page').shift()
+        }
+      })
+      CDP(actualCdpOptions, async (client) => {
         this.client = client
-        const {Network, Page, Console} = client
-        await Network.enable()
-        await Page.enable()
-        await Console.enable()
+        const {Network, Page, Runtime, Console} = client
+        await Promise.all([Network.enable(), Page.enable(), Runtime.enable(), Console.enable()])
+
+        // focuses to first tab
+        const targets = await this.client.Target.getTargets()
+        const page = targets.targetInfos.filter(t => t.type === 'page').shift()
+        await this.client.Target.activateTarget({targetId: page.targetId})
+
         if ('userAgent' in this.options) {
           await this.userAgent(this.options.userAgent)
         }
@@ -346,7 +356,8 @@ class Chromy {
   }
 
   async type (expr, value) {
-    return await this.evaluate('document.querySelectorAll("' + expr + '").forEach(n => n.value = "' + escapeHtml(value) + '")')
+    await this.evaluate('document.querySelector("' + expr + '").focus()')
+    await this.client.Input.dispatchKeyEvent({type: 'char', text: value})
   }
 
   async click (expr, inputOptions = {}) {
