@@ -218,7 +218,12 @@ class Chromy {
         return null
       }
       if (result.result.type === 'string') {
-        return JSON.parse(result.result.value)
+        const c = result.result.value.substring(0, 1)
+        if (c === '{' || c === '"') {
+          return JSON.parse(result.result.value)
+        } else {
+          return result.result.value
+        }
       }
       return result.result.value
     } catch (e) {
@@ -357,7 +362,17 @@ class Chromy {
 
   async type (expr, value) {
     await this.evaluate('document.querySelector("' + expr + '").focus()')
-    await this.client.Input.dispatchKeyEvent({type: 'char', text: value})
+    const characters = value.split('')
+    for (let i in characters) {
+      const c = characters[i]
+      await this.client.Input.dispatchKeyEvent({type: 'char', text: c})
+      await this.sleep(20)
+    }
+  }
+
+  async insert (expr, value) {
+    await this.evaluate('document.querySelector("' + expr + '").focus()')
+    await this.evaluate('document.querySelector("' + expr + '").value = "' + escapeHtml(value) + '"')
   }
 
   async click (expr, inputOptions = {}) {
@@ -371,6 +386,25 @@ class Chromy {
     if (promise !== null) {
       await promise
     }
+  }
+
+  async check (selector) {
+    await this.evaluate('document.querySelectorAll("' + selector + '").forEach(n => n.checked = true)')
+  }
+
+  async uncheck (selector) {
+    await this.evaluate('document.querySelectorAll("' + selector + '").forEach(n => n.checked = false)')
+  }
+
+  async select (selector, value) {
+    const src = `
+      document.querySelectorAll("${selector} > option").forEach(n => {
+        if (n.value === "${value}") {
+          n.selected = true
+        }
+      })
+      `
+    await this.evaluate(src)
   }
 
   async screenshot (format = 'png', quality = undefined, fromSurface = true) {

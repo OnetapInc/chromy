@@ -113,6 +113,14 @@ wait for milli seconds you specified.
 
 ##### .type(selector, text)
 
+##### .insert(selector, text)
+
+##### .check(selector)
+
+##### .uncheck(selector)
+
+##### .select(selector, value)
+
 ##### .click(selector, options)
 
 ###### options
