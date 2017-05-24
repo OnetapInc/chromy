@@ -1,7 +1,7 @@
 module.exports = {
   Nexus6P: {
-    width: 2560,
-    height: 1440,
+    width: 1440,
+    height: 2560,
     deviceScaleFactor: 6.24,
     pageScaleFactor: 1.0,
     mobile: true,
