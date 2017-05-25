@@ -219,6 +219,27 @@ blocks urls from loading.
 urls: array[string]  
 Wildcard('*') is allowed in url string.
 
+##### clearBrowserCache()
+
+Removes all browser caches.
+
+##### setCookie(params)
+
+###### Prameters
+
+params: object  
+
+See [chrome document](https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setCookie)
+
+##### deleteCookie(name, url)
+
+Remove a single cookie.
+
+##### clearAllCookies()
+
+Removes all browser cookies.
+
+
 ##### static cleanup()
 
 close all browsers.

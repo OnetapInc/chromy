@@ -463,6 +463,21 @@ class Chromy {
     await this.client.Network.clearBrowserCache()
   }
 
+  async setCookie (params) {
+    await this.checkStart()
+    await this.client.Network.setCookie(params)
+  }
+
+  async deleteCookie (name, url) {
+    await this.checkStart()
+    await this.client.Network.deleteCookie({cookieName: name, url: url})
+  }
+
+  async clearAllCookies () {
+    await this.checkStart()
+    await this.client.Network.clearBrowserCookies()
+  }
+
   async checkStart () {
     if (this.client === null) {
       await this.start()
