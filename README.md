@@ -74,7 +74,7 @@ visible(default: false): If set to true, chrome is launched in visible mode.
 port(default: 9222): --remote-debugging-port  
 waitTimeout(default: 30000): If wait() does not be finished in a specified time WaitTimeoutError will be throwed.  
 gotoTimeout(default: 30000): If goto() does not be finished in a specified time GotoTimeoutError will be throwed.  
-evaluateTimeout(default: 30000): If evaluate() does not be finished in a specified time EvaluateTimeError will be throwed.
+evaluateTimeout(default: 30000): If evaluate() does not be finished in a specified time EvaluateTimeError will be throwed.  
 typeInterval(default: 20): This option is used only in type() method.
 
 ##### .goto(url, options)
