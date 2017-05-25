@@ -34,7 +34,8 @@ class Chromy {
       waitTimeout: 30000,
       gotoTimeout: 30000,
       loadTimeout: 30000,
-      evaluateTimeout: 30000
+      evaluateTimeout: 30000,
+      typeInterval: 20
     }
     this.options = Object.assign(Object.assign({}, defaults), options)
     this.cdpOptions = {
@@ -208,10 +209,7 @@ class Chromy {
   }
 
   async evaluate (expr) {
-    let e = expr
-    if ((typeof e) === 'function') {
-      e = functionToEvaluatingSource(expr)
-    }
+    let e = functionToEvaluatingSource(expr)
     try {
       let result = await this._waitFinish(this.options.evaluateTimeout, async () => {
         if (!this.client) {
@@ -369,7 +367,7 @@ class Chromy {
     for (let i in characters) {
       const c = characters[i]
       await this.client.Input.dispatchKeyEvent({type: 'char', text: c})
-      await this.sleep(20)
+      await this.sleep(this.options.typeInterval)
     }
   }
 
