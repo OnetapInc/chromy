@@ -8,7 +8,7 @@ function functionToSource (f, replaces = {}) {
 }
 
 function toFunctionForm (f, replaces = {}) {
-  if (typeof(f) === 'function') {
+  if ((typeof f) === 'function') {
     return functionToSource(f, replaces)
   } else {
     return 'function () {' + functionToSource(f, replaces) + '}'

@@ -1,9 +1,10 @@
 const Chromy = require('../src')
+const path = require('path')
 const fs = require('fs')
 
 let chromy = new Chromy()
 chromy.chain()
-      .goto('file://' + __dirname + '/pages/index.html')
+      .goto(path.join('file://', __dirname, '/pages/index.html'))
       .screenshot()
       .result((png) => {
         fs.writeFileSync('out.png', png)

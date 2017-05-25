@@ -1,9 +1,10 @@
 const Chromy = require('../src')
+const path = require('path')
 
 let chromy = new Chromy({visible: true})
 chromy.chain()
       .emulate('Nexus6P')
-      .goto('file://' + __dirname + '/pages/index.html')
+      .goto(path.join('file://', __dirname, '/pages/index.html'))
       .evaluate(() => {
         return 'Nexus6P width: ' + window.innerWidth
       })
