@@ -222,15 +222,13 @@ class Chromy {
       if (!result || !result.result) {
         return null
       }
-      if (result.result.type === 'string') {
-        const c = result.result.value.substring(0, 1)
-        if (c === '{' || c === '"') {
-          return JSON.parse(result.result.value)
-        } else {
-          return result.result.value
-        }
+      const resultObject = JSON.parse(result.result.value)
+      const type = resultObject.type
+      if (type === 'undefined') {
+        return undefined
+      } else {
+        return JSON.parse(resultObject.result)
       }
-      return result.result.value
     } catch (e) {
       if (e instanceof TimeoutError) {
         throw new EvaluateTimeoutError('evaluate() timeout')
