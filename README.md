@@ -210,6 +210,15 @@ chromy.chain()
       })
 ```
 
+##### blockUrls(urls)
+
+blocks urls from loading.  
+
+###### Parameter
+
+urls: array[string]  
+Wildcard('*') is allowed in url string.
+
 ##### static cleanup()
 
 close all browsers.

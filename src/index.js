@@ -453,6 +453,11 @@ class Chromy {
     this.emulateMode = false
   }
 
+  async blockUrls (urls) {
+    await this.checkStart()
+    await this.client.Network.setBlockedURLs({urls: urls})
+  }
+
   async checkStart () {
     if (this.client === null) {
       await this.start()
