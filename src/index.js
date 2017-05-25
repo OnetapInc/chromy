@@ -458,6 +458,11 @@ class Chromy {
     await this.client.Network.setBlockedURLs({urls: urls})
   }
 
+  async clearBrowserCache () {
+    await this.checkStart()
+    await this.client.Network.clearBrowserCache()
+  }
+
   async checkStart () {
     if (this.client === null) {
       await this.start()
