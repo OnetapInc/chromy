@@ -406,6 +406,18 @@ class Chromy {
     await this.client.Input.dispatchMouseEvent(opts)
   }
 
+  async tap (x, y, options = {}) {
+    const time = Date.now() / 1000
+    const opts = Object.assign({x: x, y: y, timestamp: time, button: 'left'}, options)
+    await this.client.Input.synthesizeTapGesture(opts)
+  }
+
+  async doubleTap (x, y, options = {}) {
+    const time = Date.now() / 1000
+    const opts = Object.assign({x: x, y: y, timestamp: time, button: 'left', tapCount: 2}, options)
+    await this.client.Input.synthesizeTapGesture(opts)
+  }
+
   async check (selector) {
     await this.evaluate('document.querySelectorAll("' + selector + '").forEach(n => n.checked = true)')
   }

@@ -14,6 +14,25 @@
     document.addEventListener('mousedown', (e) => {
       console.log(`type:${e.type} x:${e.offsetX} y:${e.offsetY}`)
     })
+    function displayTouchEvent(e) {
+      if (e.touches && e.touches.length > 0) {
+        for ( let i = 0; i < e.touches.length; i++ ) {
+          const t = e.touches[i]
+          console.log(`type: ${e.type} x: ${t.clientX} y: ${t.clientY}`)
+        }
+      } else {
+        console.log(`type: ${e.type}`)
+      }
+    }
+    document.addEventListener('touchstart', (e) => {
+      displayTouchEvent(e)
+    })
+    document.addEventListener('touchend', (e) => {
+      displayTouchEvent(e)
+    })
+    document.addEventListener('touchmove', (e) => {
+      displayTouchEvent(e)
+    })
     </script>
   </body>
 </html>

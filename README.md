@@ -160,6 +160,16 @@ Dispatch mousedown event.
 
 Dispatch mouseup event.
 
+##### .tap(x, y, options = {})
+
+Synthesize tap by dispatching touche events.
+(NOTE: To dispatch touch events you need to enable a mobile emulation before.)
+
+##### .doubleTap(x, y, options = {})
+
+Synthesize double tap by dispatching touche events.
+(NOTE: To dispatch touch events you need to enable a mobile emulation before.)
+
 ##### .defineFunction(func)
 
 ```js
