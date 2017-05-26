@@ -148,6 +148,18 @@ wait for milli seconds you specified.
 
 waitLoadEvent(Default:false): If set to true, wait until load event is fired after click event is fired.
 
+##### .mouseMoved(x, y, options = {})
+
+Dispatch mousemoved event.
+
+##### .mousePressed(x, y, options = {})
+
+Dispatch mousedown event.
+
+##### .mouseReleased(x, y, options = {})
+
+Dispatch mouseup event.
+
 ##### .defineFunction(func)
 
 ```js

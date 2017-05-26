@@ -27,6 +27,8 @@ function makeSendToChromy (uuid) {
   `
 }
 
+const _clone = (obj) => Object.assign({}, obj)
+
 class Chromy {
   constructor (options = {}) {
     const defaults = {
@@ -37,7 +39,7 @@ class Chromy {
       evaluateTimeout: 30000,
       typeInterval: 20
     }
-    this.options = Object.assign(Object.assign({}, defaults), options)
+    this.options = Object.assign(_clone(defaults), options)
     this.cdpOptions = {
       port: this.options.port
     }
@@ -63,7 +65,7 @@ class Chromy {
     await this.launcher.run()
     instances.push(this)
     await new Promise((resolve, reject) => {
-      const actualCdpOptions = Object.assign({}, this.cdpOptions)
+      const actualCdpOptions = _clone(this.cdpOptions)
       Object.assign(actualCdpOptions, {
         target: (targets) => {
           return targets.filter(t => t.type === 'page').shift()
@@ -166,7 +168,7 @@ class Chromy {
     const defaultOptions = {
       waitLoadEvent: true
     }
-    options = Object.assign(defaultOptions, options)
+    options = Object.assign(_clone(defaultOptions), options)
     await this.checkStart()
     try {
       await this._waitFinish(this.options.gotoTimeout, async () => {
@@ -378,7 +380,7 @@ class Chromy {
 
   async click (expr, inputOptions = {}) {
     const defaults = {waitLoadEvent: false}
-    const options = Object.assign(defaults, inputOptions)
+    const options = Object.assign(_clone(defaults), inputOptions)
     let promise = null
     if (options.waitLoadEvent) {
       promise = this.waitLoadEvent()
@@ -387,6 +389,21 @@ class Chromy {
     if (promise !== null) {
       await promise
     }
+  }
+
+  async mouseMoved (x, y, options = {}) {
+    const opts = Object.assign({type: 'mouseMoved', x: x, y: y}, options)
+    await this.client.Input.dispatchMouseEvent(opts)
+  }
+
+  async mousePressed (x, y, options = {}) {
+    const opts = Object.assign({type: 'mousePressed', x: x, y: y, button: 'left'}, options)
+    await this.client.Input.dispatchMouseEvent(opts)
+  }
+
+  async mouseReleased (x, y, options = {}) {
+    const opts = Object.assign({type: 'mouseReleased', x: x, y: y, button: 'left'}, options)
+    await this.client.Input.dispatchMouseEvent(opts)
   }
 
   async check (selector) {
