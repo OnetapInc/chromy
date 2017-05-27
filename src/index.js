@@ -505,6 +505,10 @@ class Chromy {
     await this.client.Network.clearBrowserCookies()
   }
 
+  async getDOMCounters () {
+    return this.client.Memory.getDOMCounters()
+  }
+
   async checkStart () {
     if (this.client === null) {
       await this.start()

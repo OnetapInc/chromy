@@ -262,6 +262,11 @@ Remove a single cookie.
 
 Removes all browser cookies.
 
+##### getDOMCounters()
+
+Get count of these item: document, node, jsEventListeners
+
+See details [here](https://chromedevtools.github.io/devtools-protocol/tot/Memory/#method-getDOMCounters)
 
 ##### static cleanup()
 
