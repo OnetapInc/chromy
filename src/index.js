@@ -37,7 +37,8 @@ class Chromy {
       gotoTimeout: 30000,
       loadTimeout: 30000,
       evaluateTimeout: 30000,
-      typeInterval: 20
+      typeInterval: 20,
+      activateOnStartUp: true
     }
     this.options = Object.assign(_clone(defaults), options)
     this.cdpOptions = {
@@ -76,10 +77,12 @@ class Chromy {
         const {Network, Page, Runtime, Console} = client
         await Promise.all([Network.enable(), Page.enable(), Runtime.enable(), Console.enable()])
 
-        // focuses to first tab
-        const targets = await this.client.Target.getTargets()
-        const page = targets.targetInfos.filter(t => t.type === 'page').shift()
-        await this.client.Target.activateTarget({targetId: page.targetId})
+        // activate first tab
+        if (this.options.activateOnStartUp) {
+          const targets = await this.client.Target.getTargets()
+          const page = targets.targetInfos.filter(t => t.type === 'page').shift()
+          await this.client.Target.activateTarget({targetId: page.targetId})
+        }
 
         if ('userAgent' in this.options) {
           await this.userAgent(this.options.userAgent)

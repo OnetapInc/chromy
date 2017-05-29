@@ -76,6 +76,7 @@ waitTimeout(default: 30000): If wait() does not be finished in a specified time 
 gotoTimeout(default: 30000): If goto() does not be finished in a specified time GotoTimeoutError will be throwed.  
 evaluateTimeout(default: 30000): If evaluate() does not be finished in a specified time EvaluateTimeError will be throwed.  
 typeInterval(default: 20): This option is used only in type() method.
+activateOnStartUp(default: true): activate a first tab on startup. this option is enable only in visible mode.
 
 ##### .goto(url, options)
 
