@@ -47,7 +47,7 @@ main()
 ### Mobile Emulation
 
 Chromy provide mobile emulation.  
-The emulation will change screen resolution, density, userAgent and provide touch emulation.
+The emulation changes screen resolution, density, userAgent and provide touch emulation.
 
 ```js
 const Chromy = require('chromy')
@@ -56,6 +56,7 @@ let chromy = new Chromy()
 chromy.chain()
       .emulate('iPhone6')
       .goto('http://example.com/')
+      .tap(100, 100) // emulate tap action by synthesizing touch events.
       .evaluate(() => {
         return navigator.userAgent
       })
