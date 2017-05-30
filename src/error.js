@@ -26,8 +26,16 @@ class EvaluateTimeoutError extends TimeoutError {
   }
 }
 
+class EvaluateError extends Error {
+  constructor (message, object) {
+    super(message)
+    this.object = object
+  }
+}
+
 exports.TimeoutError = TimeoutError
 exports.GotoTimeoutError = GotoTimeoutError
 exports.WaitTimeoutError = WaitTimeoutError
 exports.EvaluateTimeoutError = EvaluateTimeoutError
+exports.EvaluateError = EvaluateError
 
