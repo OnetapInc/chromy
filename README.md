@@ -264,11 +264,17 @@ Remove a single cookie.
 
 Removes all browser cookies.
 
+##### clearDataForOrigin (origin = null, type = 'all')
+
+Clear data for origin.(cookies, local_storage, indexeddb, etc...)
+
+See details [here](https://chromedevtools.github.io/devtools-protocol/tot/Storage/#method-clearDataForOrigin).
+
 ##### getDOMCounters()
 
 Get count of these item: document, node, jsEventListeners
 
-See details [here](https://chromedevtools.github.io/devtools-protocol/tot/Memory/#method-getDOMCounters)
+See details [here](https://chromedevtools.github.io/devtools-protocol/tot/Memory/#method-getDOMCounters).
 
 ##### static cleanup()
 

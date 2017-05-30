@@ -6,7 +6,8 @@ const {
   TimeoutError,
   GotoTimeoutError,
   WaitTimeoutError,
-  EvaluateTimeoutError
+  EvaluateTimeoutError,
+  EvaluateError
 } = require('./error')
 const {
   functionToEvaluatingSource
@@ -224,6 +225,9 @@ class Chromy {
       })
       if (!result || !result.result) {
         return null
+      }
+      if (result.result.subtype === 'error') {
+        throw new EvaluateError('An error has been occurred in evaluated script on a browser.' + result.result.description, result.result)
       }
       const resultObject = JSON.parse(result.result.value)
       const type = resultObject.type
@@ -509,7 +513,15 @@ class Chromy {
   }
 
   async getDOMCounters () {
-    return this.client.Memory.getDOMCounters()
+    return await this.client.Memory.getDOMCounters()
+  }
+
+  async clearDataForOrigin (origin = null, type = 'all') {
+    if (origin === null) {
+      origin = await this.evaluate(_ => { return location.origin })
+    }
+    console.log(origin)
+    return await this.client.Storage.clearDataForOrigin({origin: origin, storageTypes: type})
   }
 
   async checkStart () {
