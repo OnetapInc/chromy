@@ -457,6 +457,18 @@ class Chromy {
     return Buffer.from(data, 'base64')
   }
 
+  async startScreencast (callback, options = {}) {
+    await this.client.Page.screencastFrame(async (payload) => {
+      await callback.apply(this, [payload])
+      await this.client.Page.screencastFrameAck({sessionId: payload.sessionId})
+    })
+    await this.client.Page.startScreencast(options)
+  }
+
+  async stopScreencast () {
+    await this.client.Page.stopScreencast()
+  }
+
   async emulate (deviceName) {
     await this.checkStart()
 
@@ -520,7 +532,6 @@ class Chromy {
     if (origin === null) {
       origin = await this.evaluate(_ => { return location.origin })
     }
-    console.log(origin)
     return await this.client.Storage.clearDataForOrigin({origin: origin, storageTypes: type})
   }
 

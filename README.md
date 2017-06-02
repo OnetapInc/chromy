@@ -196,9 +196,24 @@ See examples: [examples/screenshot.js]
 
 ##### .pdf()
 
-It export a current screen as a PDF data. 
+It export a current screen as a PDF data.
 
 See examples: [examples/screenshot.js]
+
+##### .startScreencast(callback, options = {})
+
+Starts screencast to take screenshots by every frame.
+
+See examples: [examples/screencast.js]
+
+###### Parameter
+
+callback: callback function for receiving parameters of screencastFrame event. See details [here](https://chromedevtools.github.io/devtools-protocol/tot/Page/#event-screencastFrame)
+options: See details [here](https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-startScreencast).
+
+##### .stopScreencast()
+
+Stops screencast.
 
 ##### .console(func)
 
