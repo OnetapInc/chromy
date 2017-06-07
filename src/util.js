@@ -20,6 +20,12 @@ function escapeHtml (string) {
 function createChromeLauncher (options) {
   const flags = []
   flags.push('--disable-gpu')
+  // Lighthouse adds '--disable-setuid-sandbox' flag automatically.
+  // The flag causes an error on linux when staring headless chrome.
+  // '--no-sandbox' suppresses an error caused by '--disable-setuid-sandbox'.
+  if (process.platform === 'linux') {
+    flags.push('--no-sandbox')
+  }
   if (!options.visible) {
     flags.push('--headless')
   }
