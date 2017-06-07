@@ -469,6 +469,11 @@ class Chromy {
     await this.client.Page.stopScreencast()
   }
 
+  async requestWillBeSent (callback) {
+    await this.checkStart()
+    await this.client.Network.responseReceived(callback)
+  }
+
   async emulate (deviceName) {
     await this.checkStart()
 
