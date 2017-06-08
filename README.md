@@ -1,6 +1,12 @@
 # Chromy
 
-Chromy is a library for operating headless chrome. 
+Chromy is a library for operating headless chrome.
+
+Chromy is similar to Nightmare.js but has some differnces:
+
+ - Controlling Chrome via Chrome DevTools Protocol.
+ - Supports mobile emulation.
+ - No need to prepare display such as xvfb. 
 
 ## Installation
 
@@ -46,8 +52,8 @@ main()
 
 ### Mobile Emulation
 
-Chromy provide mobile emulation.  
-The emulation changes screen resolution, density, userAgent and provide touch emulation.
+Chromy provides mobile emulation.  
+The emulation changes screen resolution, density, userAgent and provides touch emulation.
 
 ```js
 const Chromy = require('chromy')
@@ -76,7 +82,7 @@ port(default: 9222): --remote-debugging-port
 waitTimeout(default: 30000): If wait() does not be finished in a specified time WaitTimeoutError will be throwed.  
 gotoTimeout(default: 30000): If goto() does not be finished in a specified time GotoTimeoutError will be throwed.  
 evaluateTimeout(default: 30000): If evaluate() does not be finished in a specified time EvaluateTimeError will be throwed.  
-typeInterval(default: 20): This option is used only in type() method.
+typeInterval(default: 20): This option is used only in type() method.  
 activateOnStartUp(default: true): activate a first tab on startup. this option is enable only in visible mode.
 
 ##### .goto(url, options)
@@ -192,19 +198,19 @@ chromy.chain()
 It export a current screen as an image data. 
 `format` must be eather 'png' or 'jpeg'.
 
-See examples: [examples/screenshot.js]
+See examples: [examples/screenshot.js](examples/screenshot.js)
 
 ##### .pdf()
 
 It export a current screen as a PDF data.
 
-See examples: [examples/screenshot.js]
+See examples: [examples/screenshot.js](examples/screenshot.js)
 
 ##### .startScreencast(callback, options = {})
 
 Starts screencast to take screenshots by every frame.
 
-See examples: [examples/screencast.js]
+See examples: [examples/screencast.js](examples/screenshot.js)
 
 ###### Parameter
 
