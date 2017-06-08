@@ -8,6 +8,12 @@ Chromy is similar to Nightmare.js but has some differnces:
  - Supports mobile emulation.
  - No need to prepare display such as xvfb. 
 
+## Requirements
+
+ - Install Chrome59 or later to your machine before use Chromy.
+
+headless mode is supported by Chrome59 or later.
+
 ## Installation
 
 ```bash
