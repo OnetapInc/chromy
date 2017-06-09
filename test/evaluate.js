@@ -1,7 +1,8 @@
 const Chromy = require('../src')
 const assert = require('assert')
 
-describe('evaluate', _ => {
+describe('evaluate', function() {
+  this.timeout(5000);
   afterEach(() => {
     Chromy.cleanup()
   })

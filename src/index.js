@@ -38,6 +38,7 @@ class Chromy {
       gotoTimeout: 30000,
       loadTimeout: 30000,
       evaluateTimeout: 30000,
+      waitFunctionPollingInterval: 100,
       typeInterval: 20,
       activateOnStartUp: true
     }
@@ -266,7 +267,7 @@ class Chromy {
       if ((now - start) > timeout) {
         throw new TimeoutError('timeout')
       }
-      await this.sleep(50)
+      await this.sleep(this.options.waitFunctionPollingInterval)
     }
     if (error !== null) {
       throw error
@@ -330,13 +331,11 @@ class Chromy {
   async _waitFunction (func) {
     await this._waitFinish(this.options.evaluateTimeout, async () => {
       while (true) {
-        let r = await this._waitFinish(1000, () => {
-          return this.evaluate(func)
-        })
+        const r = await this.evaluate(func)
         if (r) {
           break
         }
-        await this.sleep(50)
+        await this.sleep(this.options.waitFunctionPollingInterval)
       }
     })
   }
@@ -364,7 +363,7 @@ class Chromy {
           } catch (e) {
             reject(e)
           }
-        }, 50)
+        }, this.options.waitFunctionPollingInterval)
       }
       check()
     })
