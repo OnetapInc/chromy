@@ -29,7 +29,16 @@ function createChromeLauncher (options) {
   if (!options.visible) {
     flags.push('--headless')
   }
+  if (options.chromeFlags && Array.isArray(options.chromeFlags)) {
+    options.chromeFlags.forEach(f => {
+      if (f.indexOf('--') === -1) {
+        throw new Error('chrome flag must start "--". flag: ' + f)
+      }
+      flags.push(f)
+    })
+  }
   if (options.additionalChromeFlags && Array.isArray(options.additionalChromeFlags)) {
+    console.warn('[chromy] additionalChromeFlags is deprecated. Use chromeFlags instead of this.')
     options.additionalChromeFlags.forEach(f => {
       if (f.indexOf('--') === -1) {
         throw new Error('chrome flag must start "--". flag: ' + f)

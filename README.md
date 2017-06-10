@@ -91,6 +91,9 @@ evaluateTimeout(default: 30000): If evaluate() does not be finished in a specifi
 waitFunctionPollingInterval(default: 100): polling interval for wait().  
 typeInterval(default: 20): This option is used only in type() method.  
 activateOnStartUp(default: true): activate a first tab on startup. this option is enable only in visible mode.
+chromePath(default: undefined): This option is used to find out executable of Chrome. If set to undefined Chromy search basic paths. 
+chromeFlags(default: []): This flags passes to chrome. Each flags must start with "--".
+
 
 ##### .goto(url, options)
 

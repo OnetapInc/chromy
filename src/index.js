@@ -40,7 +40,8 @@ class Chromy {
       evaluateTimeout: 30000,
       waitFunctionPollingInterval: 100,
       typeInterval: 20,
-      activateOnStartUp: true
+      activateOnStartUp: true,
+      chromeFlags: []
     }
     this.options = Object.assign(_clone(defaults), options)
     this.cdpOptions = {
