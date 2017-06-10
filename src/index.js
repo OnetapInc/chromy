@@ -65,7 +65,7 @@ class Chromy {
     if (this.launcher === null) {
       this.launcher = createChromeLauncher(this.options)
     }
-    await this.launcher.run()
+    await this.launcher.launch()
     instances.push(this)
     await new Promise((resolve, reject) => {
       const actualCdpOptions = _clone(this.cdpOptions)

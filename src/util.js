@@ -1,4 +1,4 @@
-const {ChromeLauncher} = require('lighthouse/lighthouse-cli/chrome-launcher')
+const {Launcher} = require('lighthouse/chrome-launcher')
 
 // borrow from: http://qiita.com/saekis/items/c2b41cd8940923863791
 function escapeHtml (string) {
@@ -37,10 +37,10 @@ function createChromeLauncher (options) {
       flags.push(f)
     })
   }
-  return new ChromeLauncher({
+  return new Launcher({
     port: options.port,
-    autoSelectChrome: true,
-    additionalFlags: flags
+    chromePath: options.chromePath,
+    chromeFlags: flags
   })
 }
 
