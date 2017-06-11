@@ -479,7 +479,7 @@ class Chromy {
 
   async inject (type, file) {
     const data = await new Promise((resolve, reject) => {
-      fs.readFile(file, 'utf8', (err, data) => {
+      fs.readFile(file, {encoding: 'utf-8'}, (err, data) => {
         if (err) reject(err)
         resolve(data)
       })
@@ -487,7 +487,7 @@ class Chromy {
       throw e
     })
     if (type === 'js') {
-      let script = data.replace(/'/g, "\\'").replace(/(\r|\n)/g, '\\n')
+      let script = data.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/(\r|\n)/g, '\\n')
       let expr = `
       {
          let script = document.createElement('script')
@@ -498,12 +498,14 @@ class Chromy {
       `
       return this.evaluate(expr)
     } else if (type === 'css') {
-      let style = data.replace(/'/g, "\\'").replace(/(\r|\n)/g, '')
+      let style = data.replace(/`/g, "\\`").replace(/\\/g, '\\\\') // .replace(/(\r|\n)/g, ' ')
       let expr = `
       {
          let style = document.createElement('style')
          style.type = 'text/css'
-         style.innerText = '${style}'
+         style.innerText = \`
+        ${style}
+        \`
          document.head.appendChild(style)
       }
       `
