@@ -113,7 +113,16 @@ go forward to the next page and wait until load event is fired.
 
 go back to the previous page and wait until load event is fired.
 
+##### .inject(type, file)
+
+Injects a file into browser as a javascript or a css.
+
+type: must be 'js' or 'css'
+file: injected file.
+
 ##### .evaluate(func)
+
+Evaluates expression in browser.
 
 ##### .result(func)
 

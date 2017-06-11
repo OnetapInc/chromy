@@ -1,7 +1,10 @@
+const fs = require('fs')
+
 const CDP = require('chrome-remote-interface')
 const chainProxy = require('async-chain-proxy')
 const uuidV4 = require('uuid/v4')
 const devices = require('./devices')
+
 const {
   TimeoutError,
   GotoTimeoutError,
@@ -472,6 +475,42 @@ class Chromy {
   async requestWillBeSent (callback) {
     await this.checkStart()
     await this.client.Network.responseReceived(callback)
+  }
+
+  async inject (type, file) {
+    const data = await new Promise((resolve, reject) => {
+      fs.readFile(file, 'utf8', (err, data) => {
+        if (err) reject(err)
+        resolve(data)
+      })
+    }).catch(e => {
+      throw e
+    })
+    if (type === 'js') {
+      let script = data.replace(/'/g, "\\'").replace(/(\r|\n)/g, '\\n')
+      let expr = `
+      {
+         let script = document.createElement('script')
+         script.type = 'text/javascript'
+         script.innerHTML = '${script}'
+         document.body.appendChild(script)
+      }
+      `
+      return this.evaluate(expr)
+    } else if (type === 'css') {
+      let style = data.replace(/'/g, "\\'").replace(/(\r|\n)/g, '')
+      let expr = `
+      {
+         let style = document.createElement('style')
+         style.type = 'text/css'
+         style.innerText = '${style}'
+         document.head.appendChild(style)
+      }
+      `
+      return this.evaluate(expr)
+    } else {
+      throw new Error('found invalid type.')
+    }
   }
 
   async emulate (deviceName) {
