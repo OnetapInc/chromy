@@ -219,18 +219,19 @@ class Chromy {
     await this.client.Page.reload({ignoreCache, scriptToEvaluateOnLoad})
   }
 
-  async evaluate (expr) {
-    return await this._evaluateWithReplaces(expr)
+  async evaluate (expr, options = {}) {
+    return await this._evaluateWithReplaces(expr, options)
   }
 
-  async _evaluateWithReplaces (expr, replaces = {}) {
+  async _evaluateWithReplaces (expr, options = {}, replaces = {}) {
     let e = functionToEvaluatingSource(expr, replaces)
     try {
       let result = await this._waitFinish(this.options.evaluateTimeout, async () => {
         if (!this.client) {
           return null
         }
-        return await this.client.Runtime.evaluate({expression: e})
+        let params = Object.assign({}, options, {expression: e})
+        return await this.client.Runtime.evaluate(params)
       })
       if (!result || !result.result) {
         return null
@@ -362,7 +363,7 @@ class Chromy {
             }
             const result = await this._evaluateWithReplaces(() => {
               return document.querySelector('?')
-            }, {'?': escapeHtml(selector)})
+            }, {}, {'?': escapeHtml(selector)})
             if (result) {
               resolve(result)
             } else {
