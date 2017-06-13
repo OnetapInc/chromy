@@ -337,7 +337,7 @@ class Chromy {
 
   // wait for func to return true.
   async _waitFunction (func) {
-    await this._waitFinish(this.options.evaluateTimeout, async () => {
+    await this._waitFinish(this.options.waitTimeout, async () => {
       while (true) {
         const r = await this.evaluate(func)
         if (r) {
