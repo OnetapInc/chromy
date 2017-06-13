@@ -220,7 +220,11 @@ class Chromy {
   }
 
   async evaluate (expr) {
-    let e = functionToEvaluatingSource(expr)
+    return await this._evaluateWithReplaces(expr)
+  }
+
+  async _evaluateWithReplaces (expr, replaces = {}) {
+    let e = functionToEvaluatingSource(expr, replaces)
     try {
       let result = await this._waitFinish(this.options.evaluateTimeout, async () => {
         if (!this.client) {
@@ -356,9 +360,9 @@ class Chromy {
               reject(new WaitTimeoutError('wait() timeout'))
               return
             }
-            const result = await this.evaluate(functionToEvaluatingSource(() => {
+            const result = await this._evaluateWithReplaces(() => {
               return document.querySelector('?')
-            }, {'?': escapeHtml(selector)}))
+            }, {'?': escapeHtml(selector)})
             if (result) {
               resolve(result)
             } else {
