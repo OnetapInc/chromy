@@ -3,8 +3,8 @@ const assert = require('assert')
 
 describe('inject()', function() {
   this.timeout(5000);
-  afterEach(() => {
-    Chromy.cleanup()
+  afterEach(async () => {
+    await Chromy.cleanup()
   })
   it('can inject javascript', (done) => {
     const chromy = new Chromy()

@@ -3,11 +3,11 @@ const assert = require('assert')
 
 describe('evaluate', function() {
   this.timeout(5000);
-  afterEach(() => {
-    Chromy.cleanup()
+  afterEach(async () => {
+    console.log('after')
+    await Chromy.cleanup()
   })
   it('can return any type', (done) => {
-    Chromy.cleanup()
     const chromy = new Chromy()
     chromy.chain()
           .goto('file://' + __dirname + '/pages/index.html')
