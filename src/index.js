@@ -502,7 +502,7 @@ class Chromy {
       `
       return this.evaluate(expr)
     } else if (type === 'css') {
-      let style = data.replace(/`/g, "\\`").replace(/\\/g, '\\\\') // .replace(/(\r|\n)/g, ' ')
+      let style = data.replace(/`/g, '\\`').replace(/\\/g, '\\\\') // .replace(/(\r|\n)/g, ' ')
       let expr = `
       {
          let style = document.createElement('style')
