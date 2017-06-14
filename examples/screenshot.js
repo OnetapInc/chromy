@@ -15,5 +15,8 @@ chromy.chain()
       })
       .end()
       .then(_ => chromy.close())
-      .catch(e => chromy.close())
+      .catch(e => {
+        console.log(e)
+        chromy.close()
+      })
 
