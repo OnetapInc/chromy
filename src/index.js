@@ -31,6 +31,10 @@ function makeSendToChromy (uuid) {
   `
 }
 
+function defaultTargetFunction (targets) {
+  return targets.filter(t => t.type === 'page').shift()
+}
+
 const _clone = (obj) => Object.assign({}, obj)
 
 class Chromy {
@@ -44,11 +48,13 @@ class Chromy {
       waitFunctionPollingInterval: 100,
       typeInterval: 20,
       activateOnStartUp: true,
+      target: defaultTargetFunction,
       chromeFlags: []
     }
     this.options = Object.assign(_clone(defaults), options)
     this.cdpOptions = {
-      port: this.options.port
+      port: this.options.port,
+      target: this.options.target
     }
     this.client = null
     this.launcher = null
@@ -72,35 +78,48 @@ class Chromy {
     await this.launcher.launch()
     instances.push(this)
     await new Promise((resolve, reject) => {
-      const actualCdpOptions = _clone(this.cdpOptions)
-      Object.assign(actualCdpOptions, {
-        target: (targets) => {
-          return targets.filter(t => t.type === 'page').shift()
-        }
-      })
-      CDP(actualCdpOptions, async (client) => {
-        this.client = client
-        const {Network, Page, Runtime, Console} = client
-        await Promise.all([Network.enable(), Page.enable(), Runtime.enable(), Console.enable()])
+      CDP(this.cdpOptions, async (client) => {
+        try {
+          this.client = client
+          const {Network, Page, Runtime, Console} = client
+          await Promise.all([Network.enable(), Page.enable(), Runtime.enable(), Console.enable()])
 
-        // activate first tab
-        if (this.options.activateOnStartUp) {
-          const targets = await this.client.Target.getTargets()
-          const page = targets.targetInfos.filter(t => t.type === 'page').shift()
-          await this.client.Target.activateTarget({targetId: page.targetId})
-        }
+          // activate first tab
+          if (this.options.activateOnStartUp) {
+            let targetId = await this._getTargetIdFromOption()
+            await this.client.Target.activateTarget({targetId: targetId})
+          }
 
-        if ('userAgent' in this.options) {
-          await this.userAgent(this.options.userAgent)
+          if ('userAgent' in this.options) {
+            await this.userAgent(this.options.userAgent)
+          }
+          if ('headers' in this.options) {
+            await this.headers(this.options.headers)
+          }
+          resolve(this)
+        } catch (e) {
+          reject(e)
         }
-        if ('headers' in this.options) {
-          await this.headers(this.options.headers)
-        }
-        resolve(this)
       }).on('error', (err) => {
         reject(err)
       })
+    }).catch(e => {
+      throw e
     })
+  }
+
+  async _getTargetIdFromOption () {
+    if (typeof this.options.target === 'function') {
+      const result = await this.client.Target.getTargets()
+      const page = this.options.target(result.targetInfos)
+      return page.targetId
+    } else if (typeof this.options.target === 'object') {
+      return this.options.target.targetId
+    } else if (typeof this.options.target === 'string') {
+      return this.options.target
+    } else {
+      throw new Error('type of `target` option is invalid.')
+    }
   }
 
   async close () {
@@ -121,6 +140,11 @@ class Chromy {
     const copy = [].concat(instances)
     const promises = copy.map(i => i.close())
     await Promise.all(promises)
+  }
+
+  async getPageTargets () {
+    const result = await this.client.Target.getTargets()
+    return result.targetInfos.filter(t => t.type === 'page')
   }
 
   async userAgent (ua) {
