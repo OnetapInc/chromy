@@ -19,8 +19,8 @@
   "license": "MIT",
   "dependencies": {
     "async-chain-proxy": "^0.1.0",
+    "chrome-launcher": "^0.1.1",
     "chrome-remote-interface": "^0.23.2",
-    "lighthouse": "^2.1.0",
     "uuid": "^3.0.1"
   },
   "devDependencies": {
