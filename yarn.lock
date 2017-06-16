@@ -208,9 +208,9 @@ chrome-devtools-frontend@1.0.422034:
   version "1.0.422034"
   resolved "https://registry.yarnpkg.com/chrome-devtools-frontend/-/chrome-devtools-frontend-1.0.422034.tgz#071c8ce14466b7653032fcd1ad1a4a68d5e3cbd9"
 
-chrome-launcher@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/chrome-launcher/-/chrome-launcher-0.1.1.tgz#425006344a1611665d96c7ec01b2fad96eaf51d6"
+chrome-launcher@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/chrome-launcher/-/chrome-launcher-0.1.2.tgz#8432bf89cf080ba4c17531db46ac9ae8e6f95c75"
   dependencies:
     "@types/core-js" "^0.9.41"
     "@types/mkdirp" "^0.3.29"
