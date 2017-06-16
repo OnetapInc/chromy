@@ -214,14 +214,15 @@ chromy.chain()
 
 ##### .screenshot(format = 'png', quality = 100, fromSurface = true)
 
-It export a current screen as an image data. 
+Exports a current screen as an image data. 
 `format` must be eather 'png' or 'jpeg'.
 
 See examples: [examples/screenshot.js](examples/screenshot.js)
 
 ##### .pdf()
 
-It export a current screen as a PDF data.
+Exports a current page's printing image as a PDF data.
+This function is supported only in headless mode.
 
 See examples: [examples/screenshot.js](examples/screenshot.js)
 
