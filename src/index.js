@@ -68,12 +68,15 @@ class Chromy {
     return chainProxy(this, options)
   }
 
-  async start () {
+  async start (startingUrl = null) {
+    if (startingUrl === null ) {
+      startingUrl = 'about:blank'
+    }
     if (this.client !== null) {
       return
     }
     if (this.launcher === null) {
-      this.launcher = createChromeLauncher(this.options)
+      this.launcher = createChromeLauncher(startingUrl, this.options)
     }
     await this.launcher.launch()
     instances.push(this)
@@ -148,7 +151,7 @@ class Chromy {
   }
 
   async userAgent (ua) {
-    await this.checkStart()
+    await this._checkStart()
     return await this.client.Network.setUserAgentOverride({'userAgent': ua})
   }
 
@@ -157,12 +160,12 @@ class Chromy {
    * chromy.headers({'X-Requested-By': 'foo'})
    */
   async headers (headers) {
-    await this.checkStart()
+    await this._checkStart()
     return await this.client.Network.setExtraHTTPHeaders({'headers': headers})
   }
 
   async console (callback) {
-    await this.checkStart()
+    await this._checkStart()
     this.client.Console.messageAdded((payload) => {
       try {
         const msg = payload.message.text
@@ -179,7 +182,7 @@ class Chromy {
   }
 
   async receiveMessage (callback) {
-    await this.checkStart()
+    await this._checkStart()
     const uuid = uuidV4()
     this.messagePrefix = uuid
     const f = makeSendToChromy(this.messagePrefix)
@@ -202,7 +205,7 @@ class Chromy {
       waitLoadEvent: true
     }
     options = Object.assign(_clone(defaultOptions), options)
-    await this.checkStart()
+    await this._checkStart(url)
     try {
       await this._waitFinish(this.options.gotoTimeout, async () => {
         await this.client.Page.navigate({url: url})
@@ -502,7 +505,7 @@ class Chromy {
   }
 
   async requestWillBeSent (callback) {
-    await this.checkStart()
+    await this._checkStart()
     await this.client.Network.responseReceived(callback)
   }
 
@@ -545,7 +548,7 @@ class Chromy {
   }
 
   async emulate (deviceName) {
-    await this.checkStart()
+    await this._checkStart()
 
     if (!this.emulateMode) {
       this.userAgentBeforeEmulate = await this.evaluate('return navigator.userAgent')
@@ -575,27 +578,27 @@ class Chromy {
   }
 
   async blockUrls (urls) {
-    await this.checkStart()
+    await this._checkStart()
     await this.client.Network.setBlockedURLs({urls: urls})
   }
 
   async clearBrowserCache () {
-    await this.checkStart()
+    await this._checkStart()
     await this.client.Network.clearBrowserCache()
   }
 
   async setCookie (params) {
-    await this.checkStart()
+    await this._checkStart()
     await this.client.Network.setCookie(params)
   }
 
   async deleteCookie (name, url) {
-    await this.checkStart()
+    await this._checkStart()
     await this.client.Network.deleteCookie({cookieName: name, url: url})
   }
 
   async clearAllCookies () {
-    await this.checkStart()
+    await this._checkStart()
     await this.client.Network.clearBrowserCookies()
   }
 
@@ -610,9 +613,9 @@ class Chromy {
     return await this.client.Storage.clearDataForOrigin({origin: origin, storageTypes: type})
   }
 
-  async checkStart () {
+  async _checkStart (startingUrl = null) {
     if (this.client === null) {
-      await this.start()
+      await this.start(startingUrl)
     }
   }
 }

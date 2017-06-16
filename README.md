@@ -6,7 +6,7 @@ Chromy is similar to Nightmare.js but has some differnces:
 
  - Controlling Chrome via Chrome DevTools Protocol.
  - Supports mobile emulation.
- - No need to prepare display such as xvfb. 
+ - No need to prepare a screen such as xvfb. 
 
 ## Requirements
 
@@ -95,7 +95,17 @@ chromePath(default: undefined): This option is used to find out executable of Ch
 chromeFlags(default: []): This flags is passed to Chrome. Each flags must start with "--". 
 
 
-##### .goto(url, options)
+##### .start(startingUrl = null)
+
+Launches Chrome browser.
+
+###### options
+
+startingUrl: a staring url. If you set to null 'abount:blank' is used as a starting url.
+
+##### .goto(url, options = {})
+
+Goes to url. If you have not called start(), this method calls start(url) automatically.
 
 ###### options
 
@@ -126,7 +136,7 @@ Evaluates expression in browser.
 
 ##### .result(func)
 
-result() receive a result of previous directive.
+result() receives a result of previous directive.
 
 ```js
 chromy.chain()
@@ -222,7 +232,7 @@ See examples: [examples/screenshot.js](examples/screenshot.js)
 ##### .pdf()
 
 Exports a current page's printing image as a PDF data.
-This function is supported only in headless mode.
+This function is supported only in headless mode (since Chrome60).
 
 See examples: [examples/screenshot.js](examples/screenshot.js)
 

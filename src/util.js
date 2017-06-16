@@ -17,7 +17,7 @@ function escapeHtml (string) {
   })
 }
 
-function createChromeLauncher (options) {
+function createChromeLauncher (startingUrl, options) {
   const flags = []
   flags.push('--disable-gpu')
   // Lighthouse adds '--disable-setuid-sandbox' flag automatically.
@@ -49,7 +49,8 @@ function createChromeLauncher (options) {
   return new Launcher({
     port: options.port,
     chromePath: options.chromePath,
-    chromeFlags: flags
+    chromeFlags: flags,
+    startingUrl: startingUrl
   })
 }
 
