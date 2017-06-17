@@ -69,7 +69,7 @@ class Chromy {
   }
 
   async start (startingUrl = null) {
-    if (startingUrl === null ) {
+    if (startingUrl === null) {
       startingUrl = 'about:blank'
     }
     if (this.client !== null) {
@@ -483,7 +483,11 @@ class Chromy {
     if (['png', 'jpeg'].indexOf(format) === -1) {
       throw new Error('format is invalid.')
     }
-    const {data} = await this.client.Page.captureScreenshot({format: format, quality: quality, fromSurface: fromSurface})
+    const {data} = await this.client.Page.captureScreenshot({
+      format: format,
+      quality: quality,
+      fromSurface: fromSurface
+    })
     return Buffer.from(data, 'base64')
   }
 
@@ -519,7 +523,7 @@ class Chromy {
       throw e
     })
     if (type === 'js') {
-      let script = data.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/(\r|\n)/g, '\\n')
+      let script = data.replace(/\\/g, '\\\\').replace(/'/g, '\\\'').replace(/(\r|\n)/g, '\\n')
       let expr = `
       {
          let script = document.createElement('script')
