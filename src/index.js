@@ -503,7 +503,9 @@ class Chromy {
 
     // scroll to element
     await this._evaluateWithReplaces(function () {
-      window.scrollTo(_1, document.body.scrollTop + _2)
+      const dx = _1  // eslint-disable-line no-undef
+      const dy = _2  // eslint-disable-line no-undef
+      window.scrollTo(document.body.scrollLeft + dx, document.body.scrollTop + dy)
     }, {}, {'_1': rect.left, '_2': rect.top})
 
     // capture screenshot and crop it.
