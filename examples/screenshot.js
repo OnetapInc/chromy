@@ -9,6 +9,10 @@ chromy.chain()
       .result((png) => {
         fs.writeFileSync('out.png', png)
       })
+      .screenshotSelector('form')
+      .result((png) => {
+        fs.writeFileSync('out_form.png', png)
+      })
       .pdf()
       .result((pdf) => {
         fs.writeFileSync('out.pdf', pdf)

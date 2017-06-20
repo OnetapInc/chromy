@@ -229,6 +229,13 @@ Exports a current screen as an image data.
 
 See examples: [examples/screenshot.js](examples/screenshot.js)
 
+##### .screenshotSelector(selector, format = 'png', quality = 100, fromSurface = true)
+
+Exports an area of selector you specified as an image data. 
+`format` must be eather 'png' or 'jpeg'.
+
+See examples: [examples/screenshot.js](examples/screenshot.js)
+
 ##### .pdf()
 
 Exports a current page's printing image as a PDF data.

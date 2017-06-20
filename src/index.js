@@ -4,6 +4,7 @@ const CDP = require('chrome-remote-interface')
 const chainProxy = require('async-chain-proxy')
 const uuidV4 = require('uuid/v4')
 const devices = require('./devices')
+const sharp = require('sharp')
 
 const {
   TimeoutError,
@@ -491,6 +492,42 @@ class Chromy {
     return Buffer.from(data, 'base64')
   }
 
+  async screenshotSelector (selector, format = 'png', quality = undefined, fromSurface = true) {
+    const rect = await this.getBoundingClientRect(selector)
+    if (!rect) {
+      return null
+    }
+    const pixelRatio = await this.evaluate(function () {
+      return window.devicePixelRatio
+    })
+
+    // scroll to element
+    await this._evaluateWithReplaces(function () {
+      window.scrollTo(_1, document.body.scrollTop + _2)
+    }, {}, {'_1': rect.left, '_2': rect.top})
+
+    // capture screenshot and crop it.
+    const actualRect = await this.getBoundingClientRect(selector)
+    if (!actualRect) {
+      return null
+    }
+    const clipRect = {
+      top: Math.floor(actualRect.top * pixelRatio),
+      left: Math.floor(actualRect.left * pixelRatio),
+      width: Math.floor(actualRect.width * pixelRatio),
+      height: Math.floor(actualRect.height * pixelRatio)
+    }
+    const buffer = await this.screenshot(format, quality, fromSurface)
+    const meta = await sharp(buffer).metadata()
+    if (meta.width < clipRect.left + clipRect.width) {
+      clipRect.width = meta.width - clipRect.left
+    }
+    if (meta.height < clipRect.top + clipRect.height) {
+      clipRect.height = meta.height - clipRect.top
+    }
+    return sharp(buffer).extract(clipRect).toBuffer()
+  }
+
   async pdf (options = {}) {
     const {data} = await this.client.Page.printToPDF(options)
     return Buffer.from(data, 'base64')
@@ -615,6 +652,28 @@ class Chromy {
       origin = await this.evaluate(_ => { return location.origin })
     }
     return await this.client.Storage.clearDataForOrigin({origin: origin, storageTypes: type})
+  }
+
+  async getBoundingClientRect (selector) {
+    const result = await this._evaluateWithReplaces(function () {
+      let dom = document.querySelector('?')
+      if (!dom) {
+        return null
+      }
+      let rect = dom.getBoundingClientRect()
+      return {
+        rect: {top: rect.top, left: rect.left, width: rect.width, height: rect.height}
+      }
+    }, {}, {'?': escapeHtml(selector)})
+    if (!result) {
+      return null
+    }
+    return {
+      top: Math.floor(result.rect.top),
+      left: Math.floor(result.rect.left),
+      width: Math.floor(result.rect.width),
+      height: Math.floor(result.rect.height)
+    }
   }
 
   async _checkStart (startingUrl = null) {
