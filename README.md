@@ -236,6 +236,11 @@ Exports an area of selector you specified as an image data.
 
 See examples: [examples/screenshot.js](examples/screenshot.js)
 
+Note:
+
+ - The size of target specified by selector must be smaller than viewport size. If not, image gets cropped.
+ - It has a side-effect. After this api is called, scroll position is moved to target position.
+
 ##### .pdf()
 
 Exports a current page's printing image as a PDF data.
