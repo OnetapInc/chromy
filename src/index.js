@@ -493,7 +493,7 @@ class Chromy {
     return Buffer.from(data, 'base64')
   }
 
-  async screenshotDocument (model = 'box', format = 'png', quality = undefined, fromSurface = true) {
+  async screenshotDocument (model = 'scroll', format = 'png', quality = undefined, fromSurface = true) {
     let width = 0
     let height = 0
     if (model === 'box') {
@@ -503,9 +503,9 @@ class Chromy {
         selector: 'body',
         nodeId: documentNodeId,
       })
-      const {model: {w, h}} = await DOM.getBoxModel({nodeId: bodyNodeId})
-      width = w
-      height = h
+      const box = await DOM.getBoxModel({nodeId: bodyNodeId})
+      width = box.model.width
+      height = box.model.height
     } else {
       const info = await this.evaluate(function () {
         return {
@@ -530,8 +530,7 @@ class Chromy {
       await this.client.Emulation.setVisibleSize({width, height})
       await this.client.Emulation.forceViewport({x: 0, y: 0, scale: 1})
       await this.scrollTo(0, 0)
-      await this.sleep(1000)
-      result = await this.screenshot(format, quality, fromSurface)
+      result = await this.screenshot('png', quality, fromSurface)
     } finally {
       await this.client.Emulation.resetViewport()
       await this.client.Emulation.clearDeviceMetricsOverride()

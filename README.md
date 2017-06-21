@@ -241,12 +241,18 @@ Note:
  - The size of target specified by selector must be smaller than viewport size. If not, image gets cropped.
  - It has a side-effect. After this api is called, scroll position is moved to target position.
 
-##### .screenshotDocument(model = 'box', format = 'png', quality = 100, fromSurface = true)
+##### .screenshotDocument(model = 'scroll', format = 'png', quality = 100, fromSurface = true)
+
+(Experimental)
 
 Exports a entire document as an image data. 
 `format` must be eather 'png' or 'jpeg'.
 
 See examples: [examples/screenshot.js](examples/screenshot.js)
+
+Known Issue:
+
+ - When this api is called to take large page sometimes strange white area is appeared. Possibly it's a chrome's bug.
 
 ###### Parameters
 

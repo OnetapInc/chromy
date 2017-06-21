@@ -28,6 +28,7 @@ function createChromeLauncher (startingUrl, options) {
   }
   if (!options.visible) {
     flags.push('--headless')
+    flags.push('--hide-scrollbars')
   }
   if (options.chromeFlags && Array.isArray(options.chromeFlags)) {
     options.chromeFlags.forEach(f => {
