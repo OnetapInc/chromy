@@ -1,0 +1,9 @@
+.gitignore
+node_modules
+test
+scripts
+.DS_Store
+.editorconfig
+.idea
+.git
+.tmp
