@@ -6,4 +6,4 @@ scripts
 .editorconfig
 .idea
 .git
-.tmp
+tmp
