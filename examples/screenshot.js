@@ -13,6 +13,10 @@ chromy.chain()
       .result((png) => {
         fs.writeFileSync('out_form.png', png)
       })
+      .screenshotDocument() // take screenshot of whole document
+      .result((png) => {
+        fs.writeFileSync('out_doc.png', png)
+      })
       .pdf()
       .result((pdf) => {
         fs.writeFileSync('out.pdf', pdf)

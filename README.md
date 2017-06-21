@@ -241,6 +241,17 @@ Note:
  - The size of target specified by selector must be smaller than viewport size. If not, image gets cropped.
  - It has a side-effect. After this api is called, scroll position is moved to target position.
 
+##### .screenshotDocument(model = 'box', format = 'png', quality = 100, fromSurface = true)
+
+Exports a entire document as an image data. 
+`format` must be eather 'png' or 'jpeg'.
+
+See examples: [examples/screenshot.js](examples/screenshot.js)
+
+###### Parameters
+
+ - model: this parameter affect page size. must be which one of: 'box', 'scroll'. 'box' means box model of body element. 'scroll' means size of scroll area.
+
 ##### .pdf()
 
 Exports a current page's printing image as a PDF data.

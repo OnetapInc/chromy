@@ -61,6 +61,7 @@ class Chromy {
     this.launcher = null
     this.messagePrefix = null
     this.emulateMode = false
+    this.currentEmulateDeviceName = null
     this.userAgentBeforeEmulate = null
     this.instanceId = instanceId++
   }
@@ -492,6 +493,57 @@ class Chromy {
     return Buffer.from(data, 'base64')
   }
 
+  async screenshotDocument (model = 'box', format = 'png', quality = undefined, fromSurface = true) {
+    let width = 0
+    let height = 0
+    if (model === 'box') {
+      const DOM = this.client.DOM
+      const {root: {nodeId: documentNodeId}} = await DOM.getDocument()
+      const {nodeId: bodyNodeId} = await DOM.querySelector({
+        selector: 'body',
+        nodeId: documentNodeId,
+      })
+      const {model: {w, h}} = await DOM.getBoxModel({nodeId: bodyNodeId})
+      width = w
+      height = h
+    } else {
+      const info = await this.evaluate(function () {
+        return {
+          width: document.body.scrollWidth,
+          height: document.body.scrollHeight
+        }
+      })
+      width = info.width
+      height = info.height
+    }
+    const deviceMetrics = {
+      width,
+      height,
+      deviceScaleFactor: 0,
+      mobile: false,
+      fitWindow: false
+    }
+
+    let result = null
+    try {
+      await this.client.Emulation.setDeviceMetricsOverride(deviceMetrics)
+      await this.client.Emulation.setVisibleSize({width, height})
+      await this.client.Emulation.forceViewport({x: 0, y: 0, scale: 1})
+      await this.scrollTo(0, 0)
+      await this.sleep(1000)
+      result = await this.screenshot(format, quality, fromSurface)
+    } finally {
+      await this.client.Emulation.resetViewport()
+      await this.client.Emulation.clearDeviceMetricsOverride()
+
+      // restore emulation mode
+      if (this.currentEmulateDeviceName !== null) {
+        await this.emulate(this.currentEmulateDeviceName)
+      }
+    }
+    return result
+  }
+
   async screenshotSelector (selector, format = 'png', quality = undefined, fromSurface = true) {
     const rect = await this.getBoundingClientRect(selector)
     if (!rect) {
@@ -502,11 +554,7 @@ class Chromy {
     })
 
     // scroll to element
-    await this._evaluateWithReplaces(function () {
-      const dx = _1  // eslint-disable-line no-undef
-      const dy = _2  // eslint-disable-line no-undef
-      window.scrollTo(document.body.scrollLeft + dx, document.body.scrollTop + dy)
-    }, {}, {'_1': rect.left, '_2': rect.top})
+    await this.scroll(rect.left, rect.top)
 
     // capture screenshot and crop it.
     const actualRect = await this.getBoundingClientRect(selector)
@@ -608,6 +656,7 @@ class Chromy {
     const platform = device.mobile ? 'mobile' : 'desktop'
     await this.client.Emulation.setTouchEmulationEnabled({enabled: true, configuration: platform})
     await this.userAgent(device.userAgent)
+    this.currentEmulateDeviceName = deviceName
     this.emulateMode = true
   }
 
@@ -618,6 +667,7 @@ class Chromy {
       await this.userAgent(this.userAgentBeforeEmulate)
     }
     this.emulateMode = false
+    this.currentEmulateDeviceName = null
   }
 
   async blockUrls (urls) {
@@ -654,6 +704,20 @@ class Chromy {
       origin = await this.evaluate(_ => { return location.origin })
     }
     return await this.client.Storage.clearDataForOrigin({origin: origin, storageTypes: type})
+  }
+
+  async scroll (x, y) {
+    return this._evaluateWithReplaces(function () {
+      const dx = _1  // eslint-disable-line no-undef
+      const dy = _2  // eslint-disable-line no-undef
+      window.scrollTo(document.body.scrollLeft + dx, document.body.scrollTop + dy)
+    }, {}, {'_1': x, '_2': y})
+  }
+
+  async scrollTo (x, y) {
+    return this._evaluateWithReplaces(function () {
+      window.scrollTo(_1, _2) // eslint-disable-line no-undef
+    }, {}, {'_1': x, '_2': y})
   }
 
   async getBoundingClientRect (selector) {
