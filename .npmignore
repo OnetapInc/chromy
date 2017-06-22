@@ -8,3 +8,6 @@ scripts
 .git
 tmp
 examples
+*.png
+*.jpg
+*.pdf
