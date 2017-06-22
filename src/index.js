@@ -509,7 +509,7 @@ class Chromy {
       const {root: {nodeId: documentNodeId}} = await DOM.getDocument()
       const {nodeId: bodyNodeId} = await DOM.querySelector({
         selector: 'body',
-        nodeId: documentNodeId,
+        nodeId: documentNodeId
       })
       const box = await DOM.getBoxModel({nodeId: bodyNodeId})
       width = box.model.width
