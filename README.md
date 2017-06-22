@@ -252,7 +252,7 @@ See examples: [examples/screenshot.js](examples/screenshot.js)
 
 Known Issue:
 
- - When this api is called to take large page sometimes strange white area is appeared. Possibly it's a chrome's bug.
+ - When this api is called to take large page sometimes strange white area is appeared. This result is caused by --disable-flag option passed to Chrome. After chrome 60 is officialy released I remove --disable-flag option to fix this problem.
 
 ###### Parameters
 

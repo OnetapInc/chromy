@@ -19,6 +19,7 @@ function escapeHtml (string) {
 
 function createChromeLauncher (startingUrl, options) {
   const flags = []
+  // TODO: Remove this after chrome60 is released.
   flags.push('--disable-gpu')
   // Lighthouse adds '--disable-setuid-sandbox' flag automatically.
   // The flag causes an error on linux when staring headless chrome.

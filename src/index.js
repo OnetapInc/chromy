@@ -496,6 +496,14 @@ class Chromy {
   async screenshotDocument (model = 'scroll', format = 'png', quality = undefined, fromSurface = true) {
     let width = 0
     let height = 0
+    const info = await this.evaluate(function () {
+      return {
+        width: document.body.scrollWidth,
+        height: document.body.scrollHeight,
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight
+      }
+    })
     if (model === 'box') {
       const DOM = this.client.DOM
       const {root: {nodeId: documentNodeId}} = await DOM.getDocument()
@@ -507,12 +515,6 @@ class Chromy {
       width = box.model.width
       height = box.model.height
     } else {
-      const info = await this.evaluate(function () {
-        return {
-          width: document.body.scrollWidth,
-          height: document.body.scrollHeight
-        }
-      })
       width = info.width
       height = info.height
     }
@@ -526,14 +528,15 @@ class Chromy {
 
     let result = null
     try {
-      await this.client.Emulation.setDeviceMetricsOverride(deviceMetrics)
       await this.client.Emulation.setVisibleSize({width, height})
       await this.client.Emulation.forceViewport({x: 0, y: 0, scale: 1})
+      await this.client.Emulation.setDeviceMetricsOverride(deviceMetrics)
       await this.scrollTo(0, 0)
       result = await this.screenshot('png', quality, fromSurface)
     } finally {
       await this.client.Emulation.resetViewport()
       await this.client.Emulation.clearDeviceMetricsOverride()
+      await this.client.Emulation.setVisibleSize({width: info.viewportHeight, height: info.viewportHeight})
 
       // restore emulation mode
       if (this.currentEmulateDeviceName !== null) {
