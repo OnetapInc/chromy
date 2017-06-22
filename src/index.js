@@ -712,7 +712,7 @@ class Chromy {
     return this._evaluateWithReplaces(function () {
       const dx = _1  // eslint-disable-line no-undef
       const dy = _2  // eslint-disable-line no-undef
-      window.scrollTo(document.body.scrollLeft + dx, document.body.scrollTop + dy)
+      window.scrollTo(window.pageXOffset + dx, window.pageYOffset + dy)
     }, {}, {'_1': x, '_2': y})
   }
 
