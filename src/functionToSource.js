@@ -17,11 +17,16 @@ function toFunctionForm (f, replaces = {}) {
 
 function functionToEvaluatingSource (f, replaces = {}) {
   let s = '(' + toFunctionForm(f, replaces) + ')()'
+  // If the result is an instanceof of Promise, It's resolved in context of nodejs later.
   return `
     {
       let result = ${s};
-      let json = JSON.stringify(result);
-      JSON.stringify({type: (typeof result), result: json});
+      if (result instanceof Promise) {
+        result
+      } else {
+        let json = JSON.stringify(result);
+        JSON.stringify({type: (typeof result), result: json});
+      }
     }
   `.trim()
 }

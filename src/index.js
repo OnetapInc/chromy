@@ -265,6 +265,12 @@ class Chromy {
       if (!result || !result.result) {
         return null
       }
+      // resolve a promise
+      if (result.result.subtype === 'promise') {
+        result = await this.client.Runtime.awaitPromise({promiseObjectId: result.result.objectId, returnByValue: true})
+        // adjust to after process
+        result.result.value = JSON.stringify({type: (typeof result.result.value), result: JSON.stringify(result.result.value)})
+      }
       if (result.result.subtype === 'error') {
         throw new EvaluateError('An error has been occurred in evaluated script on a browser.' + result.result.description, result.result)
       }
@@ -273,7 +279,12 @@ class Chromy {
       if (type === 'undefined') {
         return undefined
       } else {
-        return JSON.parse(resultObject.result)
+        try {
+          return JSON.parse(resultObject.result)
+        } catch (e) {
+          console.log('ERROR', resultObject)
+          throw e
+        }
       }
     } catch (e) {
       if (e instanceof TimeoutError) {
