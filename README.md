@@ -130,9 +130,10 @@ Injects a file into browser as a javascript or a css.
 type: must be 'js' or 'css'
 file: injected file.
 
-##### .evaluate(func)
+##### .evaluate(func|source)
 
-Evaluates expression in browser.
+Evaluates a expression in the browser context.  
+If the expression returns a Promise object, the promise is resolved automatically.
 
 ##### .result(func)
 
