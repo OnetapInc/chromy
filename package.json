@@ -18,7 +18,7 @@
   "author": "shinji <dotneet@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "async-chain-proxy": "^0.1.3",
+    "async-chain-proxy": "^0.1.2",
     "chrome-launcher": "^0.1.2",
     "chrome-remote-interface": "^0.23.2",
     "sharp": "^0.18.1",
