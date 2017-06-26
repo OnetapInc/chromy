@@ -77,6 +77,10 @@ chromy.chain()
       .then(() => chromy.close())
 ```
 
+## FAQ
+
+[FAQ](https://github.com/OnetapInc/chromy/wiki/FAQ)
+
 ## API
 
 ##### Chromy(options)
