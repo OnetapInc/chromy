@@ -1,6 +1,6 @@
 {
   "name": "chromy",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "The library for manipulating headless chrome with Nightmare.js like API.",
   "main": "src/index.js",
   "directories": {
@@ -15,10 +15,10 @@
     "url": "https://github.com/OnetapInc/chromy.git"
   },
   "bugs": "https://github.com/OnetapInc/chromy/issues",
-  "author": "yamada <yamada@enty.jp>",
+  "author": "shinji <dotneet@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "async-chain-proxy": "^0.1.0",
+    "async-chain-proxy": "^0.1.3",
     "chrome-launcher": "^0.1.2",
     "chrome-remote-interface": "^0.23.2",
     "sharp": "^0.18.1",
