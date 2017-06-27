@@ -18,6 +18,7 @@ const {
 } = require('./functionToSource')
 const {
   escapeHtml,
+  escapeSingleQuote,
   createChromeLauncher
 } = require('./util')
 
@@ -403,7 +404,7 @@ class Chromy {
             }
             const result = await this._evaluateWithReplaces(() => {
               return document.querySelector('?')
-            }, {}, {'?': escapeHtml(selector)})
+            }, {}, {'?': escapeSingleQuote(selector)})
             if (result) {
               resolve(result)
             } else {
@@ -429,8 +430,9 @@ class Chromy {
   }
 
   async insert (expr, value) {
-    await this.evaluate('document.querySelector("' + expr + '").focus()')
-    await this.evaluate('document.querySelector("' + expr + '").value = "' + escapeHtml(value) + '"')
+    expr = escapeSingleQuote(expr)
+    await this.evaluate('document.querySelector(\'' + expr + '\').focus()')
+    await this.evaluate('document.querySelector(\'' + expr + '\').value = "' + escapeHtml(value) + '"')
   }
 
   async click (expr, inputOptions = {}) {
@@ -440,7 +442,7 @@ class Chromy {
     if (options.waitLoadEvent) {
       promise = this.waitLoadEvent()
     }
-    await this.evaluate('document.querySelectorAll("' + expr + '").forEach(n => n.click())')
+    await this.evaluate('document.querySelectorAll(\'' + escapeSingleQuote(expr) + '\').forEach(n => n.click())')
     if (promise !== null) {
       await promise
     }
@@ -474,16 +476,17 @@ class Chromy {
   }
 
   async check (selector) {
-    await this.evaluate('document.querySelectorAll("' + selector + '").forEach(n => n.checked = true)')
+    await this.evaluate('document.querySelectorAll(\'' + escapeSingleQuote(selector) + '\').forEach(n => n.checked = true)')
   }
 
   async uncheck (selector) {
-    await this.evaluate('document.querySelectorAll("' + selector + '").forEach(n => n.checked = false)')
+    await this.evaluate('document.querySelectorAll(\'' + escapeSingleQuote(selector) + '\').forEach(n => n.checked = false)')
   }
 
   async select (selector, value) {
+    let sel = escapeSingleQuote(selector)
     const src = `
-      document.querySelectorAll("${selector} > option").forEach(n => {
+      document.querySelectorAll('${sel} > option').forEach(n => {
         if (n.value === "${value}") {
           n.selected = true
         }
@@ -743,7 +746,7 @@ class Chromy {
       return {
         rect: {top: rect.top, left: rect.left, width: rect.width, height: rect.height}
       }
-    }, {}, {'?': escapeHtml(selector)})
+    }, {}, {'?': escapeSingleQuote(selector)})
     if (!result) {
       return null
     }

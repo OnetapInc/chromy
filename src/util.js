@@ -17,6 +17,13 @@ function escapeHtml (string) {
   })
 }
 
+function escapeSingleQuote (string) {
+  if (typeof string !== 'string') {
+    return string
+  }
+  return string.replace(/'/g, '\\\'')
+}
+
 function createChromeLauncher (startingUrl, options) {
   const flags = []
   // TODO: Remove this after chrome60 is released.
@@ -57,5 +64,6 @@ function createChromeLauncher (startingUrl, options) {
 }
 
 exports.escapeHtml = escapeHtml
+exports.escapeSingleQuote = escapeSingleQuote
 exports.createChromeLauncher = createChromeLauncher
 
