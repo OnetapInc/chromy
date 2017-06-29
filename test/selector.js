@@ -1,5 +1,5 @@
-const Chromy = require('../src')
-const {TimeoutError} = require('../src/error')
+const Chromy = require('../dist')
+const {TimeoutError} = require('../dist/error')
 const assert = require('assert')
 
 describe('wait', function() {
@@ -10,7 +10,7 @@ describe('wait', function() {
   it('selector', (done) => {
     const chromy = new Chromy()
     chromy.chain()
-          .goto('file://' + __dirname + '/pages/index.html')
+          .goto('file://' + process.env.PWD + '/example_pages/index.html')
           .wait("a[class='link1']")
           .wait('a[class="link1"]')
           .getBoundingClientRect('a[class=\'link1\']')

@@ -1,4 +1,4 @@
-const Chromy = require('../src')
+const Chromy = require('../dist')
 const assert = require('assert')
 
 describe('inject()', function() {
@@ -11,9 +11,9 @@ describe('inject()', function() {
     let jsResult = null
     let cssResult = null
     chromy.chain()
-          .goto('file://' + __dirname + '/pages/index.html')
-          .inject('js', __dirname + '/pages/inject.js')
-          .inject('css', __dirname + '/pages/inject.css')
+          .goto('file://' + process.env.PWD + '/example_pages/index.html')
+          .inject('js', process.env.PWD + '/example_pages/inject.js')
+          .inject('css', process.env.PWD + '/example_pages/inject.css')
           .evaluate(() => {
             let r1 = InjectedFunc(1, '2')
             var h1Node = document.querySelector('h1')

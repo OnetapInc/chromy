@@ -11,3 +11,5 @@ examples
 *.png
 *.jpg
 *.pdf
+src
+example_pages

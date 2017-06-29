@@ -1,5 +1,5 @@
-const Chromy = require('../src')
-const {TimeoutError} = require('../src/error')
+const Chromy = require('../dist')
+const {TimeoutError} = require('../dist/error')
 const assert = require('assert')
 
 describe('wait', function() {
@@ -10,7 +10,7 @@ describe('wait', function() {
   it('selector', (done) => {
     const chromy = new Chromy()
     chromy.chain()
-          .goto('file://' + __dirname + '/pages/wait.html')
+          .goto('file://' + process.env.PWD + '/example_pages/wait.html')
           .wait("div")
           .wait(".block1")
           .wait(".block2")
@@ -26,7 +26,7 @@ describe('wait', function() {
   it('selector 2', (done) => {
     const chromy = new Chromy()
     chromy.chain()
-          .goto('file://' + __dirname + '/pages/wait.html')
+          .goto('file://' + process.env.PWD + '/example_pages/wait.html')
           .evaluate(() => {
             setTimeout(() => {
               let div = document.createElement('div')
@@ -44,7 +44,7 @@ describe('wait', function() {
   it('function normal', (done) => {
     const chromy = new Chromy()
     chromy.chain()
-          .goto('file://' + __dirname + '/pages/wait.html')
+          .goto('file://' + process.env.PWD + '/example_pages/wait.html')
           .wait(function () {
             return document.querySelector('.block1')
           })
@@ -57,7 +57,7 @@ describe('wait', function() {
   it('function timeout', (done) => {
     const chromy = new Chromy({waitTimeout: 100})
     chromy.chain()
-          .goto('file://' + __dirname + '/pages/wait.html')
+          .goto('file://' + process.env.PWD + '/example_pages/wait.html')
           .wait(function () {
             return document.querySelector('.not-exists')
           })
@@ -75,7 +75,7 @@ describe('wait', function() {
     const chromy = new Chromy()
     let ellapseTime = null
     chromy.chain()
-          .goto('file://' + __dirname + '/pages/wait.html')
+          .goto('file://' + process.env.PWD + '/example_pages/wait.html')
           .evaluate(() => {
             window.before_time = Date.now()
           })
