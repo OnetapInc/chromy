@@ -1,4 +1,5 @@
 const {Launcher} = require('chrome-launcher')
+const path = require('path')
 
 // borrow from: http://qiita.com/saekis/items/c2b41cd8940923863791
 function escapeHtml (string) {
@@ -63,7 +64,17 @@ function createChromeLauncher (startingUrl, options) {
   })
 }
 
+function completeUrl (url) {
+  const reg = new RegExp('^(?:[a-z]+:)?//', 'i');
+  if (reg.test(url) || url.indexOf('about:') === 0) {
+    return url
+  } else {
+    return path.join('file://', process.cwd(), url)
+  }
+}
+
 exports.escapeHtml = escapeHtml
 exports.escapeSingleQuote = escapeSingleQuote
 exports.createChromeLauncher = createChromeLauncher
+exports.completeUrl = completeUrl
 

@@ -3,7 +3,7 @@ const path = require('path')
 
 let chromy = new Chromy()
 chromy.chain()
-      .goto(path.join('file://', __dirname, '/pages/index.html'))
+      .goto('file://' + path.join(__dirname, '/pages/index.html'))
       .startScreencast(async (payload) => {
         console.log(payload.data.length)
       }, {format: 'jpeg', quality: 50})

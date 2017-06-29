@@ -19,7 +19,8 @@ const {
 const {
   escapeHtml,
   escapeSingleQuote,
-  createChromeLauncher
+  createChromeLauncher,
+  completeUrl
 } = require('./util')
 
 let instances = []
@@ -79,7 +80,7 @@ class Chromy {
       return
     }
     if (this.launcher === null) {
-      this.launcher = createChromeLauncher(startingUrl, this.options)
+      this.launcher = createChromeLauncher(completeUrl(startingUrl), this.options)
     }
     await this.launcher.launch()
     instances.push(this)
@@ -211,7 +212,7 @@ class Chromy {
     await this._checkStart(url)
     try {
       await this._waitFinish(this.options.gotoTimeout, async () => {
-        await this.client.Page.navigate({url: url})
+        await this.client.Page.navigate({url: completeUrl(url)})
         if (options.waitLoadEvent) {
           await this.client.Page.loadEventFired()
         }
@@ -763,6 +764,7 @@ class Chromy {
       await this.start(startingUrl)
     }
   }
+
 }
 
 module.exports = Chromy

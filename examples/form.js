@@ -3,7 +3,7 @@ const path = require('path')
 
 let chromy = new Chromy({visible: true})
 chromy.chain()
-      .goto(path.join('file://', __dirname, '/pages/index.html'))
+      .goto('file://' + path.join(__dirname, '/pages/index.html'))
       .type('input[type=text]', 'text1')
       .type('textarea', 'text1\r\ntext2')
       .check('input[type=checkbox]')

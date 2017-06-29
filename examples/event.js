@@ -4,7 +4,7 @@ const path = require('path')
 let chromy = new Chromy({visible: true})
 chromy.chain()
       .emulate('Nexus6P') // enable touch event
-      .goto(path.join('file://', __dirname, '/pages/event.html'))
+      .goto('file://' + path.join(__dirname, '/pages/event.html'))
       .console((msg) => {
         console.log(msg)
       })

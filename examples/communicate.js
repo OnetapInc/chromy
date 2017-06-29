@@ -6,7 +6,7 @@ const path = require('path')
 let chromy = new Chromy()
 chromy.chain()
       .start()
-      .goto(path.join('file://', __dirname, '/pages/index.html'))
+      .goto('file://' + path.join(__dirname, '/pages/index.html'))
       .receiveMessage((params) => {
         // receive a parameters passed by sendToChromy()
         console.log(params)

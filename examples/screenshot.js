@@ -4,7 +4,7 @@ const fs = require('fs')
 
 let chromy = new Chromy()
 chromy.chain()
-      .goto(path.join('file://', __dirname, '/pages/index.html'))
+      .goto('file://' + path.join(__dirname, '/pages/index.html'))
       .screenshot()
       .result((png) => {
         fs.writeFileSync('out.png', png)

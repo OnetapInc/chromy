@@ -3,7 +3,7 @@ const path = require('path')
 
 let chromy = new Chromy({visible: true, chromeFlags: ['--disable-popup-blocking']})
 chromy.chain()
-      .goto(path.join('file://', __dirname, '/pages/tab01.html'))
+      .goto('file://' + path.join(__dirname, '/pages/tab01.html'))
       .click('a.link')
       .sleep(500)
       .getPageTargets()
