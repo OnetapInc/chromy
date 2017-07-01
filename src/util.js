@@ -60,7 +60,8 @@ function createChromeLauncher (startingUrl, options) {
     port: options.port,
     chromePath: options.chromePath,
     chromeFlags: flags,
-    startingUrl: startingUrl
+    startingUrl: startingUrl,
+    logLevel: 'error'
   })
 }
 
