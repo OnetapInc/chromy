@@ -10,9 +10,9 @@ describe('goto', function() {
   it('can use absolute or relative url', (done) => {
     const chromy = new Chromy()
     chromy.chain()
-          .goto('file://' + process.env.PWD + '/example_pages/wait.html')
+          .goto('file://' + process.env.PWD + '/test_pages/wait.html')
           .wait("div")
-          .goto('example_pages/wait.html')
+          .goto('test_pages/wait.html')
           .wait("div")
           .end()
           .then(_ => done())

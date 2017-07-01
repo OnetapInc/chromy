@@ -10,7 +10,7 @@ describe('wait', function() {
   it('selector', (done) => {
     const chromy = new Chromy()
     chromy.chain()
-          .goto('file://' + process.env.PWD + '/example_pages/index.html')
+          .goto('file://' + process.env.PWD + '/test_pages/index.html')
           .wait("a[class='link1']")
           .wait('a[class="link1"]')
           .getBoundingClientRect('a[class=\'link1\']')

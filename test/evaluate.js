@@ -10,7 +10,7 @@ describe('evaluate', function() {
   it('can return any type', (done) => {
     const chromy = new Chromy()
     chromy.chain()
-          .goto('file://' + process.env.PWD + '/example_pages/index.html')
+          .goto('file://' + process.env.PWD + '/test_pages/index.html')
           .evaluate(_ => "abc")
           .result(r => assert.equal('abc', r))
           .evaluate(_ => 100)
@@ -33,7 +33,7 @@ describe('evaluate', function() {
     it('resolve promise', (done) => {
       const chromy = new Chromy()
       chromy.chain()
-            .goto('file://' + process.env.PWD + '/example_pages/index.html')
+            .goto('file://' + process.env.PWD + '/test_pages/index.html')
             .evaluate(_ => Promise.resolve(100))
             .result(r => assert.equal(100, r))
             .evaluate(_ => Promise.resolve({a: 'abc'}))
