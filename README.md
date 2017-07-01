@@ -60,7 +60,7 @@ main()
 ### Mobile Emulation
 
 Chromy provides mobile emulation.  
-The emulation changes screen resolution, density, userAgent and provides touch emulation.
+The emulation changes a screen resolution, density, userAgent and provides touch emulation.
 
 ```js
 const Chromy = require('chromy')
@@ -88,16 +88,17 @@ chromy.chain()
 
 ###### options  
 
-visible(default: false): If set to true, chrome is launched in visible mode.  
-port(default: 9222): --remote-debugging-port  
-waitTimeout(default: 30000): If wait() does not be finished in a specified time WaitTimeoutError will be throwed.  
-gotoTimeout(default: 30000): If goto() does not be finished in a specified time GotoTimeoutError will be throwed.  
-evaluateTimeout(default: 30000): If evaluate() does not be finished in a specified time EvaluateTimeError will be throwed.  
-waitFunctionPollingInterval(default: 100): polling interval for wait().  
-typeInterval(default: 20): This option is used only in type() method.  
-activateOnStartUp(default: true): activate a first tab on startup. this option is enable only in visible mode.
-chromePath(default: undefined): This option is used to find out executable of Chrome. If set to undefined Chromy search basic paths.  
-chromeFlags(default: []): This flags is passed to Chrome. Each flags must start with "--". 
+ - port(default: 9222): --remote-debugging-port  
+ - launchBrowser(default: true): If you want chromy to attach to Chrome that is already launched, set to true.
+ - visible(default: false): If set to true, chrome is launched in visible mode. This option is not used if launchChrome is false.
+ - chromePath(default: null): This option is used to find out an executable of Chrome. If set to null, executable is selected automatically. This option is not used if launchChrome is false.
+ - chromeFlags(default: []): These flags is passed to Chrome. Each flag must have a prefix string "--". This option is not used if launchChrome is false.
+ - waitTimeout(default: 30000): If wait() doesn't finish in the specified time WaitTimeoutError will be throwed.
+ - gotoTimeout(default: 30000): If goto() doesn't finish in the specified time GotoTimeoutError will be throwed.
+ - evaluateTimeout(default: 30000): If evaluate() doesn't finish in the specified time EvaluateTimeError will be throwed.
+ - waitFunctionPollingInterval(default: 100): polling interval for wait().
+ - typeInterval(default: 20): This option is used only in type() method.
+ - activateOnStartUp(default: true): activate a first tab on startup. this option is enable only in visible mode.
 
 
 ##### .start(startingUrl = null)

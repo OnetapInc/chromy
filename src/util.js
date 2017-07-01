@@ -42,7 +42,7 @@ function createChromeLauncher (startingUrl, options) {
   if (options.chromeFlags && Array.isArray(options.chromeFlags)) {
     options.chromeFlags.forEach(f => {
       if (f.indexOf('--') === -1) {
-        throw new Error('chrome flag must start "--". flag: ' + f)
+        throw new Error('An item of chromFlags option must have "--" at start of itself. the value: ' + f)
       }
       flags.push(f)
     })
@@ -51,18 +51,21 @@ function createChromeLauncher (startingUrl, options) {
     console.warn('[chromy] additionalChromeFlags is deprecated. Use chromeFlags instead of this.')
     options.additionalChromeFlags.forEach(f => {
       if (f.indexOf('--') === -1) {
-        throw new Error('chrome flag must start "--". flag: ' + f)
+        throw new Error('An item of chromFlags option must have "--" at start of itself. the value: ' + f)
       }
       flags.push(f)
     })
   }
-  return new Launcher({
+  const params = {
     port: options.port,
-    chromePath: options.chromePath,
     chromeFlags: flags,
     startingUrl: startingUrl,
     logLevel: 'error'
-  })
+  }
+  if (options.chromePath) {
+    params.chromePath = options.chromePath
+  }
+  return new Launcher(params)
 }
 
 function completeUrl (url) {

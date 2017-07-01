@@ -45,15 +45,17 @@ class Chromy {
   constructor (options = {}) {
     const defaults = {
       port: 9222,
+      launchBrowser: true,
+      chromeFlags: [],
+      chromePath: null,
+      activateOnStartUp: true,
       waitTimeout: 30000,
       gotoTimeout: 30000,
       loadTimeout: 30000,
       evaluateTimeout: 30000,
       waitFunctionPollingInterval: 100,
       typeInterval: 20,
-      activateOnStartUp: true,
-      target: defaultTargetFunction,
-      chromeFlags: []
+      target: defaultTargetFunction
     }
     this.options = Object.assign(_clone(defaults), options)
     this.cdpOptions = {
@@ -80,11 +82,16 @@ class Chromy {
     if (this.client !== null) {
       return
     }
-    if (this.launcher === null) {
-      this.launcher = createChromeLauncher(completeUrl(startingUrl), this.options)
+    if (this.options.launchBrowser) {
+      if (this.launcher === null) {
+        this.launcher = createChromeLauncher(completeUrl(startingUrl), this.options)
+      }
+      const res = await this.launcher.launch()
+      if (!this.launcher.pid) {
+        throw new Error('Failed to launch a browser.')
+      }
+      instances.push(this)
     }
-    await this.launcher.launch()
-    instances.push(this)
     await new Promise((resolve, reject) => {
       CDP(this.cdpOptions, async (client) => {
         try {
