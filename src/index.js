@@ -272,7 +272,10 @@ class Chromy {
       if (result.result.subtype === 'promise') {
         result = await this.client.Runtime.awaitPromise({promiseObjectId: result.result.objectId, returnByValue: true})
         // adjust to after process
-        result.result.value = JSON.stringify({type: (typeof result.result.value), result: JSON.stringify(result.result.value)})
+        result.result.value = JSON.stringify({
+          type: (typeof result.result.value),
+          result: JSON.stringify(result.result.value)
+        })
       }
       if (result.result.subtype === 'error') {
         throw new EvaluateError('An error has been occurred in evaluated script on a browser.' + result.result.description, result.result)
@@ -554,7 +557,7 @@ class Chromy {
 
     // capture screenshot and crop it.
     const actualRect = await this.getBoundingClientRect(selector)
-    if (!actualRect) {
+    if (!actualRect || actualRect.width === 0) {
       return null
     }
     const clipRect = {
@@ -579,7 +582,8 @@ class Chromy {
       model: 'scroll',
       format: 'png',
       quality: undefined,
-      fromSurface: true
+      fromSurface: true,
+      useQuerySelectorAll: false
     }
     const opts = Object.assign({}, defaults, options)
     const fullscreenBuffer = await this.screenshotDocument(opts.model, opts.format, opts.quality, opts.fromSurface)
@@ -590,27 +594,43 @@ class Chromy {
       for (let selIdx = 0; selIdx < selectors.length; selIdx++) {
         let selector = selectors[selIdx]
         try {
-          const rect = await this.getBoundingClientRect(selector)
-          if (!rect) {
-            const err = new Error(`selector is not found. selector=${selector}`)
+          let rects = null
+          if (opts.useQuerySelectorAll) {
+            rects = await this.getBoundingClientRectAll(selector)
+            // remove elements that has 'display: none'
+            rects = rects.filter(rect => rect.width !== 0)
+          } else {
+            const r = await this.getBoundingClientRect(selector)
+            if (r && r.width !== 0) {
+              rects = [r]
+            }
+          }
+          if (rects.length === 0) {
+            const err = {reason: 'notfound', message: `selector is not found. selector=${selector}`}
             callback.apply(this, [err, null, selIdx, selectors])
             continue
           }
+          for (let rectIdx = 0; rectIdx < rects.length; rectIdx++) {
+            const rect = rects[rectIdx]
 
-          if (rect.top >= meta.height || rect.left >= meta.width) {
-            const err = new Error(`top of selector is over the limitation of height. selector=${selector}`)
-            callback.apply(this, [err, null, selIdx, selectors])
-            continue
-          }
-          if (meta.width < rect.left + rect.width) {
-            rect.width = meta.width - rect.left
-          }
-          if (meta.height < rect.top + rect.height) {
-            rect.height = meta.height - rect.top
-          }
+            if (rect.top >= meta.height || rect.left >= meta.width) {
+              const err = {
+                reason: 'limitation',
+                message: `top of selector is over the limitation of height. selector=${selector}`
+              }
+              callback.apply(this, [err, null, selIdx, selectors])
+              continue
+            }
+            if (meta.width < rect.left + rect.width) {
+              rect.width = meta.width - rect.left
+            }
+            if (meta.height < rect.top + rect.height) {
+              rect.height = meta.height - rect.top
+            }
 
-          const buffer = await sharp(fullscreenBuffer).extract(rect).toBuffer()
-          callback.apply(this, [null, buffer, selIdx, selectors])
+            const buffer = await sharp(fullscreenBuffer).extract(rect).toBuffer()
+            callback.apply(this, [null, buffer, selIdx, selectors, rectIdx])
+          }
         } catch (e) {
           callback.apply(this, [e, null, selIdx, selectors])
         }
@@ -763,25 +783,41 @@ class Chromy {
   }
 
   async getBoundingClientRect (selector) {
-    const result = await this._evaluateWithReplaces(function () {
+    const rect = await this._evaluateWithReplaces(function () {
       let dom = document.querySelector('?')
       if (!dom) {
         return null
       }
-      let rect = dom.getBoundingClientRect()
-      return {
-        rect: {top: rect.top, left: rect.left, width: rect.width, height: rect.height}
-      }
+      let r = dom.getBoundingClientRect()
+      return {top: r.top, left: r.left, width: r.width, height: r.height}
     }, {}, {'?': escapeSingleQuote(selector)})
-    if (!result) {
+    if (!rect) {
       return null
     }
     return {
-      top: Math.floor(result.rect.top),
-      left: Math.floor(result.rect.left),
-      width: Math.floor(result.rect.width),
-      height: Math.floor(result.rect.height)
+      top: Math.floor(rect.top),
+      left: Math.floor(rect.left),
+      width: Math.floor(rect.width),
+      height: Math.floor(rect.height)
     }
+  }
+
+  async getBoundingClientRectAll (selector) {
+    const rects = await this._evaluateWithReplaces(function () {
+      let doms = document.querySelectorAll('?')
+      return Array.prototype.map.call(doms, dom => {
+        let r = dom.getBoundingClientRect()
+        return {top: r.top, left: r.left, width: r.width, height: r.height}
+      })
+    }, {}, {'?': escapeSingleQuote(selector)})
+    return rects.map(rect => {
+      return {
+        top: Math.floor(rect.top),
+        left: Math.floor(rect.left),
+        width: Math.floor(rect.width),
+        height: Math.floor(rect.height)
+      }
+    })
   }
 
   async _checkStart (startingUrl = null) {

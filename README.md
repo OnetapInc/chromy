@@ -260,7 +260,12 @@ Limitation:
 
  - selectors: An array of selector
  - callback: function(error, buffer, index, selectors)
- - options: Specifies the parameters of screenshotDocument() used in internal implmentation such as model, format, quality, fromSurface.
+ - options:  
+   - model: see explanation of screenDocument() 
+   - format: see explanation of screenDocument() 
+   - quality: see explanation of screenDocument() 
+   - fromSurface: see explanation of screenDocument() 
+   - useQuerySelectorAll(default:false): If set to true, take all the screenshot of elements returned from document.querySelectorAll() (Since v 0.2.13)
 
 ##### .screenshotDocument(model = 'scroll', format = 'png', quality = 100, fromSurface = true)
 

@@ -1,8 +1,14 @@
+function escapeRegExp (str) {
+  // eslint-disable-next-line
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&')
+}
+
 function functionToSource (f, replaces = {}) {
   let s = f.toString()
   for (let key in replaces) {
     let v = replaces[key]
-    s = s.replace(key, v)
+    let reg = new RegExp(escapeRegExp(key), 'g')
+    s = s.replace(reg, v)
   }
   return s
 }
