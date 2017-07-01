@@ -1,6 +1,6 @@
 {
   "name": "chromy",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "description": "The library for manipulating headless chrome with Nightmare.js like API.",
   "main": "dist/index.js",
   "directories": {
@@ -20,7 +20,7 @@
   "author": "shinji <dotneet@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "async-chain-proxy": "^0.1.4",
+    "async-chain-proxy": "^0.1.5",
     "chrome-launcher": "^0.1.2",
     "chrome-remote-interface": "^0.23.2",
     "sharp": "^0.18.1",
