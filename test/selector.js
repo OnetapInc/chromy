@@ -2,7 +2,7 @@ const Chromy = require('../dist')
 const {TimeoutError} = require('../dist/error')
 const assert = require('assert')
 
-describe('wait', function() {
+describe('selector', function() {
   this.timeout(5000);
   afterEach(async () => {
     await Chromy.cleanup()

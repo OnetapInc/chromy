@@ -7,6 +7,8 @@ const devices = require('./devices')
 const sharp = require('sharp')
 const {createFullscreenEmulationManager} = require('./emulation')
 
+const Document = require('./document')
+
 const {
   TimeoutError,
   GotoTimeoutError,
@@ -14,9 +16,6 @@ const {
   EvaluateTimeoutError,
   EvaluateError
 } = require('./error')
-const {
-  functionToEvaluatingSource
-} = require('./functionToSource')
 const {
   escapeHtml,
   escapeSingleQuote,
@@ -39,10 +38,9 @@ function defaultTargetFunction (targets) {
   return targets.filter(t => t.type === 'page').shift()
 }
 
-const _clone = (obj) => Object.assign({}, obj)
-
-class Chromy {
+class Chromy extends Document {
   constructor (options = {}) {
+    super(null, null, null)
     const defaults = {
       port: 9222,
       launchBrowser: true,
@@ -57,7 +55,7 @@ class Chromy {
       typeInterval: 20,
       target: defaultTargetFunction
     }
-    this.options = Object.assign(_clone(defaults), options)
+    this.options = Object.assign({}, defaults, options)
     this.cdpOptions = {
       port: this.options.port,
       target: this.options.target
@@ -96,8 +94,8 @@ class Chromy {
       CDP(this.cdpOptions, async (client) => {
         try {
           this.client = client
-          const {Network, Page, Runtime, Console} = client
-          await Promise.all([Network.enable(), Page.enable(), Runtime.enable(), Console.enable()])
+          const {DOM, Network, Page, Runtime, Console} = client
+          await Promise.all([DOM.enable(), Network.enable(), Page.enable(), Runtime.enable(), Console.enable()])
 
           // activate first tab
           if (this.options.activateOnStartUp) {
@@ -111,6 +109,7 @@ class Chromy {
           if ('headers' in this.options) {
             await this.headers(this.options.headers)
           }
+          this._activateOnDocumentUpdatedListener()
           resolve(this)
         } catch (e) {
           reject(e)
@@ -216,7 +215,7 @@ class Chromy {
     const defaultOptions = {
       waitLoadEvent: true
     }
-    options = Object.assign(_clone(defaultOptions), options)
+    options = Object.assign({}, defaultOptions, options)
     await this._checkStart(url)
     try {
       await this._waitFinish(this.options.gotoTimeout, async () => {
@@ -258,84 +257,6 @@ class Chromy {
     await this.client.Page.reload({ignoreCache, scriptToEvaluateOnLoad})
   }
 
-  async evaluate (expr, options = {}) {
-    return await this._evaluateWithReplaces(expr, options)
-  }
-
-  async _evaluateWithReplaces (expr, options = {}, replaces = {}) {
-    let e = functionToEvaluatingSource(expr, replaces)
-    try {
-      let result = await this._waitFinish(this.options.evaluateTimeout, async () => {
-        if (!this.client) {
-          return null
-        }
-        let params = Object.assign({}, options, {expression: e})
-        return await this.client.Runtime.evaluate(params)
-      })
-      if (!result || !result.result) {
-        return null
-      }
-      // resolve a promise
-      if (result.result.subtype === 'promise') {
-        result = await this.client.Runtime.awaitPromise({promiseObjectId: result.result.objectId, returnByValue: true})
-        // adjust to after process
-        result.result.value = JSON.stringify({
-          type: (typeof result.result.value),
-          result: JSON.stringify(result.result.value)
-        })
-      }
-      if (result.result.subtype === 'error') {
-        throw new EvaluateError('An error has been occurred in evaluated script on a browser.' + result.result.description, result.result)
-      }
-      const resultObject = JSON.parse(result.result.value)
-      const type = resultObject.type
-      if (type === 'undefined') {
-        return undefined
-      } else {
-        try {
-          return JSON.parse(resultObject.result)
-        } catch (e) {
-          console.log('ERROR', resultObject)
-          throw e
-        }
-      }
-    } catch (e) {
-      if (e instanceof TimeoutError) {
-        throw new EvaluateTimeoutError('evaluate() timeout')
-      } else {
-        throw e
-      }
-    }
-  }
-
-  async _waitFinish (timeout, callback) {
-    const start = Date.now()
-    let finished = false
-    let error = null
-    let result = null
-    const f = async () => {
-      try {
-        result = await callback.apply()
-        finished = true
-        return result
-      } catch (e) {
-        error = e
-        finished = true
-      }
-    }
-    f.apply()
-    while (!finished) {
-      const now = Date.now()
-      if ((now - start) > timeout) {
-        throw new TimeoutError('timeout')
-      }
-      await this.sleep(this.options.waitFunctionPollingInterval)
-    }
-    if (error !== null) {
-      throw error
-    }
-    return result
-  }
 
   /**
    * define function
@@ -369,14 +290,6 @@ class Chromy {
       result.push(src)
     }
     return result
-  }
-
-  async sleep (msec) {
-    await new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve()
-      }, msec)
-    })
   }
 
   async wait (cond) {
@@ -445,19 +358,6 @@ class Chromy {
     expr = escapeSingleQuote(expr)
     await this.evaluate('document.querySelector(\'' + expr + '\').focus()')
     await this.evaluate('document.querySelector(\'' + expr + '\').value = "' + escapeHtml(value) + '"')
-  }
-
-  async click (expr, inputOptions = {}) {
-    const defaults = {waitLoadEvent: false}
-    const options = Object.assign(_clone(defaults), inputOptions)
-    let promise = null
-    if (options.waitLoadEvent) {
-      promise = this.waitLoadEvent()
-    }
-    await this.evaluate('document.querySelectorAll(\'' + escapeSingleQuote(expr) + '\').forEach(n => n.click())')
-    if (promise !== null) {
-      await promise
-    }
   }
 
   async mouseMoved (x, y, options = {}) {
@@ -811,6 +711,7 @@ class Chromy {
     }, {}, {'_1': x, '_2': y})
   }
 
+
   async getBoundingClientRect (selector) {
     const rect = await this._evaluateWithReplaces(function () {
       let dom = document.querySelector('?')
@@ -854,7 +755,6 @@ class Chromy {
       await this.start(startingUrl)
     }
   }
-
 }
 
 module.exports = Chromy

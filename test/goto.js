@@ -3,7 +3,7 @@ const {TimeoutError} = require('../dist/error')
 const assert = require('assert')
 
 describe('goto', function() {
-  this.timeout(5000);
+  this.timeout(10000);
   afterEach(async () => {
     await Chromy.cleanup()
   })
@@ -11,8 +11,13 @@ describe('goto', function() {
     const chromy = new Chromy()
     chromy.chain()
           .goto('file://' + process.env.PWD + '/test_pages/wait.html')
+          .evaluate(_ => { console.log('test') })
           .wait("div")
-          .goto('test_pages/wait.html')
+          .goto('file://' + process.env.PWD + '/test_pages/index.html')
+          .evaluate(_ => { console.log('test') })
+          .wait("form")
+          .goto('file://' + process.env.PWD + '/test_pages/wait.html')
+          .evaluate(_ => { console.log('test') })
           .wait("div")
           .end()
           .then(_ => done())

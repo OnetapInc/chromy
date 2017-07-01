@@ -21,22 +21,23 @@ function toFunctionForm (f, replaces = {}) {
   }
 }
 
-function functionToEvaluatingSource (f, replaces = {}) {
+function wrapFunctionForEvaluation (f, replaces = {}) {
   let s = '(' + toFunctionForm(f, replaces) + ')()'
   // If the result is an instanceof of Promise, It's resolved in context of nodejs later.
   return `
-    {
+    function () {
       let result = ${s};
       if (result instanceof Promise) {
-        result
+        return result
       } else {
         let json = JSON.stringify(result);
-        JSON.stringify({type: (typeof result), result: json});
+        return JSON.stringify({type: (typeof result), result: json});
       }
     }
   `.trim()
 }
 
 exports.functionToSource = functionToSource
-exports.functionToEvaluatingSource = functionToEvaluatingSource
+// exports.functionToEvaluatingSource = functionToEvaluatingSource
+exports.wrapFunctionForEvaluation = wrapFunctionForEvaluation
 
