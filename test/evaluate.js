@@ -29,24 +29,26 @@ describe('evaluate', function() {
             done(e)
           })
   })
-  it('resolve promise', (done) => {
-    const chromy = new Chromy()
-    chromy.chain()
-          .goto('file://' + process.env.PWD + '/example_pages/index.html')
-          .evaluate(_ => Promise.resolve(100))
-          .result(r => assert.equal(100, r))
-          .evaluate(_ => Promise.resolve({a: 'abc'}))
-          .result(r => assert.equal('abc', r.a))
-          .evaluate(_ => Promise.resolve(Promise.resolve(Promise.resolve(100))))
-          .result(r => assert.equal(100, r))
-          .evaluate(async r => await 200)
-          .result(r => assert.equal(200, r))
-          .end()
-          .then(_ => done())
-          .catch(e => {
-            done(e)
-          })
-  })
+  if (!process.env.WITH_BABEL)  {
+    it('resolve promise', (done) => {
+      const chromy = new Chromy()
+      chromy.chain()
+            .goto('file://' + process.env.PWD + '/example_pages/index.html')
+            .evaluate(_ => Promise.resolve(100))
+            .result(r => assert.equal(100, r))
+            .evaluate(_ => Promise.resolve({a: 'abc'}))
+            .result(r => assert.equal('abc', r.a))
+            .evaluate(_ => Promise.resolve(Promise.resolve(Promise.resolve(100))))
+            .result(r => assert.equal(100, r))
+            .evaluate(async r => await 200)
+            .result(r => assert.equal(200, r))
+            .end()
+            .then(_ => done())
+            .catch(e => {
+              done(e)
+            })
+    })
+  }
 
 })
 
