@@ -5,6 +5,7 @@ const chainProxy = require('async-chain-proxy')
 const uuidV4 = require('uuid/v4')
 const devices = require('./devices')
 const sharp = require('sharp')
+const {createFullscreenEmulationManager} = require('./emulation')
 
 const {
   TimeoutError,
@@ -508,51 +509,29 @@ class Chromy {
     return Buffer.from(data, 'base64')
   }
 
+  /*
+   * Limitation:
+   * maximum height is 16384px because of chrome's bug from Skia library.
+   * https://groups.google.com/a/chromium.org/d/msg/headless-dev/DqaAEXyzvR0/kUTEqNYiDQAJ
+   * https://stackoverflow.com/questions/44599858/max-height-of-16-384px-for-headless-chrome-screenshots
+   */
   async screenshotDocument (model = 'scroll', format = 'png', quality = undefined, fromSurface = true) {
-    let width = 0
-    let height = 0
-    const info = await this.evaluate(function () {
-      return {
-        width: document.body.scrollWidth,
-        height: document.body.scrollHeight,
-        viewportWidth: window.innerWidth,
-        viewportHeight: window.innerHeight
-      }
-    })
-    if (model === 'box') {
-      const DOM = this.client.DOM
-      const {root: {nodeId: documentNodeId}} = await DOM.getDocument()
-      const {nodeId: bodyNodeId} = await DOM.querySelector({
-        selector: 'body',
-        nodeId: documentNodeId
-      })
-      const box = await DOM.getBoxModel({nodeId: bodyNodeId})
-      width = box.model.width
-      height = box.model.height
-    } else {
-      width = info.width
-      height = info.height
-    }
-    const deviceMetrics = {
-      width,
-      height,
-      deviceScaleFactor: 0,
-      mobile: false,
-      fitWindow: false
-    }
+    const emulation = await createFullscreenEmulationManager(this, model)
 
     let result = null
     try {
-      await this.client.Emulation.setVisibleSize({width, height})
-      await this.client.Emulation.forceViewport({x: 0, y: 0, scale: 1})
-      await this.client.Emulation.setDeviceMetricsOverride(deviceMetrics)
-      await this.scrollTo(0, 0)
-      result = await this.screenshot('png', quality, fromSurface)
+      await emulation.emulate()
+      result = await this.screenshot(format, quality, fromSurface)
+      const info = emulation.browserInfo
+      if (info.devicePixelRatio !== 1) {
+        let s = sharp(result)
+        let m1 = await s.metadata()
+        const newWidth = parseInt(m1.width / info.devicePixelRatio)
+        const newHeight = parseInt(m1.height / info.devicePixelRatio)
+        result = await s.resize(newWidth, newHeight).toBuffer()
+      }
     } finally {
-      await this.client.Emulation.resetViewport()
-      await this.client.Emulation.clearDeviceMetricsOverride()
-      await this.client.Emulation.setVisibleSize({width: info.viewportHeight, height: info.viewportHeight})
-
+      await emulation.reset()
       // restore emulation mode
       if (this.currentEmulateDeviceName !== null) {
         await this.emulate(this.currentEmulateDeviceName)
@@ -593,6 +572,52 @@ class Chromy {
       clipRect.height = meta.height - clipRect.top
     }
     return sharp(buffer).extract(clipRect).toBuffer()
+  }
+
+  async screenshotMultipleSelectors (selectors, callback, options = {}) {
+    const defaults = {
+      model: 'scroll',
+      format: 'png',
+      quality: undefined,
+      fromSurface: true
+    }
+    const opts = Object.assign({}, defaults, options)
+    const fullscreenBuffer = await this.screenshotDocument(opts.model, opts.format, opts.quality, opts.fromSurface)
+    const meta = await sharp(fullscreenBuffer).metadata()
+    const emulation = await createFullscreenEmulationManager(this, 'scroll')
+    await emulation.emulate()
+    try {
+      for (let selIdx = 0; selIdx < selectors.length; selIdx++) {
+        let selector = selectors[selIdx]
+        try {
+          const rect = await this.getBoundingClientRect(selector)
+          if (!rect) {
+            const err = new Error(`selector is not found. selector=${selector}`)
+            callback.apply(this, [err, null, selIdx, selectors])
+            continue
+          }
+
+          if (rect.top >= meta.height || rect.left >= meta.width) {
+            const err = new Error(`top of selector is over the limitation of height. selector=${selector}`)
+            callback.apply(this, [err, null, selIdx, selectors])
+            continue
+          }
+          if (meta.width < rect.left + rect.width) {
+            rect.width = meta.width - rect.left
+          }
+          if (meta.height < rect.top + rect.height) {
+            rect.height = meta.height - rect.top
+          }
+
+          const buffer = await sharp(fullscreenBuffer).extract(rect).toBuffer()
+          callback.apply(this, [null, buffer, selIdx, selectors])
+        } catch (e) {
+          callback.apply(this, [e, null, selIdx, selectors])
+        }
+      }
+    } finally {
+      await emulation.reset()
+    }
   }
 
   async pdf (options = {}) {

@@ -246,6 +246,17 @@ Note:
  - The size of target specified by selector must be smaller than viewport size. If not, image gets cropped.
  - It has a side-effect. After this api is called, scroll position is moved to target position.
 
+##### .screenshotMultipleSelectors(selectors, callback, options = {})
+
+Takes multiple screenshot specified by selector at once.
+Each image can be received by callback.
+
+###### Parameter
+
+ - selectors: An array of selector
+ - callback: function(error, buffer, index, selectors)
+ - options: Specifies the parameters of screenshotDocument() used in internal implmentation such as model, format, quality, fromSurface.
+
 ##### .screenshotDocument(model = 'scroll', format = 'png', quality = 100, fromSurface = true)
 
 (Experimental)
