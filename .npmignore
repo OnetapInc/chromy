@@ -12,4 +12,5 @@ examples
 *.jpg
 *.pdf
 src
-example_pages
+test_pages
+dist_test
