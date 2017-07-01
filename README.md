@@ -185,6 +185,13 @@ wait for milli seconds you specified.
 
 ##### .select(selector, value)
 
+##### .setFile(selector, files)
+
+Sets the files to a file field that matches the selector.
+
+ - selector: selector for specifing the file field.
+ - files: The array or string value that representate a local file path.
+
 ##### .click(selector, options)
 
 ###### options

@@ -500,6 +500,28 @@ class Chromy {
     await this.evaluate(src)
   }
 
+  async setFile (selector, files) {
+    let paramFiles = files
+    if ((typeof files) === 'string') {
+      paramFiles = [files]
+    }
+    if (paramFiles.length === 0) {
+      return
+    }
+    const {root} = await this.client.DOM.getDocument()
+    const {nodeId: fileNodeId} = await this.client.DOM.querySelector({
+      nodeId: root.nodeId,
+      selector: selector
+    })
+    if (!fileNodeId) {
+      return
+    }
+    await this.client.DOM.setFileInputFiles({
+      nodeId: fileNodeId,
+      files: paramFiles
+    })
+  }
+
   async screenshot (format = 'png', quality = undefined, fromSurface = true) {
     if (['png', 'jpeg'].indexOf(format) === -1) {
       throw new Error('format is invalid.')
