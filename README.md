@@ -10,6 +10,7 @@ Chromy is similar to Nightmare.js but has some differnces:
 
 ## Requirements
 
+ - Node 6 or later
  - Install Chrome59 or later to your machine before use Chromy.
 
 headless mode is supported by Chrome59 or later.
@@ -251,6 +252,10 @@ Note:
 Takes multiple screenshot specified by selector at once.
 Each image can be received by callback.
 
+Limitation:
+ - It is impossible that taking a screenshot of the element positioned at below of 16384px because of limitation of chrome.
+   Detail: https://groups.google.com/a/chromium.org/d/msg/headless-dev/DqaAEXyzvR0/P9zmTLMvDQAJ
+
 ###### Parameter
 
  - selectors: An array of selector
@@ -265,6 +270,10 @@ Exports a entire document as an image data.
 `format` must be eather 'png' or 'jpeg'.
 
 See examples: [examples/screenshot.js](examples/screenshot.js)
+
+Limitation:
+  - Cannot take a screenshot of an area under 16384px.
+    Detail: https://groups.google.com/a/chromium.org/d/msg/headless-dev/DqaAEXyzvR0/P9zmTLMvDQAJ
 
 Known Issue:
 
