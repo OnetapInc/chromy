@@ -40,13 +40,23 @@ class Document {
     if (!rect) {
       return Promise.resolve()
     }
-    const locationParams = {x: rect.left + Math.floor(rect.width / 2), y: rect.top + Math.floor(rect.height / 2)}
-    const {nodeId: iframeNodeId} = await this.client.DOM.getNodeForLocation(locationParams)
-    if (!iframeNodeId) {
-      return Promise.resolve()
+    // to get the the node for location, a position of the node must be in a viewport.
+    const originalPageOffset = await this.getPageOffset()
+    let doc = null
+    try {
+      await this.scrollTo(0, rect.top)
+      const newRect = await this.getBoundingClientRect(selector)
+      const locationParams = {x: rect.left + 10, y: rect.top + 10}
+      const {nodeId: iframeNodeId} = await this.client.DOM.getNodeForLocation(locationParams)
+      if (!iframeNodeId) {
+        return Promise.resolve()
+      }
+      doc = new Document(this.chromy, this.client, iframeNodeId)
+      doc._activateOnDocumentUpdatedListener()
+    } finally {
+      // restore scroll potion.
+      await this.scrollTo(originalPageOffset.x, originalPageOffset.y)
     }
-    const doc = new Document(this.chromy, this.client, iframeNodeId)
-    doc._activateOnDocumentUpdatedListener()
     return Promise.resolve(callback.apply(this, [doc]))
   }
 
@@ -107,6 +117,15 @@ class Document {
     return this._evaluateWithReplaces(function () {
       window.scrollTo(_1, _2) // eslint-disable-line no-undef
     }, {}, {'_1': x, '_2': y})
+  }
+
+  async getPageOffset () {
+    return this.evaluate(_ => {
+      return {
+        x: window.pageXOffset,
+        y: window.pageYOffset
+      }
+    })
   }
 
   async evaluate (expr, options = {}) {
