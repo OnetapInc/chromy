@@ -9,7 +9,8 @@ const {
   EvaluateError
 } = require('./error')
 const {
-  wrapFunctionForEvaluation
+  wrapFunctionForEvaluation,
+  wrapFunctionForCallFunction
 } = require('./functionToSource')
 const {
   escapeHtml,
@@ -27,6 +28,7 @@ class Document {
     }
     this.client = client
     this.nodeId = nodeId
+    this._originalNodeId = nodeId
   }
 
   chain (options = {}) {
@@ -56,7 +58,12 @@ class Document {
       promise = this.waitLoadEvent()
     }
     let nid = await this._getNodeId()
-    await this._evaluateOnNode(nid, 'document.querySelectorAll(\'' + escapeSingleQuote(expr) + '\').forEach(n => n.click())')
+    let evalExpr = 'document.querySelectorAll(\'' + escapeSingleQuote(expr) + '\').forEach(n => n.click())'
+    if (this._originalNodeId) {
+      await this._evaluateOnNode(nid, evalExpr)
+    } else {
+      await this.evaluate(evalExpr)
+    }
     if (promise !== null) {
       await promise
     }
@@ -107,16 +114,26 @@ class Document {
   }
 
   async _evaluateWithReplaces (expr, options = {}, replaces = {}) {
-    let e = wrapFunctionForEvaluation(expr, replaces)
+    let e = null
+    if (this._originalNodeId) {
+      e = wrapFunctionForCallFunction(expr, replaces)
+    } else {
+      e = wrapFunctionForEvaluation(expr, replaces)
+    }
     try {
       let result = await this._waitFinish(this.chromy.options.evaluateTimeout, async () => {
         if (!this.client) {
           return null
         }
-        const contextNodeId = await this._getNodeId()
-        const objectId = await this._getObjectIdFromNodeId(contextNodeId)
-        let params = Object.assign({}, options, {objectId: objectId, functionDeclaration: e})
-        return await this.client.Runtime.callFunctionOn(params)
+        if (this._originalNodeId) {
+          // must call callFunctionOn() for evaluating expression with iframe context.
+          const contextNodeId = await this._getNodeId()
+          const objectId = await this._getObjectIdFromNodeId(contextNodeId)
+          const params = Object.assign({}, options, {objectId: objectId, functionDeclaration: e})
+          return await this.client.Runtime.callFunctionOn(params)
+        } else {
+          return await this.client.Runtime.evaluate({expression: e})
+        }
       })
       if (!result || !result.result) {
         return null

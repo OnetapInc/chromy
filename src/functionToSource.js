@@ -25,6 +25,22 @@ function wrapFunctionForEvaluation (f, replaces = {}) {
   let s = '(' + toFunctionForm(f, replaces) + ')()'
   // If the result is an instanceof of Promise, It's resolved in context of nodejs later.
   return `
+    {
+      let result = ${s};
+      if (result instanceof Promise) {
+        result
+      } else {
+        let json = JSON.stringify(result);
+        JSON.stringify({type: (typeof result), result: json});
+      }
+    }
+  `.trim()
+}
+
+function wrapFunctionForCallFunction (f, replaces = {}) {
+  let s = '(' + toFunctionForm(f, replaces) + ')()'
+  // If the result is an instanceof of Promise, It's resolved in context of nodejs later.
+  return `
     function () {
       let result = ${s};
       if (result instanceof Promise) {
@@ -38,6 +54,6 @@ function wrapFunctionForEvaluation (f, replaces = {}) {
 }
 
 exports.functionToSource = functionToSource
-// exports.functionToEvaluatingSource = functionToEvaluatingSource
 exports.wrapFunctionForEvaluation = wrapFunctionForEvaluation
+exports.wrapFunctionForCallFunction = wrapFunctionForCallFunction
 
