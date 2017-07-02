@@ -7,7 +7,7 @@ describe('wait', function() {
   afterEach(async () => {
     await Chromy.cleanup()
   })
-  it('selector', (done) => {
+  it('wait selector', (done) => {
     const chromy = new Chromy()
     chromy.chain()
           .goto('file://' + process.env.PWD + '/test_pages/wait.html')
@@ -23,7 +23,7 @@ describe('wait', function() {
             done(e)
           })
   })
-  it('selector 2', (done) => {
+  it('wait selector with asynchronouse process', (done) => {
     const chromy = new Chromy()
     chromy.chain()
           .goto('file://' + process.env.PWD + '/test_pages/wait.html')
@@ -41,7 +41,7 @@ describe('wait', function() {
             done(e)
           })
   })
-  it('function normal', (done) => {
+  it('wait function', (done) => {
     const chromy = new Chromy()
     chromy.chain()
           .goto('file://' + process.env.PWD + '/test_pages/wait.html')
@@ -54,7 +54,7 @@ describe('wait', function() {
             done(e)
           })
   })
-  it('function timeout', (done) => {
+  it('raise TimeoutError', (done) => {
     const chromy = new Chromy({waitTimeout: 100})
     chromy.chain()
           .goto('file://' + process.env.PWD + '/test_pages/wait.html')
@@ -71,7 +71,7 @@ describe('wait', function() {
             }
           })
   })
-  it('sleep', (done) => {
+  it('wait fixed time', (done) => {
     const chromy = new Chromy()
     let ellapseTime = null
     chromy.chain()

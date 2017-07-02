@@ -1,7 +1,6 @@
 const fs = require('fs')
 
 const CDP = require('chrome-remote-interface')
-const chainProxy = require('async-chain-proxy')
 const uuidV4 = require('uuid/v4')
 const devices = require('./devices')
 const sharp = require('sharp')
@@ -67,10 +66,6 @@ class Chromy extends Document {
     this.currentEmulateDeviceName = null
     this.userAgentBeforeEmulate = null
     this.instanceId = instanceId++
-  }
-
-  chain (options = {}) {
-    return chainProxy(this, options)
   }
 
   async start (startingUrl = null) {
@@ -257,7 +252,6 @@ class Chromy extends Document {
     await this.client.Page.reload({ignoreCache, scriptToEvaluateOnLoad})
   }
 
-
   /**
    * define function
    *
@@ -292,58 +286,6 @@ class Chromy extends Document {
     return result
   }
 
-  async wait (cond) {
-    if ((typeof cond) === 'number') {
-      await this.sleep(cond)
-    } else if ((typeof cond) === 'function') {
-      await this._waitFunction(cond)
-    } else {
-      await this._waitSelector(cond)
-    }
-  }
-
-  // wait for func to return true.
-  async _waitFunction (func) {
-    await this._waitFinish(this.options.waitTimeout, async () => {
-      while (true) {
-        const r = await this.evaluate(func)
-        if (r) {
-          break
-        }
-        await this.sleep(this.options.waitFunctionPollingInterval)
-      }
-    })
-  }
-
-  async _waitSelector (selector) {
-    let check = null
-    let startTime = Date.now()
-    await new Promise((resolve, reject) => {
-      check = () => {
-        setTimeout(async () => {
-          try {
-            const now = Date.now()
-            if (now - startTime > this.options.waitTimeout) {
-              reject(new WaitTimeoutError('wait() timeout'))
-              return
-            }
-            const result = await this._evaluateWithReplaces(() => {
-              return document.querySelector('?')
-            }, {}, {'?': escapeSingleQuote(selector)})
-            if (result) {
-              resolve(result)
-            } else {
-              check()
-            }
-          } catch (e) {
-            reject(e)
-          }
-        }, this.options.waitFunctionPollingInterval)
-      }
-      check()
-    })
-  }
-
   async type (expr, value) {
     await this.evaluate('document.querySelector("' + expr + '").focus()')
     const characters = value.split('')
@@ -352,12 +294,6 @@ class Chromy extends Document {
       await this.client.Input.dispatchKeyEvent({type: 'char', text: c})
       await this.sleep(this.options.typeInterval)
     }
-  }
-
-  async insert (expr, value) {
-    expr = escapeSingleQuote(expr)
-    await this.evaluate('document.querySelector(\'' + expr + '\').focus()')
-    await this.evaluate('document.querySelector(\'' + expr + '\').value = "' + escapeHtml(value) + '"')
   }
 
   async mouseMoved (x, y, options = {}) {
@@ -385,26 +321,6 @@ class Chromy extends Document {
     const time = Date.now() / 1000
     const opts = Object.assign({x: x, y: y, timestamp: time, button: 'left', tapCount: 2}, options)
     await this.client.Input.synthesizeTapGesture(opts)
-  }
-
-  async check (selector) {
-    await this.evaluate('document.querySelectorAll(\'' + escapeSingleQuote(selector) + '\').forEach(n => n.checked = true)')
-  }
-
-  async uncheck (selector) {
-    await this.evaluate('document.querySelectorAll(\'' + escapeSingleQuote(selector) + '\').forEach(n => n.checked = false)')
-  }
-
-  async select (selector, value) {
-    let sel = escapeSingleQuote(selector)
-    const src = `
-      document.querySelectorAll('${sel} > option').forEach(n => {
-        if (n.value === "${value}") {
-          n.selected = true
-        }
-      })
-      `
-    await this.evaluate(src)
   }
 
   async setFile (selector, files) {
@@ -695,59 +611,6 @@ class Chromy extends Document {
       origin = await this.evaluate(_ => { return location.origin })
     }
     return await this.client.Storage.clearDataForOrigin({origin: origin, storageTypes: type})
-  }
-
-  async scroll (x, y) {
-    return this._evaluateWithReplaces(function () {
-      const dx = _1  // eslint-disable-line no-undef
-      const dy = _2  // eslint-disable-line no-undef
-      window.scrollTo(window.pageXOffset + dx, window.pageYOffset + dy)
-    }, {}, {'_1': x, '_2': y})
-  }
-
-  async scrollTo (x, y) {
-    return this._evaluateWithReplaces(function () {
-      window.scrollTo(_1, _2) // eslint-disable-line no-undef
-    }, {}, {'_1': x, '_2': y})
-  }
-
-
-  async getBoundingClientRect (selector) {
-    const rect = await this._evaluateWithReplaces(function () {
-      let dom = document.querySelector('?')
-      if (!dom) {
-        return null
-      }
-      let r = dom.getBoundingClientRect()
-      return {top: r.top, left: r.left, width: r.width, height: r.height}
-    }, {}, {'?': escapeSingleQuote(selector)})
-    if (!rect) {
-      return null
-    }
-    return {
-      top: Math.floor(rect.top),
-      left: Math.floor(rect.left),
-      width: Math.floor(rect.width),
-      height: Math.floor(rect.height)
-    }
-  }
-
-  async getBoundingClientRectAll (selector) {
-    const rects = await this._evaluateWithReplaces(function () {
-      let doms = document.querySelectorAll('?')
-      return Array.prototype.map.call(doms, dom => {
-        let r = dom.getBoundingClientRect()
-        return {top: r.top, left: r.left, width: r.width, height: r.height}
-      })
-    }, {}, {'?': escapeSingleQuote(selector)})
-    return rects.map(rect => {
-      return {
-        top: Math.floor(rect.top),
-        left: Math.floor(rect.left),
-        width: Math.floor(rect.width),
-        height: Math.floor(rect.height)
-      }
-    })
   }
 
   async _checkStart (startingUrl = null) {
