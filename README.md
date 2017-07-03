@@ -90,9 +90,9 @@ chromy.chain()
 
  - port(default: 9222): --remote-debugging-port  
  - launchBrowser(default: true): If you want chromy to attach to Chrome that is already launched, set to true.
- - visible(default: false): If set to true, chrome is launched in visible mode. This option is not used if launchChrome is false.
- - chromePath(default: null): This option is used to find out an executable of Chrome. If set to null, executable is selected automatically. This option is not used if launchChrome is false.
- - chromeFlags(default: []): These flags is passed to Chrome. Each flag must have a prefix string "--". This option is not used if launchChrome is false.
+ - visible(default: false): If set to true, chrome is launched in visible mode. This option is not used if launchBrowser is false.
+ - chromePath(default: null): This option is used to find out an executable of Chrome. If set to null, executable is selected automatically. This option is not used if launchBrowser is false.
+ - chromeFlags(default: []): These flags is passed to Chrome. Each flag must have a prefix string "--". This option is not used if launchBrowser is false.
  - waitTimeout(default: 30000): If wait() doesn't finish in the specified time WaitTimeoutError will be throwed.
  - gotoTimeout(default: 30000): If goto() doesn't finish in the specified time GotoTimeoutError will be throwed.
  - evaluateTimeout(default: 30000): If evaluate() doesn't finish in the specified time EvaluateTimeError will be throwed.
