@@ -267,7 +267,11 @@ Limitation:
 ###### Parameter
 
  - selectors: An array of selector
- - callback: function(error, buffer, index, selectors)
+ - callback: function(error, image, index, selectors, subIndex)
+   - error: error information.
+   - image: image data
+   - index: index of selectors.
+   - subIndex: this value is used only if useQuerySelecotrAll is true.
  - options:  
    - model: see explanation of screenDocument() 
    - format: see explanation of screenDocument() 
