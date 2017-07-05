@@ -160,6 +160,14 @@ chromy.chain()
 
 ##### .end()
 
+##### exists(selector)
+
+Returns whether an node matched with the selector is exists.
+
+##### visible(selector)
+
+Returns whether an node matched with the selector is exists and visible.
+
 ##### .wait(msec)
 
 alias for .sleep(msec)

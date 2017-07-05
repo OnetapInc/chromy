@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,user-scalable=no,maximum-scale=1" />
+    <style type="text/css">
+      #fixed_div {
+        display: inline-block;
+        position: fixed;
+        width: 10px;
+        height: 10px;
+      }
+      #invisible_div {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Index Page</h1>
+    <div id="normal_div">
+      ABC
+    </div>
+    <div id="fixed_div">
+      ABC
+    </div>
+    <div id="invisible_div">
+      ABC
+      <div id="invisible_div_child">
+        DEF
+      </div>
+    </div>
+  </body>
+</html>

@@ -205,6 +205,23 @@ class Document {
     await this.client.Runtime.callFunctionOn(params)
   }
 
+  async exists (selector) {
+    return this._evaluateWithReplaces(
+      _ => { return document.body.querySelector('?') !== null },
+      {}, {'?': escapeSingleQuote(selector)}
+    )
+  }
+
+  async visible (selector) {
+    return this._evaluateWithReplaces(
+      _ => {
+        let dom = document.body.querySelector('?')
+        return dom !== null && dom.offsetWidth > 0 && dom.offsetHeight > 0
+      },
+      {}, {'?': escapeSingleQuote(selector)}
+    )
+  }
+
   async wait (cond) {
     if ((typeof cond) === 'number') {
       await this.sleep(cond)
