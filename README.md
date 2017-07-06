@@ -88,6 +88,7 @@ chromy.chain()
 
 ###### options  
 
+ - host(default: localhost): host address
  - port(default: 9222): --remote-debugging-port  
  - launchBrowser(default: true): If you want chromy to attach to Chrome that is already launched, set to true.
  - visible(default: false): If set to true, chrome is launched in visible mode. This option is not used if launchBrowser is false.

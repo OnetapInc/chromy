@@ -41,6 +41,7 @@ class Chromy extends Document {
   constructor (options = {}) {
     super(null, null, null)
     const defaults = {
+      host: 'localhost',
       port: 9222,
       launchBrowser: true,
       chromeFlags: [],
@@ -56,6 +57,7 @@ class Chromy extends Document {
     }
     this.options = Object.assign({}, defaults, options)
     this.cdpOptions = {
+      host: this.options.host,
       port: this.options.port,
       target: this.options.target
     }
