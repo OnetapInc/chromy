@@ -454,7 +454,7 @@ class Chromy extends Document {
           }
           if (rects.length === 0) {
             const err = {reason: 'notfound', message: `selector is not found. selector=${selector}`}
-            callback.apply(this, [err, null, selIdx, selectors])
+            await callback.apply(this, [err, null, selIdx, selectors])
             continue
           }
           for (let rectIdx = 0; rectIdx < rects.length; rectIdx++) {
@@ -465,7 +465,7 @@ class Chromy extends Document {
                 reason: 'limitation',
                 message: `top of selector is over the limitation of height. selector=${selector}`
               }
-              callback.apply(this, [err, null, selIdx, selectors])
+              await callback.apply(this, [err, null, selIdx, selectors])
               continue
             }
             if (meta.width < rect.left + rect.width) {
@@ -476,10 +476,10 @@ class Chromy extends Document {
             }
 
             const buffer = await sharp(fullscreenBuffer).extract(rect).toBuffer()
-            callback.apply(this, [null, buffer, selIdx, selectors, rectIdx])
+            await callback.apply(this, [null, buffer, selIdx, selectors, rectIdx])
           }
         } catch (e) {
-          callback.apply(this, [e, null, selIdx, selectors])
+          await callback.apply(this, [e, null, selIdx, selectors])
         }
       }
     } finally {

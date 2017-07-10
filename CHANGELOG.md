@@ -1,6 +1,7 @@
-## 0.3.3 - 2017-07-XX
+## 0.3.3 - 2017-07-11
 ### Change
  - Add host option
+ - Improve screenshotMultipleSelector(). (A promise that is returned from callback is resolved by screenshotMultipleSelecotr().)
 
 ## 0.3.2 - 2017-07-05
 ### Change
