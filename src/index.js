@@ -612,12 +612,43 @@ class Chromy extends Document {
 
   async setCookie (params) {
     await this._checkStart()
-    await this.client.Network.setCookie(params)
+    let paramArray = null
+    if (Array.isArray(params)) {
+      paramArray = params
+    } else {
+      paramArray = [params]
+    }
+    const currentUrl = await this.evaluate(_ => {return location.href})
+    paramArray = paramArray.map(obj => {
+      if (obj.url) {
+        return obj
+      } else {
+        obj.url = currentUrl
+        return obj
+      }
+    })
+    for (let i in paramArray) {
+      const item = paramArray[i]
+      await this.client.Network.setCookie(item)
+    }
   }
 
-  async deleteCookie (name, url) {
+  async deleteCookie (name, url = null) {
     await this._checkStart()
-    await this.client.Network.deleteCookie({cookieName: name, url: url})
+    let nameArray = null
+    if (Array.isArray(name)) {
+      nameArray = name
+    } else {
+      nameArray = [name]
+    }
+    let paramUrl = url
+    if (!url) {
+      paramUrl  = await this.evaluate(_ => {return location.href})
+    }
+    for (let i in nameArray) {
+      const n = nameArray[i]
+      await this.client.Network.deleteCookie({cookieName: n, url: paramUrl})
+    }
   }
 
   async clearAllCookies () {

@@ -397,15 +397,21 @@ Removes all browser caches.
 
 ##### setCookie(params)
 
-###### Prameters
+###### Parameters
 
-params: object  
+params: object or array
 
 See [chrome document](https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setCookie)
+If url parameter is not set, current url(location.href) is used as default value.
 
-##### deleteCookie(name, url)
+##### deleteCookie(name, url = null)
 
-Remove a single cookie.
+Remove a cookie.
+
+###### Parameters
+
+name: string or array of string
+url: url associated with cookie. If url is not set, current url(location.href) is used as default value.
 
 ##### clearAllCookies()
 

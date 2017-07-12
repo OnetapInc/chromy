@@ -1,6 +1,8 @@
 ## 0.3.4 - 2017-07-XX
 ### Change
  - Add event handling functions: on(), once(), removeListener(), removeAllListeners()
+ - Supports array format with setCookie() and deleteCookie()
+ - url parameter of setCookie() and deleteCookie() became option. If not set, current url is used as default value.
 
 ## 0.3.3 - 2017-07-11
 ### Change
