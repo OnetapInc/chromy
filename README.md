@@ -245,6 +245,22 @@ chromy.chain()
       .end()
 ```
 
+##### .on(eventName, listener)
+
+Adds the listner function.
+
+##### .once(eventName, listener)
+
+Adds one time listener function.
+
+##### .removeListener(eventName, listener)
+
+Removes the listener function.
+
+##### .removeAllListeners(eventName)
+
+Removes all listener function.
+
 ##### .screenshot(format = 'png', quality = 100, fromSurface = true)
 
 Exports a current screen as an image data. 

@@ -1,3 +1,7 @@
+## 0.3.4 - 2017-07-XX
+### Change
+ - Add event handling functions: on(), once(), removeListener(), removeAllListeners()
+
 ## 0.3.3 - 2017-07-11
 ### Change
  - Add host option

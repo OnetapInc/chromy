@@ -504,9 +504,30 @@ class Chromy extends Document {
     await this.client.Page.stopScreencast()
   }
 
+  // deprecated since 0.3.4
   async requestWillBeSent (callback) {
     await this._checkStart()
-    await this.client.Network.responseReceived(callback)
+    await this.client.Network.requestWillBeSent(callback)
+  }
+
+  async on(event, callback) {
+    await this._checkStart()
+    this.client.on(event, callback)
+  }
+
+  async once(event, callback) {
+    await this._checkStart()
+    this.client.once(event, callback)
+  }
+
+  async removeListener(event, callback) {
+    await this._checkStart()
+    this.client.removeListener(event, callback)
+  }
+
+  async removeAllListeners(event) {
+    await this._checkStart()
+    this.client.removeAllListeners(event)
   }
 
   async inject (type, file) {
