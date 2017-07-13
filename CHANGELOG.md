@@ -1,4 +1,4 @@
-## 0.3.4 - 2017-07-XX
+## 0.3.4 - 2017-07-13
 ### Change
  - Add event handling functions: on(), once(), removeListener(), removeAllListeners()
  - Supports array format with setCookie() and deleteCookie()
