@@ -2,7 +2,8 @@
 ### Change
  - Add event handling functions: on(), once(), removeListener(), removeAllListeners()
  - Supports array format with setCookie() and deleteCookie()
- - url parameter of setCookie() and deleteCookie() became option. If not set, current url is used as default value.
+ - url parameter of setCookie() and deleteCookie() is now optional. If not set, current url is used as default value.
+ - Fix screenshotDocument()/screenshotMultipleSelectors() with chrome ver.61.
 
 ## 0.3.3 - 2017-07-11
 ### Change

@@ -37,6 +37,20 @@ describe('screenshot', function() {
             done(e)
           })
   })
+  it('screenshotDocument', (done) => {
+    const chromy = new Chromy()
+    chromy.chain()
+          .goto(page)
+          .screenshotDocument()
+          .result(img => {
+            assert.ok(img !== null)
+          })
+          .end()
+          .then(_ => done())
+          .catch(e => {
+            done(e)
+          })
+  })
   it('screenshotMultipleSelectors', (done) => {
     const chromy = new Chromy()
     chromy.chain()

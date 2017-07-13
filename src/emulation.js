@@ -38,14 +38,21 @@ class FullscreenEmulationManager {
       height,
       deviceScaleFactor: 0,
       mobile: false,
-      fitWindow: false
+      fitWindow: false,
+    }
+    if (this._chromy._chromeVersion >= 61) {
+      this._deviceMetrics.deviceScaleFactor = info.devicePixelRatio
     }
   }
 
   async emulate () {
     const m = this._deviceMetrics
-    await this._client.Emulation.setVisibleSize({width: m.width, height: m.height})
-    await this._client.Emulation.forceViewport({x: 0, y: 0, scale: 1})
+    if (this._chromy._chromeVersion < 61) {
+      await this._client.Emulation.setVisibleSize({width: m.width, height: m.height})
+      await this._client.Emulation.forceViewport({x: 0, y: 0, scale: 1})
+    } else {
+      await this._client.Emulation.resetPageScaleFactor()
+    }
     await this._client.Emulation.setDeviceMetricsOverride(m)
     await this._chromy.scrollTo(0, 0)
     await this._chromy.sleep(200)
@@ -53,9 +60,13 @@ class FullscreenEmulationManager {
 
   async reset () {
     const info = this.browserInfo
-    await this._client.Emulation.resetViewport()
-    await this._client.Emulation.clearDeviceMetricsOverride()
-    await this._client.Emulation.setVisibleSize({width: info.viewportWidth, height: info.viewportHeight})
+    if (this._chromy._chromeVersion < 61) {
+      await this._client.Emulation.resetViewport()
+      await this._client.Emulation.clearDeviceMetricsOverride()
+      await this._client.Emulation.setVisibleSize({width: info.viewportWidth, height: info.viewportHeight})
+    } else {
+      await this._client.Emulation.clearDeviceMetricsOverride()
+    }
   }
 }
 

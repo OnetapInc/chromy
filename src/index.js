@@ -94,6 +94,8 @@ class Chromy extends Document {
           const {DOM, Network, Page, Runtime, Console} = client
           await Promise.all([DOM.enable(), Network.enable(), Page.enable(), Runtime.enable(), Console.enable()])
 
+          await this._cacheChromeVersion()
+
           // activate first tab
           if (this.options.activateOnStartUp) {
             let targetId = await this._getTargetIdFromOption()
@@ -671,6 +673,17 @@ class Chromy extends Document {
     if (this.client === null) {
       await this.start(startingUrl)
     }
+  }
+
+  async _cacheChromeVersion () {
+    this._chromeVersion = await this._getChromeVersion()
+  }
+
+  async _getChromeVersion () {
+    return this.evaluate(_ => {
+      let v = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
+      return v ? parseInt(v[2], 10) : false;
+    })
   }
 }
 
