@@ -75,8 +75,7 @@ class Chromy extends Document {
       cusDevices = [cusDevices]
     }
     cusDevices.forEach(item => {
-      const deviceName = Object.keys(item)[0]
-      devices[deviceName] = item[deviceName]
+      devices[item.name] = item
     })
   }
 
