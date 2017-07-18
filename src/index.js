@@ -70,6 +70,16 @@ class Chromy extends Document {
     this.instanceId = instanceId++
   }
 
+  static addCustomDevice (cusDevices = []) {
+    if (!Array.isArray(cusDevices)) {
+      cusDevices = [cusDevices]
+    }
+    cusDevices.forEach(item => {
+      const deviceName = Object.keys(item)[0]
+      devices[deviceName] = item[deviceName]
+    })
+  }
+
   async start (startingUrl = null) {
     if (startingUrl === null) {
       startingUrl = 'about:blank'
