@@ -360,14 +360,25 @@ class Chromy extends Document {
   }
 
   async screenshot (format = 'png', quality = undefined, fromSurface = true) {
-    if (['png', 'jpeg'].indexOf(format) === -1) {
+    let opts = {
+      format: 'png',
+      fromSurface: true
+    }
+    if ((typeof format) === 'string') {
+      // deprecated arguments style
+      const params = {
+        format: format,
+        quality: quality,
+        fromSurface: fromSurface
+      }
+      opts = Object.assign({}, opts, params)
+    } else if((typeof format) === 'object') {
+      opts = Object.assign({}, opts, format)
+    }
+    if (['png', 'jpeg'].indexOf(opts.format) === -1) {
       throw new Error('format is invalid.')
     }
-    const {data} = await this.client.Page.captureScreenshot({
-      format: format,
-      quality: quality,
-      fromSurface: fromSurface
-    })
+    const {data} = await this.client.Page.captureScreenshot(opts)
     return Buffer.from(data, 'base64')
   }
 
@@ -378,12 +389,30 @@ class Chromy extends Document {
    * https://stackoverflow.com/questions/44599858/max-height-of-16-384px-for-headless-chrome-screenshots
    */
   async screenshotDocument (model = 'scroll', format = 'png', quality = undefined, fromSurface = true) {
-    const emulation = await createFullscreenEmulationManager(this, model)
+    let opts = {
+      model: 'scroll',
+      format: 'png',
+      fromSurface: true
+    }
+    if ((typeof model) === 'string') {
+      const params = {
+        model: model,
+        format: format,
+        quality: quality,
+        fromSurface: fromSurface
+      }
+      opts = Object.assign({}, opts, params)
+    } else if ((typeof model) === 'object') {
+      opts = Object.assign({}, opts, model)
+    }
+    const emulation = await createFullscreenEmulationManager(this, opts.model)
 
     let result = null
     try {
       await emulation.emulate()
-      result = await this.screenshot(format, quality, fromSurface)
+      const screenshotParams = Object.assign({}, opts)
+      delete screenshotParams.model
+      result = await this.screenshot(screenshotParams)
       const info = emulation.browserInfo
       if (info.devicePixelRatio !== 1) {
         let s = sharp(result)
@@ -403,6 +432,20 @@ class Chromy extends Document {
   }
 
   async screenshotSelector (selector, format = 'png', quality = undefined, fromSurface = true) {
+    let opts = {
+      format: 'png',
+      fromSurface: true
+    }
+    if ((typeof format) === 'string') {
+      const params = {
+        format: format,
+        quality: quality,
+        fromSurface: fromSurface
+      }
+      opts = Object.assign({}, opts, params)
+    } else if ((typeof format) === 'object') {
+      opts = Object.assign({}, opts, format)
+    }
     const rect = await this.getBoundingClientRect(selector)
     if (!rect) {
       return null
@@ -416,7 +459,7 @@ class Chromy extends Document {
 
     // capture screenshot and crop it.
     const actualRect = await this.getBoundingClientRect(selector)
-    if (!actualRect || actualRect.width === 0) {
+    if (!actualRect || actualRect.width === 0 || actualRect.height === 0) {
       return null
     }
     const clipRect = {
@@ -425,7 +468,7 @@ class Chromy extends Document {
       width: Math.floor(actualRect.width * pixelRatio),
       height: Math.floor(actualRect.height * pixelRatio)
     }
-    const buffer = await this.screenshot(format, quality, fromSurface)
+    const buffer = await this.screenshot(opts)
     const meta = await sharp(buffer).metadata()
     if (meta.width < clipRect.left + clipRect.width) {
       clipRect.width = meta.width - clipRect.left
@@ -445,7 +488,9 @@ class Chromy extends Document {
       useQuerySelectorAll: false
     }
     const opts = Object.assign({}, defaults, options)
-    const fullscreenBuffer = await this.screenshotDocument(opts.model, opts.format, opts.quality, opts.fromSurface)
+    const screenshotDocumentParams = Object.assign({}, opts)
+    delete screenshotDocumentParams.useQuerySelectorAll
+    const fullscreenBuffer = await this.screenshotDocument(screenshotDocumentParams)
     const meta = await sharp(fullscreenBuffer).metadata()
     const emulation = await createFullscreenEmulationManager(this, 'scroll')
     await emulation.emulate()

@@ -262,17 +262,21 @@ Removes the listener function.
 
 Removes all listener function.
 
-##### .screenshot(format = 'png', quality = 100, fromSurface = true)
+##### .screenshot(options= {})
 
 Exports a current screen as an image data. 
-`format` must be eather 'png' or 'jpeg'.
 
 See examples: [examples/screenshot.js](examples/screenshot.js)
 
-##### .screenshotSelector(selector, format = 'png', quality = 100, fromSurface = true)
+###### options
+
+ - format(default: 'png'): must be eather 'png' or 'jpeg'
+ - quality(default: 100): quolity of image.
+ - fromSurface(default: true): if set to true, take screenshot from surface.
+
+##### .screenshotSelector(selector, options={})
 
 Exports an area of selector you specified as an image data. 
-`format` must be eather 'png' or 'jpeg'.
 
 See examples: [examples/screenshot.js](examples/screenshot.js)
 
@@ -280,6 +284,10 @@ Note:
 
  - The size of target specified by selector must be smaller than viewport size. If not, image gets cropped.
  - It has a side-effect. After this api is called, scroll position is moved to target position.
+
+###### options
+
+See screenshot()
 
 ##### .screenshotMultipleSelectors(selectors, callback, options = {})
 
@@ -300,17 +308,14 @@ Limitation:
    - subIndex: this value is used only if useQuerySelecotrAll is true.
  - options:  
    - model: see explanation of screenDocument() 
-   - format: see explanation of screenDocument() 
-   - quality: see explanation of screenDocument() 
-   - fromSurface: see explanation of screenDocument() 
+   - format: see explanation of screenshot() 
+   - quality: see explanation of screenshot() 
+   - fromSurface: see explanation of screenshot() 
    - useQuerySelectorAll(default:false): If set to true, take all the screenshot of elements returned from document.querySelectorAll() (Since v 0.2.13)
 
-##### .screenshotDocument(model = 'scroll', format = 'png', quality = 100, fromSurface = true)
-
-(Experimental)
+##### .screenshotDocument(options = {})
 
 Exports a entire document as an image data. 
-`format` must be eather 'png' or 'jpeg'.
 
 See examples: [examples/screenshot.js](examples/screenshot.js)
 
@@ -322,9 +327,12 @@ Known Issue:
 
  - When this api is called to take large page sometimes strange white area is appeared. This result is caused by --disable-flag option passed to Chrome. After chrome 60 is officialy released I remove --disable-flag option to fix this problem.
 
-###### Parameters
+###### options
 
  - model: this parameter affect page size. must be which one of: 'box', 'scroll'. 'box' means box model of body element. 'scroll' means size of scroll area.
+ - format: see explanation of screenshot()
+ - quality: see explanation of screenshot()
+ - fromSurface: see explanation of screenshot()
 
 ##### .pdf(options={})
 
