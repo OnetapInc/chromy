@@ -325,12 +325,16 @@ Known Issue:
 
  - model: this parameter affect page size. must be which one of: 'box', 'scroll'. 'box' means box model of body element. 'scroll' means size of scroll area.
 
-##### .pdf()
+##### .pdf(options={})
 
 Exports a current page's printing image as a PDF data.
 This function is supported only in headless mode (since Chrome60).
 
 See examples: [examples/screenshot.js](examples/screenshot.js)
+
+###### Parameters
+
+ - options: See [devtools porotocol](https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF)
 
 ##### .startScreencast(callback, options = {})
 
