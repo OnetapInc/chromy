@@ -273,6 +273,7 @@ See examples: [examples/screenshot.js](examples/screenshot.js)
  - format(default: 'png'): must be eather 'png' or 'jpeg'
  - quality(default: 100): quolity of image.
  - fromSurface(default: true): if set to true, take screenshot from surface.
+ - useDeviceResolution(default: false): if set to true, the image will have same resolution with device.
 
 ##### .screenshotSelector(selector, options={})
 

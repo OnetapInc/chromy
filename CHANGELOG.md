@@ -1,3 +1,7 @@
+## 0.3.6 - 2017-07-21
+ - Add useDeviceResolution option to screenshot functions.
+ - Change interface of screenshot series.
+
 ## 0.3.5 - 2017-07-20
 ### Change
  - Add Chromy.addCustomDevice()

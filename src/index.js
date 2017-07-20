@@ -362,7 +362,8 @@ class Chromy extends Document {
   async screenshot (format = 'png', quality = undefined, fromSurface = true) {
     let opts = {
       format: 'png',
-      fromSurface: true
+      fromSurface: true,
+      useDeviceResolution: false
     }
     if ((typeof format) === 'string') {
       // deprecated arguments style
@@ -378,8 +379,18 @@ class Chromy extends Document {
     if (['png', 'jpeg'].indexOf(opts.format) === -1) {
       throw new Error('format is invalid.')
     }
-    const {data} = await this.client.Page.captureScreenshot(opts)
-    return Buffer.from(data, 'base64')
+    const captureParams = Object.assign({}, opts)
+    delete captureParams.useDeviceResolution
+    const {data} = await this.client.Page.captureScreenshot(captureParams)
+    let image = Buffer.from(data, 'base64')
+    if (opts.useDeviceResolution) {
+      return image
+    } else {
+      const pixelRatio = await this.evaluate(function () {
+        return window.devicePixelRatio
+      })
+      return this._resizeToBrowserResolution(pixelRatio, image)
+    }
   }
 
   /*
@@ -392,7 +403,8 @@ class Chromy extends Document {
     let opts = {
       model: 'scroll',
       format: 'png',
-      fromSurface: true
+      fromSurface: true,
+      useDeviceResolution: false
     }
     if ((typeof model) === 'string') {
       const params = {
@@ -414,13 +426,6 @@ class Chromy extends Document {
       delete screenshotParams.model
       result = await this.screenshot(screenshotParams)
       const info = emulation.browserInfo
-      if (info.devicePixelRatio !== 1) {
-        let s = sharp(result)
-        let m1 = await s.metadata()
-        const newWidth = parseInt(m1.width / info.devicePixelRatio)
-        const newHeight = parseInt(m1.height / info.devicePixelRatio)
-        result = await s.resize(newWidth, newHeight).toBuffer()
-      }
     } finally {
       await emulation.reset()
       // restore emulation mode
@@ -431,10 +436,23 @@ class Chromy extends Document {
     return result
   }
 
+  async _resizeToBrowserResolution (devicePixelRatio, image) {
+      if (devicePixelRatio === 1) {
+        return image
+      } else {
+        let s = sharp(image)
+        let m = await s.metadata()
+        const newWidth = parseInt(m.width / devicePixelRatio)
+        const newHeight = parseInt(m.height / devicePixelRatio)
+        return await s.resize(newWidth, newHeight).toBuffer()
+      }
+  }
+
   async screenshotSelector (selector, format = 'png', quality = undefined, fromSurface = true) {
     let opts = {
       format: 'png',
-      fromSurface: true
+      fromSurface: true,
+      useDeviceResolution: false
     }
     if ((typeof format) === 'string') {
       const params = {
@@ -462,11 +480,14 @@ class Chromy extends Document {
     if (!actualRect || actualRect.width === 0 || actualRect.height === 0) {
       return null
     }
-    const clipRect = {
-      top: Math.floor(actualRect.top * pixelRatio),
-      left: Math.floor(actualRect.left * pixelRatio),
-      width: Math.floor(actualRect.width * pixelRatio),
-      height: Math.floor(actualRect.height * pixelRatio)
+    let clipRect = actualRect
+    if (opts.useDeviceResolution) {
+      clipRect = {
+        top: Math.floor(actualRect.top * pixelRatio),
+        left: Math.floor(actualRect.left * pixelRatio),
+        width: Math.floor(actualRect.width * pixelRatio),
+        height: Math.floor(actualRect.height * pixelRatio)
+      }
     }
     const buffer = await this.screenshot(opts)
     const meta = await sharp(buffer).metadata()
@@ -485,6 +506,7 @@ class Chromy extends Document {
       format: 'png',
       quality: undefined,
       fromSurface: true,
+      useDeviceResolution: false,
       useQuerySelectorAll: false
     }
     const opts = Object.assign({}, defaults, options)
@@ -502,10 +524,10 @@ class Chromy extends Document {
           if (opts.useQuerySelectorAll) {
             rects = await this.getBoundingClientRectAll(selector)
             // remove elements that has 'display: none'
-            rects = rects.filter(rect => rect.width !== 0)
+            rects = rects.filter(rect => rect.width !== 0 && rect.height !== 0)
           } else {
             const r = await this.getBoundingClientRect(selector)
-            if (r && r.width !== 0) {
+            if (r && r.width !== 0 && r.height !== 0) {
               rects = [r]
             }
           }
@@ -513,6 +535,17 @@ class Chromy extends Document {
             const err = {reason: 'notfound', message: `selector is not found. selector=${selector}`}
             await callback.apply(this, [err, null, selIdx, selectors])
             continue
+          }
+          if (opts.useDeviceResolution) {
+            const pixelRatio = await this.evaluate(function () {
+              return window.devicePixelRatio
+            })
+            rects = rects.map(r => { return {
+              top: Math.floor(r.top * pixelRatio),
+              left: Math.floor(r.left * pixelRatio),
+              width: Math.floor(r.width * pixelRatio),
+              height: Math.floor(r.height * pixelRatio),
+            }})
           }
           for (let rectIdx = 0; rectIdx < rects.length; rectIdx++) {
             const rect = rects[rectIdx]
