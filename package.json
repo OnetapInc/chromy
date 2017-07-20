@@ -1,6 +1,6 @@
 {
   "name": "chromy",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "The library for manipulating headless chrome with Nightmare.js like API.",
   "main": "dist/index.js",
   "directories": {
