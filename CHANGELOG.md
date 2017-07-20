@@ -1,3 +1,8 @@
+## 0.3.5 - 2017-07-20
+### Change
+ - Add Chromy.addCustomDevice()
+ - Add userDataDir option.
+
 ## 0.3.4 - 2017-07-13
 ### Change
  - Add event handling functions: on(), once(), removeListener(), removeAllListeners()

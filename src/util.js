@@ -65,6 +65,9 @@ function createChromeLauncher (startingUrl, options) {
   if (options.chromePath) {
     params.chromePath = options.chromePath
   }
+  if (options.userDataDir) {
+    params.userDataDir = options.userDataDir
+  }
   return new Launcher(params)
 }
 

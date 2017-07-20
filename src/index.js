@@ -44,6 +44,7 @@ class Chromy extends Document {
       host: 'localhost',
       port: 9222,
       launchBrowser: true,
+      userDataDir: null,
       chromeFlags: [],
       chromePath: null,
       activateOnStartUp: true,
