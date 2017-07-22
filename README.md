@@ -2,11 +2,11 @@
 
 Chromy is a library for operating headless chrome.
 
-Chromy is similar to Nightmare.js but has some differnces:
+Chromy is similar to Nightmare.js but has some differences:
 
  - Controlling Chrome via Chrome DevTools Protocol.
  - Supports mobile emulation.
- - No need to prepare a screen such as xvfb. 
+ - No need to prepare a screen such as xvfb.
 
 ## Requirements
 
@@ -95,9 +95,9 @@ chromy.chain()
  - visible(default: false): If set to true, chrome is launched in visible mode. This option is not used if launchBrowser is false.
  - chromePath(default: null): This option is used to find out an executable of Chrome. If set to null, executable is selected automatically. This option is not used if launchBrowser is false.
  - chromeFlags(default: []): These flags is passed to Chrome. Each flag must have a prefix string "--". This option is not used if launchBrowser is false.
- - waitTimeout(default: 30000): If wait() doesn't finish in the specified time WaitTimeoutError will be throwed.
- - gotoTimeout(default: 30000): If goto() doesn't finish in the specified time GotoTimeoutError will be throwed.
- - evaluateTimeout(default: 30000): If evaluate() doesn't finish in the specified time EvaluateTimeError will be throwed.
+ - waitTimeout(default: 30000): If wait() doesn't finish in the specified time WaitTimeoutError will be threw.
+ - gotoTimeout(default: 30000): If goto() doesn't finish in the specified time GotoTimeoutError will be threw.
+ - evaluateTimeout(default: 30000): If evaluate() doesn't finish in the specified time EvaluateTimeError will be threw.
  - waitFunctionPollingInterval(default: 100): polling interval for wait().
  - typeInterval(default: 20): This option is used only in type() method.
  - activateOnStartUp(default: true): activate a first tab on startup. this option is enable only in visible mode.
@@ -109,7 +109,7 @@ Launches Chrome browser.
 
 ###### options
 
-startingUrl: a staring url. If you set to null 'abount:blank' is used as a starting url.
+startingUrl: a staring url. If you set to null 'about:blank' is used as a starting url.
 
 ##### .goto(url, options = {})
 
@@ -200,14 +200,14 @@ wait for milli seconds you specified.
 
 Sets the files to a file field that matches the selector.
 
- - selector: selector for specifing the file field.
- - files: The array or string value that representate a local file path.
+ - selector: selector for specifying the file field.
+ - files: The array or string value that represents a local file path.
 
 ##### .click(selector, options)
 
 ###### options
 
-waitLoadEvent(Default:false): If set to true, wait until load event is fired after click event is fired.
+waitLoadEvent(default: false): If set to true, wait until load event is fired after click event is fired.
 
 ##### .mouseMoved(x, y, options = {})
 
@@ -223,12 +223,12 @@ Dispatch mouseup event.
 
 ##### .tap(x, y, options = {})
 
-Synthesize tap by dispatching touche events.
+Synthesize tap by dispatching touch events.
 (NOTE: To dispatch touch events you need to enable a mobile emulation before.)
 
 ##### .doubleTap(x, y, options = {})
 
-Synthesize double tap by dispatching touche events.
+Synthesize double tap by dispatching touch events.
 (NOTE: To dispatch touch events you need to enable a mobile emulation before.)
 
 ##### .defineFunction(func)
@@ -248,7 +248,7 @@ chromy.chain()
 
 ##### .on(eventName, listener)
 
-Adds the listner function.
+Adds the listener function.
 
 ##### .once(eventName, listener)
 
@@ -264,20 +264,20 @@ Removes all listener function.
 
 ##### .screenshot(options= {})
 
-Exports a current screen as an image data. 
+Exports a current screen as an image data.
 
 See examples: [examples/screenshot.js](examples/screenshot.js)
 
 ###### options
 
- - format(default: 'png'): must be eather 'png' or 'jpeg'
- - quality(default: 100): quolity of image.
+ - format(default: 'png'): must be either 'png' or 'jpeg'
+ - quality(default: 100): quality of image.
  - fromSurface(default: true): if set to true, take screenshot from surface.
  - useDeviceResolution(default: false): if set to true, the image will have same resolution with device.
 
 ##### .screenshotSelector(selector, options={})
 
-Exports an area of selector you specified as an image data. 
+Exports an area of selector you specified as an image data.
 
 See examples: [examples/screenshot.js](examples/screenshot.js)
 
@@ -308,15 +308,15 @@ Limitation:
    - index: index of selectors.
    - subIndex: this value is used only if useQuerySelecotrAll is true.
  - options:  
-   - model: see explanation of screenDocument() 
-   - format: see explanation of screenshot() 
-   - quality: see explanation of screenshot() 
-   - fromSurface: see explanation of screenshot() 
-   - useQuerySelectorAll(default:false): If set to true, take all the screenshot of elements returned from document.querySelectorAll() (Since v 0.2.13)
+   - model: see explanation of screenDocument()
+   - format: see explanation of screenshot()
+   - quality: see explanation of screenshot()
+   - fromSurface: see explanation of screenshot()
+   - useQuerySelectorAll(default: false): If set to true, take all the screenshot of elements returned from document.querySelectorAll() (Since v 0.2.13)
 
 ##### .screenshotDocument(options = {})
 
-Exports a entire document as an image data. 
+Exports a entire document as an image data.
 
 See examples: [examples/screenshot.js](examples/screenshot.js)
 
@@ -326,7 +326,7 @@ Limitation:
 
 Known Issue:
 
- - When this api is called to take large page sometimes strange white area is appeared. This result is caused by --disable-flag option passed to Chrome. After chrome 60 is officialy released I remove --disable-flag option to fix this problem.
+ - When this api is called to take large page sometimes strange white area is appeared. This result is caused by --disable-flag option passed to Chrome. After chrome 60 is officially released I remove --disable-flag option to fix this problem.
 
 ###### options
 
@@ -344,7 +344,7 @@ See examples: [examples/screenshot.js](examples/screenshot.js)
 
 ###### Parameters
 
- - options: See [devtools porotocol](https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF)
+ - options: See [devtools protocol](https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF)
 
 ##### .startScreencast(callback, options = {})
 
@@ -382,7 +382,7 @@ receive a message from browser.
 You can communicate with a browser by using receiveMessage() and sendToChromy().
 sendToChromy() is a special function to communicate with Chromy.
 When you call receiveMessage() at the first time, sendToChromy() is defined in a browser automatically.
-A listner function passed to receiveMessage() receives parameters when sendToChromy() is executed in a browser.
+A listener function passed to receiveMessage() receives parameters when sendToChromy() is executed in a browser.
 
 
 ```js
@@ -433,7 +433,7 @@ Removes all browser cookies.
 
 ##### clearDataForOrigin (origin = null, type = 'all')
 
-Clear data for origin.(cookies, local_storage, indexeddb, etc...)
+Clear data for origin.(cookies, local_storage, indexedDb, etc...)
 
 See details [here](https://chromedevtools.github.io/devtools-protocol/tot/Storage/#method-clearDataForOrigin).
 
@@ -457,4 +457,3 @@ process.on('SIGINT', async () => {
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/OnetapInc/chromy
-
