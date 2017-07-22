@@ -1,9 +1,7 @@
 const chainProxy = require('async-chain-proxy')
-const uuidV4 = require('uuid/v4')
 
 const {
   TimeoutError,
-  GotoTimeoutError,
   WaitTimeoutError,
   EvaluateTimeoutError,
   EvaluateError
@@ -15,8 +13,6 @@ const {
 const {
   escapeHtml,
   escapeSingleQuote,
-  createChromeLauncher,
-  completeUrl
 } = require('./util')
 
 class Document {
@@ -45,7 +41,6 @@ class Document {
     let doc = null
     try {
       await this.scrollTo(0, rect.top)
-      const newRect = await this.getBoundingClientRect(selector)
       const locationParams = {x: rect.left + 10, y: rect.top + 10}
       const {nodeId: iframeNodeId} = await this.client.DOM.getNodeForLocation(locationParams)
       if (!iframeNodeId) {

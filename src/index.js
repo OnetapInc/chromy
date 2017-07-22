@@ -10,14 +10,9 @@ const Document = require('./document')
 
 const {
   TimeoutError,
-  GotoTimeoutError,
-  WaitTimeoutError,
-  EvaluateTimeoutError,
-  EvaluateError
+  GotoTimeoutError
 } = require('./error')
 const {
-  escapeHtml,
-  escapeSingleQuote,
   createChromeLauncher,
   completeUrl
 } = require('./util')
@@ -91,7 +86,7 @@ class Chromy extends Document {
       if (this.launcher === null) {
         this.launcher = createChromeLauncher(completeUrl(startingUrl), this.options)
       }
-      const res = await this.launcher.launch()
+      await this.launcher.launch()
       if (!this.launcher.pid) {
         throw new Error('Failed to launch a browser.')
       }
@@ -373,7 +368,7 @@ class Chromy extends Document {
         fromSurface: fromSurface
       }
       opts = Object.assign({}, opts, params)
-    } else if((typeof format) === 'object') {
+    } else if ((typeof format) === 'object') {
       opts = Object.assign({}, opts, format)
     }
     if (['png', 'jpeg'].indexOf(opts.format) === -1) {
@@ -425,7 +420,6 @@ class Chromy extends Document {
       const screenshotParams = Object.assign({}, opts)
       delete screenshotParams.model
       result = await this.screenshot(screenshotParams)
-      const info = emulation.browserInfo
     } finally {
       await emulation.reset()
       // restore emulation mode
@@ -437,15 +431,15 @@ class Chromy extends Document {
   }
 
   async _resizeToBrowserResolution (devicePixelRatio, image) {
-      if (devicePixelRatio === 1) {
-        return image
-      } else {
-        let s = sharp(image)
-        let m = await s.metadata()
-        const newWidth = parseInt(m.width / devicePixelRatio)
-        const newHeight = parseInt(m.height / devicePixelRatio)
-        return await s.resize(newWidth, newHeight).toBuffer()
-      }
+    if (devicePixelRatio === 1) {
+      return image
+    } else {
+      let s = sharp(image)
+      let m = await s.metadata()
+      const newWidth = parseInt(m.width / devicePixelRatio)
+      const newHeight = parseInt(m.height / devicePixelRatio)
+      return await s.resize(newWidth, newHeight).toBuffer()
+    }
   }
 
   async screenshotSelector (selector, format = 'png', quality = undefined, fromSurface = true) {
@@ -540,12 +534,14 @@ class Chromy extends Document {
             const pixelRatio = await this.evaluate(function () {
               return window.devicePixelRatio
             })
-            rects = rects.map(r => { return {
-              top: Math.floor(r.top * pixelRatio),
-              left: Math.floor(r.left * pixelRatio),
-              width: Math.floor(r.width * pixelRatio),
-              height: Math.floor(r.height * pixelRatio),
-            }})
+            rects = rects.map(r => {
+              return {
+                top: Math.floor(r.top * pixelRatio),
+                left: Math.floor(r.left * pixelRatio),
+                width: Math.floor(r.width * pixelRatio),
+                height: Math.floor(r.height * pixelRatio)
+              }
+            })
           }
           for (let rectIdx = 0; rectIdx < rects.length; rectIdx++) {
             const rect = rects[rectIdx]
@@ -600,22 +596,22 @@ class Chromy extends Document {
     await this.client.Network.requestWillBeSent(callback)
   }
 
-  async on(event, callback) {
+  async on (event, callback) {
     await this._checkStart()
     this.client.on(event, callback)
   }
 
-  async once(event, callback) {
+  async once (event, callback) {
     await this._checkStart()
     this.client.once(event, callback)
   }
 
-  async removeListener(event, callback) {
+  async removeListener (event, callback) {
     await this._checkStart()
     this.client.removeListener(event, callback)
   }
 
-  async removeAllListeners(event) {
+  async removeAllListeners (event) {
     await this._checkStart()
     this.client.removeAllListeners(event)
   }
@@ -708,7 +704,7 @@ class Chromy extends Document {
     } else {
       paramArray = [params]
     }
-    const currentUrl = await this.evaluate(_ => {return location.href})
+    const currentUrl = await this.evaluate(_ => { return location.href })
     paramArray = paramArray.map(obj => {
       if (obj.url) {
         return obj
@@ -733,7 +729,7 @@ class Chromy extends Document {
     }
     let paramUrl = url
     if (!url) {
-      paramUrl  = await this.evaluate(_ => {return location.href})
+      paramUrl = await this.evaluate(_ => { return location.href })
     }
     for (let i in nameArray) {
       const n = nameArray[i]
@@ -769,8 +765,8 @@ class Chromy extends Document {
 
   async _getChromeVersion () {
     return this.evaluate(_ => {
-      let v = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
-      return v ? parseInt(v[2], 10) : false;
+      let v = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)
+      return v ? parseInt(v[2], 10) : false
     })
   }
 }
