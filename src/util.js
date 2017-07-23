@@ -1,4 +1,6 @@
-const {Launcher} = require('chrome-launcher')
+'use strict'
+
+const chromeLauncher = require('chrome-launcher')
 const path = require('path')
 
 // borrow from: http://qiita.com/saekis/items/c2b41cd8940923863791
@@ -25,8 +27,10 @@ function escapeSingleQuote (string) {
   return string.replace(/'/g, '\\\'')
 }
 
-function createChromeLauncher (startingUrl, options) {
+async function createChromeLauncher (startingUrl, options) {
   const flags = []
+  let chromeInstance
+
   // TODO: Remove this after chrome60 is released.
   flags.push('--disable-gpu')
   // Lighthouse adds '--disable-setuid-sandbox' flag automatically.
@@ -68,7 +72,10 @@ function createChromeLauncher (startingUrl, options) {
   if (options.userDataDir) {
     params.userDataDir = options.userDataDir
   }
-  return new Launcher(params)
+
+  chromeInstance = await chromeLauncher.launch(params)
+
+  return chromeInstance
 }
 
 function completeUrl (url) {
