@@ -82,16 +82,18 @@ class Chromy extends Document {
     if (this.client !== null) {
       return
     }
+
     if (this.options.launchBrowser) {
       if (this.launcher === null) {
-        this.launcher = createChromeLauncher(completeUrl(startingUrl), this.options)
+        this.launcher = await createChromeLauncher(completeUrl(startingUrl), this.options)
       }
-      await this.launcher.launch()
+
       if (!this.launcher.pid) {
         throw new Error('Failed to launch a browser.')
       }
       instances.push(this)
     }
+
     await new Promise((resolve, reject) => {
       CDP(this.cdpOptions, async (client) => {
         try {
