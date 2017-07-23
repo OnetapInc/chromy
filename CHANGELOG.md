@@ -1,3 +1,6 @@
+## 0.3.7 - 2017-07-XX
+ - Close the browser when SIGINT is happend
+
 ## 0.3.6 - 2017-07-21
  - Add useDeviceResolution option to screenshot functions.
  - Change interface of screenshot series.
