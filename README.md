@@ -95,9 +95,9 @@ chromy.chain()
  - visible(default: false): If set to true, chrome is launched in visible mode. This option is not used if launchBrowser is false.
  - chromePath(default: null): This option is used to find out an executable of Chrome. If set to null, executable is selected automatically. This option is not used if launchBrowser is false.
  - chromeFlags(default: []): These flags is passed to Chrome. Each flag must have a prefix string "--". This option is not used if launchBrowser is false.
- - waitTimeout(default: 30000): If wait() doesn't finish in the specified time WaitTimeoutError will be threw.
- - gotoTimeout(default: 30000): If goto() doesn't finish in the specified time GotoTimeoutError will be threw.
- - evaluateTimeout(default: 30000): If evaluate() doesn't finish in the specified time EvaluateTimeError will be threw.
+ - waitTimeout(default: 30000): If wait() doesn't finish in the specified time WaitTimeoutError will be thrown.
+ - gotoTimeout(default: 30000): If goto() doesn't finish in the specified time GotoTimeoutError will be thrown.
+ - evaluateTimeout(default: 30000): If evaluate() doesn't finish in the specified time EvaluateTimeError will be thrown.
  - waitFunctionPollingInterval(default: 100): polling interval for wait().
  - typeInterval(default: 20): This option is used only in type() method.
  - activateOnStartUp(default: true): activate a first tab on startup. this option is enable only in visible mode.
