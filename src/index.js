@@ -181,6 +181,18 @@ class Chromy extends Document {
     return await this.client.Network.setExtraHTTPHeaders({'headers': headers})
   }
 
+  async ignoreCertificateErrors () {
+    await this._checkStart()
+    await this.client.Security.enable()
+    await this.client.Security.setOverrideCertificateErrors({override: true})
+    await this.client.Security.certificateError(({eventId}) => {
+      this.client.Security.handleCertificateError({
+        eventId,
+        action: 'continue'
+      })
+    })
+  }
+
   async console (callback) {
     await this._checkStart()
     this.client.Console.messageAdded((payload) => {

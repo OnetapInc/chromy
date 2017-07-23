@@ -1,5 +1,6 @@
 ## 0.3.7 - 2017-07-XX
  - Close the browser when SIGINT is happend
+ - Add ignoreCertificateErrors()
 
 ## 0.3.6 - 2017-07-21
  - Add useDeviceResolution option to screenshot functions.

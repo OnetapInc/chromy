@@ -396,6 +396,17 @@ chromy.chain()
       })
 ```
 
+##### ignoreCertificateErrors()
+
+Ignores all certificate errors.
+
+```js
+chromy.chain()
+      .ignoreCertificateErrors()
+      .goto('https://xxxxx/')
+      .end()
+```
+
 ##### blockUrls(urls)
 
 blocks urls from loading.  
