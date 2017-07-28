@@ -85,11 +85,15 @@ chromy.chain()
 ## API
 
 * [Chromy(options)](#chromyoptions)
-* [.start(startingUrl = null)](#startstartingurl--null)
-* [.goto(url, options = {})](#gotourl-options--)
-* [.waitLoadEvent()](#waitloadevent)
-* []()
-* []()
+    * [.start(startingUrl = null)](#startstartingurl--null)
+    * [.goto(url, options = {})](#gotourl-options--)
+    * [.waitLoadEvent()](#waitloadevent)
+    * [.forward()](#forward)
+    * [.back()](#back)
+    * [.inject(type, file)](#injecttype-file)
+    * [.evaluate(func|source)](#evaluatefuncsource)
+    * [.result(func)]()
+    * []()
 
 ##### Chromy(options)
 
