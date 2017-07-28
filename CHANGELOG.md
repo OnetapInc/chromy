@@ -1,4 +1,4 @@
-## 0.3.7 - 2017-07-XX
+## 0.3.7 - 2017-07-28
  - Close the browser when SIGINT is happend
  - Add ignoreCertificateErrors()
 
