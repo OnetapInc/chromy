@@ -466,7 +466,7 @@ process.on('SIGINT', async () => {
 ```
 ## How to setup chrome headless in your local environemnt
 ### example 01: directly run Chrome on your environment
-you need to install Chrome 59 or higher
+you need to install Chrome 59 or later.
 then
 ```
 chrome \
