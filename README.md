@@ -20,7 +20,7 @@ headless mode is supported by Chrome59 or later.
 docker run --init -it --rm --name chrome --shm-size=1024m -p=127.0.0.1:9222:9222 --cap-add=SYS_ADMIN \
   yukinying/chrome-headless-browser
 ```
-See details: [https://github.com/yukinying/chrome-headless-browser-docker](here)
+See details: [here](https://github.com/yukinying/chrome-headless-browser-docker)
 
 ### example 02: directly run Chrome on your environment
 you need to install Chrome 59 or higher
@@ -31,7 +31,7 @@ chrome \
   --disable-gpu \                # Temporarily needed for now.
   --remote-debugging-port=9222 
 ```
-See details: [https://developers.google.com/web/updates/2017/04/headless-chrome](here)
+See details: [here](https://developers.google.com/web/updates/2017/04/headless-chrome)
 
 ## Installation
 
