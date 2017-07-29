@@ -14,24 +14,6 @@ Chromy is similar to Nightmare.js but has some differences:
  - Install Chrome59 or later to your machine before use Chromy.
 
 headless mode is supported by Chrome59 or later.
-## How to setup chrome headless in your local environemnt
-### example 01: Docker env
-```
-docker run --init -it --rm --name chrome --shm-size=1024m -p=127.0.0.1:9222:9222 --cap-add=SYS_ADMIN \
-  yukinying/chrome-headless-browser
-```
-See details: [here](https://github.com/yukinying/chrome-headless-browser-docker)
-
-### example 02: directly run Chrome on your environment
-you need to install Chrome 59 or higher
-then
-```
-chrome \
-  --headless \                   # Runs Chrome in headless mode.
-  --disable-gpu \                # Temporarily needed for now.
-  --remote-debugging-port=9222 
-```
-See details: [here](https://developers.google.com/web/updates/2017/04/headless-chrome)
 
 ## Installation
 
@@ -482,6 +464,24 @@ process.on('SIGINT', async () => {
   process.exit(1)
 })
 ```
+## How to setup chrome headless in your local environemnt
+### example 01: Docker env
+```
+docker run --init -it --rm --name chrome --shm-size=1024m -p=127.0.0.1:9222:9222 --cap-add=SYS_ADMIN \
+  yukinying/chrome-headless-browser
+```
+See details: [here](https://github.com/yukinying/chrome-headless-browser-docker)
+
+### example 02: directly run Chrome on your environment
+you need to install Chrome 59 or higher
+then
+```
+chrome \
+  --headless \                   # Runs Chrome in headless mode.
+  --disable-gpu \                # Temporarily needed for now.
+  --remote-debugging-port=9222 
+```
+See details: [here](https://developers.google.com/web/updates/2017/04/headless-chrome)
 
 ## Contributing
 
