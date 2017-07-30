@@ -1,3 +1,6 @@
+## 0.4.0 - 2017-08-XX
+ - Update dependent chrome version to 60 (it makes WebGL enabled and performance up)
+
 ## 0.3.7 - 2017-07-28
  - Close the browser when SIGINT is happend
  - Add ignoreCertificateErrors()

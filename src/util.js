@@ -31,8 +31,6 @@ async function createChromeLauncher (startingUrl, options) {
   const flags = []
   let chromeInstance
 
-  // TODO: Remove this after chrome60 is released.
-  flags.push('--disable-gpu')
   // Lighthouse adds '--disable-setuid-sandbox' flag automatically.
   // The flag causes an error on linux when staring headless chrome.
   // '--no-sandbox' suppresses an error caused by '--disable-setuid-sandbox'.
