@@ -11,7 +11,7 @@ Chromy is similar to Nightmare.js but has some differences:
 ## Requirements
 
  - Node 6 or later
- - Install Chrome59 or later to your machine before use Chromy.
+ - Install Chrome60 or later to your machine before use Chromy.
 
 headless mode is supported by Chrome59 or later.
 
