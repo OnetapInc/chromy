@@ -551,6 +551,71 @@ class Chromy extends Document {
   }
 
   async screenshotMultipleSelectors (selectors, callback, options = {}) {
+    if ( this._chromeVersion >= 61 ) {
+      return this._screenshotMultipleSelectors(selectors, callback, options)
+    } else {
+      return this._screenshotMultipleSelectorsOld(selectors, callback, options)
+    }
+  }
+
+  async _screenshotMultipleSelectors (selectors, callback, options = {}) {
+    const defaults = {
+      model: 'scroll',
+      format: 'png',
+      quality: undefined,
+      fromSurface: true,
+      useDeviceResolution: false,
+      useQuerySelectorAll: false
+    }
+    const opts = Object.assign({}, defaults, options)
+    const screenInfo = await this._getScreenInfo()
+    const emulation = await createFullscreenEmulationManager(this, 'scroll', true)
+    await emulation.emulate()
+    try {
+      for (let selIdx = 0; selIdx < selectors.length; selIdx++) {
+        let selector = selectors[selIdx]
+        try {
+          let rects = null
+          if (opts.useQuerySelectorAll) {
+            rects = await this.getBoundingClientRectAll(selector)
+            // remove elements that has 'display: none'
+            rects = rects.filter(rect => rect.width !== 0 && rect.height !== 0)
+          } else {
+            const r = await this.getBoundingClientRect(selector)
+            if (r && r.width !== 0 && r.height !== 0) {
+              rects = [r]
+            }
+          }
+          if (rects.length === 0) {
+            const err = {reason: 'notfound', message: `selector is not found. selector=${selector}`}
+            await callback.apply(this, [err, null, selIdx, selectors])
+            continue
+          }
+
+          for (let rectIdx = 0; rectIdx < rects.length; rectIdx++) {
+            const rect = rects[rectIdx]
+            let clip = {
+              x: rect.left,
+              y: rect.top,
+              width: rect.width,
+              height: rect.height,
+              scale: opts.useDeviceResolution ? parseInfo(screenInfo.devicePixelRatio) : 1
+            }
+            let screenshotOpts = Object.assign({format: opts.format, quality: opts.quality, fromSurface: opts.fromSurface, clip})
+            const {data} = await this.client.Page.captureScreenshot(screenshotOpts)
+            let buffer = Buffer.from(data, 'base64')
+            await callback.apply(this, [null, buffer, selIdx, selectors, rectIdx])
+          }
+        } catch (e) {
+          await callback.apply(this, [e, null, selIdx, selectors])
+        }
+      }
+    } finally {
+      await emulation.reset()
+    }
+  }
+
+  async _screenshotMultipleSelectorsOld (selectors, callback, options = {}) {
     const defaults = {
       model: 'scroll',
       format: 'png',

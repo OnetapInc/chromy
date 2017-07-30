@@ -1,5 +1,6 @@
 ## 0.4.0 - 2017-08-XX
  - Update dependent chrome version to 60 (it makes WebGL enabled and performance up)
+ - .screenshotSelector() and .screenshotMultipleSelectors() with chrome61 or later work without sharp library.
 
 ## 0.3.7 - 2017-07-28
  - Close the browser when SIGINT is happend
