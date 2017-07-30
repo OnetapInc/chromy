@@ -1,3 +1,6 @@
+## 0.4.1 - 2017-07-30
+ - fix regression bug.
+
 ## 0.4.0 - 2017-07-30
  - Update dependent chrome version to 60 (it makes WebGL enabled and performance up)
  - .screenshotSelector() and .screenshotMultipleSelectors() with chrome61 or later work without sharp library.
