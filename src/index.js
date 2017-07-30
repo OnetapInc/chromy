@@ -599,7 +599,7 @@ class Chromy extends Document {
               y: rect.top,
               width: rect.width,
               height: rect.height,
-              scale: opts.useDeviceResolution ? parseInfo(screenInfo.devicePixelRatio) : 1
+              scale: opts.useDeviceResolution ? parseInt(screenInfo.devicePixelRatio) : 1
             }
             let screenshotOpts = Object.assign({format: opts.format, quality: opts.quality, fromSurface: opts.fromSurface, clip})
             const {data} = await this.client.Page.captureScreenshot(screenshotOpts)
