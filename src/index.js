@@ -472,6 +472,15 @@ class Chromy extends Document {
     } else if ((typeof format) === 'object') {
       opts = Object.assign({}, opts, format)
     }
+    if ( this._chromeVersion >= 61 ) {
+      return this._screenshotSelector(selector, opts)
+    } else {
+      return this._screenshotSelectorOld(selector, opts)
+    }
+  }
+
+  // this will be deprecated after chrome61 is released.
+  async _screenshotSelectorOld (selector, opts) {
     const rect = await this.getBoundingClientRect(selector)
     if (!rect) {
       return null
@@ -506,6 +515,39 @@ class Chromy extends Document {
       clipRect.height = meta.height - clipRect.top
     }
     return sharp(buffer).extract(clipRect).toBuffer()
+  }
+
+  async _screenshotSelector (selector, opts) {
+    let scale = 1
+    if (opts.useDeviceResolution) {
+      const pixelRatio = await this.evaluate(function () {
+        return window.devicePixelRatio
+      })
+      scale = parseInt(pixelRatio)
+    }
+    const emulation = await createFullscreenEmulationManager(this, 'scroll', true)
+    let buffer = null
+    try {
+      await emulation.emulate()
+      await this.scrollTo(0, 0)
+      let rect = await this.getBoundingClientRect(selector)
+      if (!rect || rect.width === 0 || rect.height === 0) {
+        return null
+      }
+      let clip = {
+        x: rect.left,
+        y: rect.top,
+        width: rect.width,
+        height: rect.height,
+        scale: scale,
+      }
+      let screenshotOpts = Object.assign({}, opts, {clip})
+      const {data} = await this.client.Page.captureScreenshot(screenshotOpts)
+      buffer = Buffer.from(data, 'base64')
+    } finally {
+      emulation.reset()
+    }
+    return buffer
   }
 
   async screenshotMultipleSelectors (selectors, callback, options = {}) {

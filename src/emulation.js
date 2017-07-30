@@ -1,23 +1,16 @@
 class FullscreenEmulationManager {
-  constructor (chromy, model) {
+  constructor (chromy, model, captureSelector) {
     this._chromy = chromy
     this._client = chromy.client
     this._model = model
+    this._captureSelector = captureSelector
     this.browserInfo = null
   }
 
   async init () {
     let width = 0
     let height = 0
-    const info = await this._chromy.evaluate(function () {
-      return {
-        devicePixelRatio: window.devicePixelRatio,
-        width: document.body.scrollWidth,
-        height: document.body.scrollHeight,
-        viewportWidth: window.innerWidth,
-        viewportHeight: window.innerHeight
-      }
-    })
+    const info = await this._chromy._getScreenInfo()
     this.browserInfo = info
     if (this._model === 'box') {
       const DOM = this._client.DOM
@@ -39,6 +32,9 @@ class FullscreenEmulationManager {
       deviceScaleFactor: 0,
       mobile: false,
       fitWindow: false,
+    }
+    if (this._captureSelector && this._deviceMetrics.height > 10000) {
+      this._deviceMetrics.height = 10000
     }
     if (this._chromy._chromeVersion >= 61) {
       this._deviceMetrics.deviceScaleFactor = info.devicePixelRatio
@@ -70,8 +66,8 @@ class FullscreenEmulationManager {
   }
 }
 
-async function createFullscreenEmulationManager (chromy, model) {
-  const manager = new FullscreenEmulationManager(chromy, model)
+async function createFullscreenEmulationManager (chromy, model, captureSelector = false) {
+  const manager = new FullscreenEmulationManager(chromy, model, captureSelector)
   await manager.init()
   return manager
 }

@@ -367,6 +367,18 @@ class Document {
     return this.nodeId
   }
 
+  async _getScreenInfo () {
+    return await this.evaluate(function () {
+      return {
+        devicePixelRatio: window.devicePixelRatio,
+        width: document.body.scrollWidth,
+        height: document.body.scrollHeight,
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight
+      }
+    })
+  }
+
 }
 
 module.exports = Document
