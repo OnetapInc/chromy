@@ -1,3 +1,6 @@
+## 0.4.2 - 2017-07-30
+ - fix regression bug.
+
 ## 0.4.1 - 2017-07-30
  - fix regression bug.
 

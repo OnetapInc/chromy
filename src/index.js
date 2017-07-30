@@ -518,12 +518,14 @@ class Chromy extends Document {
   }
 
   async _screenshotSelector (selector, opts) {
-    let scale = 1
+    let scale = null
     if (opts.useDeviceResolution) {
+      scale = 1
+    } else {
       const pixelRatio = await this.evaluate(function () {
         return window.devicePixelRatio
       })
-      scale = parseInt(pixelRatio)
+      scale = 1.0 / pixelRatio
     }
     const emulation = await createFullscreenEmulationManager(this, 'scroll', true)
     let buffer = null
@@ -599,7 +601,7 @@ class Chromy extends Document {
               y: rect.top,
               width: rect.width,
               height: rect.height,
-              scale: opts.useDeviceResolution ? parseInt(screenInfo.devicePixelRatio) : 1
+              scale: opts.useDeviceResolution ? 1 : 1.0 / screenInfo.devicePixelRatio
             }
             let screenshotOpts = Object.assign({format: opts.format, quality: opts.quality, fromSurface: opts.fromSurface, clip})
             const {data} = await this.client.Page.captureScreenshot(screenshotOpts)
