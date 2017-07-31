@@ -14,7 +14,8 @@ const {
 } = require('./error')
 const {
   createChromeLauncher,
-  completeUrl
+  completeUrl,
+  escapeSingleQuote
 } = require('./util')
 
 let instances = []
@@ -310,7 +311,7 @@ class Chromy extends Document {
   }
 
   async type (expr, value) {
-    await this.evaluate('document.querySelector("' + expr + '").focus()')
+    await this.evaluate('document.querySelector(\'' + escapeSingleQuote(expr) + '\').focus()')
     const characters = value.split('')
     for (let i in characters) {
       const c = characters[i]
