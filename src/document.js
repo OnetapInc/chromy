@@ -162,7 +162,7 @@ class Document {
         })
       }
       if (result.result.subtype === 'error') {
-        throw new EvaluateError('An error has been occurred in evaluated script on a browser.' + result.result.description, result.result)
+        throw new EvaluateError('An error has occurred evaluating the script in the browser.' + result.result.description, result.result)
       }
       const resultObject = JSON.parse(result.result.value)
       const type = resultObject.type
