@@ -84,7 +84,7 @@ chromy.chain()
 
 ## API
 
-* [Chromy(options)](#chromyoptions)
+ * [Chromy(options)](#chromyoptions)
     * [.start(startingUrl = null)](#startstartingurl--null)
     * [.goto(url, options = {})](#gotourl-options--)
     * [.waitLoadEvent()](#waitloadevent)
