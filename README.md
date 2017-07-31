@@ -92,8 +92,49 @@ chromy.chain()
     * [.back()](#back)
     * [.inject(type, file)](#injecttype-file)
     * [.evaluate(func|source)](#evaluatefuncsource)
-    * [.result(func)]()
-    * []()
+    * [.result(func)](#resultfunc)
+    * [.end()](#end)
+    * [.exists(selector)](#existsselector)
+    * [.visible(selector)](#visibleselector)
+    * [.wait(msec)](#waitmsec)
+    * [.wait(selector)](#waitselector)
+    * [.wait(func)](#waitfunc)
+    * [.sleep(msec)](#sleepmsec)
+    * [.type(selector, text)](#typeselector-text)
+    * [.insert(selector, text)](#insertselector-text)
+    * [.check(selector)](#checkselector)
+    * [.uncheck(selector)](#uncheckselector)
+    * [.select(selector, value)](#selectselector-value)
+    * [.setFile(selector, files)](#setfileselector-files)
+    * [.click(selector, options)](#clickselector-options)
+    * [.mouseMoved(x, y, options = {})](#mousemovedx-y-options--)
+    * [.mousePressed(x, y, options = {})](#mousepressedx-y-options--)
+    * [.mouseReleased(x, y, options = {})](#mousereleasedx-y-options--)
+    * [.tap(x, y, options = {})](#tapx-y-options--)
+    * [.doubleTap(x, y, options = {})](#doubletapx-y-options--)
+    * [.defineFunction(func)](#definefunctionfunc)
+    * [.on(eventName, listener)](#oneventname-listener)
+    * [.once(eventName, listener)](#onceeventname-listener)
+    * [.removeListener(eventName, listener)](#removelistenereventname-listener)
+    * [.removeAllListeners(eventName)](#removealllistenerseventname)
+    * [.screenshot(options= {})](#screenshotoptions-)
+    * [.screenshotSelector(selector, options={})](#screenshotselectorselector-options)
+    * [.screenshotMultipleSelectors(selectors, callback, options = {})](#screenshotmultipleselectorsselectors-callback-options--)
+    * [.screenshotDocument(options = {})](#screenshotdocumentoptions--)
+    * [.pdf(options={})](#pdfoptions)
+    * [.startScreencast(callback, options = {})](#startscreencastcallback-options--)
+    * [.stopScreencast()](#stopscreencast)
+    * [.console(func)](#consolefunc)
+    * [.receiveMessage(func)](#receivemessagefunc)
+    * [.ignoreCertificateErrors()](#ignorecertificateerrors)
+    * [.blockUrls(urls)](#blockurlsurls)
+    * [.clearBrowserCache()](#clearbrowsercache)
+    * [.setCookie(params)](#setcookieparams)
+    * [.deleteCookie(name, url = null)](#deletecookiename-url--null)
+    * [.clearAllCookies()](#clearallcookies)
+    * [.clearDataForOrigin (origin = null, type = 'all')](#cleardatafororigin-origin--null-type--all)
+    * [.getDOMCounters()](#getdomcounters)
+    * [.static cleanup()](#static-cleanup)
 
 ##### Chromy(options)
 
@@ -173,11 +214,11 @@ chromy.chain()
 
 ##### .end()
 
-##### exists(selector)
+##### .exists(selector)
 
 Returns whether an node matched with the selector is exists.
 
-##### visible(selector)
+##### .visible(selector)
 
 Returns whether an node matched with the selector is exists and visible.
 
@@ -407,7 +448,7 @@ chromy.chain()
       })
 ```
 
-##### ignoreCertificateErrors()
+##### .ignoreCertificateErrors()
 
 Ignores all certificate errors.
 
@@ -418,7 +459,7 @@ chromy.chain()
       .end()
 ```
 
-##### blockUrls(urls)
+##### .blockUrls(urls)
 
 blocks urls from loading.  
 
@@ -427,11 +468,11 @@ blocks urls from loading.
 urls: array[string]  
 Wildcard('*') is allowed in url string.
 
-##### clearBrowserCache()
+##### .clearBrowserCache()
 
 Removes all browser caches.
 
-##### setCookie(params)
+##### .setCookie(params)
 
 ###### Parameters
 
@@ -440,7 +481,7 @@ params: object or array
 See [chrome document](https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setCookie)
 If url parameter is not set, current url(location.href) is used as default value.
 
-##### deleteCookie(name, url = null)
+##### .deleteCookie(name, url = null)
 
 Remove a cookie.
 
@@ -449,23 +490,23 @@ Remove a cookie.
 name: string or array of string
 url: url associated with cookie. If url is not set, current url(location.href) is used as default value.
 
-##### clearAllCookies()
+##### .clearAllCookies()
 
 Removes all browser cookies.
 
-##### clearDataForOrigin (origin = null, type = 'all')
+##### .clearDataForOrigin (origin = null, type = 'all')
 
 Clear data for origin.(cookies, local_storage, indexedDb, etc...)
 
 See details [here](https://chromedevtools.github.io/devtools-protocol/tot/Storage/#method-clearDataForOrigin).
 
-##### getDOMCounters()
+##### .getDOMCounters()
 
 Get count of these item: document, node, jsEventListeners
 
 See details [here](https://chromedevtools.github.io/devtools-protocol/tot/Memory/#method-getDOMCounters).
 
-##### static cleanup()
+##### .static cleanup()
 
 close all browsers.
 
