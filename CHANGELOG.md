@@ -1,4 +1,4 @@
-## 0.4.3 - 2017-08-XX
+## 0.4.3 - 2017-08-02
  - fix double quote problem in .type().
  - .type() is available with iframe
 

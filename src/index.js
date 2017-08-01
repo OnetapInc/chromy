@@ -14,8 +14,7 @@ const {
 } = require('./error')
 const {
   createChromeLauncher,
-  completeUrl,
-  escapeSingleQuote
+  completeUrl
 } = require('./util')
 
 let instances = []
@@ -463,7 +462,7 @@ class Chromy extends Document {
     } else if ((typeof format) === 'object') {
       opts = Object.assign({}, opts, format)
     }
-    if ( this._chromeVersion >= 61 ) {
+    if (this._chromeVersion >= 61) {
       return this._screenshotSelector(selector, opts)
     } else {
       return this._screenshotSelectorOld(selector, opts)
@@ -544,7 +543,7 @@ class Chromy extends Document {
   }
 
   async screenshotMultipleSelectors (selectors, callback, options = {}) {
-    if ( this._chromeVersion >= 61 ) {
+    if (this._chromeVersion >= 61) {
       return this._screenshotMultipleSelectors(selectors, callback, options)
     } else {
       return this._screenshotMultipleSelectorsOld(selectors, callback, options)
@@ -570,7 +569,7 @@ class Chromy extends Document {
         try {
           let rects = null
           if (opts.useQuerySelectorAll) {
-            rects = await this.getBoundingClientRectAll(selector)
+            rects = await this.rectAll(selector)
             // remove elements that has 'display: none'
             rects = rects.filter(rect => rect.width !== 0 && rect.height !== 0)
           } else {
@@ -630,7 +629,7 @@ class Chromy extends Document {
         try {
           let rects = null
           if (opts.useQuerySelectorAll) {
-            rects = await this.getBoundingClientRectAll(selector)
+            rects = await this.rectAll(selector)
             // remove elements that has 'display: none'
             rects = rects.filter(rect => rect.width !== 0 && rect.height !== 0)
           } else {

@@ -112,6 +112,10 @@ chromy.chain()
     * [.mouseReleased(x, y, options = {})](#mousereleasedx-y-options--)
     * [.tap(x, y, options = {})](#tapx-y-options--)
     * [.doubleTap(x, y, options = {})](#doubletapx-y-options--)
+    * [.scroll(x, y)](#scrollx-y)
+    * [.scrollTo(x, y)](#scrollTox-y)
+    * [.rect(selector)](#rectselector)
+    * [.rectAll(selector)](#rectallselector)
     * [.defineFunction(func)](#definefunctionfunc)
     * [.on(eventName, listener)](#oneventname-listener)
     * [.once(eventName, listener)](#onceeventname-listener)
@@ -282,6 +286,22 @@ Synthesize tap by dispatching touch events.
 
 Synthesize double tap by dispatching touch events.
 (NOTE: To dispatch touch events you need to enable a mobile emulation before.)
+
+##### .scroll(x, y)
+
+Scrolls to the position. x and y means relative position.
+
+##### .scrollTo(x, y)
+
+Scrolls to the position. x and y means absolute position.
+
+##### .rect(selector)
+
+Returns a rect of the element specified by selector.
+
+##### .rectAll(selector)
+
+Returns an array of rects that is specified by selector.
 
 ##### .defineFunction(func)
 

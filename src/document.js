@@ -37,7 +37,7 @@ class Document {
       return Promise.resolve()
     }
     // to get the the node for location, a position of the node must be in a viewport.
-    const originalPageOffset = await this.getPageOffset()
+    const originalPageOffset = await this._getPageOffset()
     let doc = null
     try {
       await this.scrollTo(0, rect.top)
@@ -114,7 +114,7 @@ class Document {
     }, {}, {'_1': x, '_2': y})
   }
 
-  async getPageOffset () {
+  async _getPageOffset () {
     return this.evaluate(_ => {
       return {
         x: window.pageXOffset,
@@ -316,7 +316,12 @@ class Document {
     })
   }
 
+  // deprecated
   async getBoundingClientRect (selector) {
+    return this.rect(selector)
+  }
+
+  async rect (selector) {
     const rect = await this._evaluateWithReplaces(function () {
       let dom = document.querySelector('?')
       if (!dom) {
@@ -336,7 +341,7 @@ class Document {
     }
   }
 
-  async getBoundingClientRectAll (selector) {
+  async rectAll (selector) {
     const rects = await this._evaluateWithReplaces(function () {
       let doms = document.querySelectorAll('?')
       return Array.prototype.map.call(doms, dom => {
