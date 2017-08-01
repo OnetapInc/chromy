@@ -1,3 +1,7 @@
+## 0.4.3 - 2017-08-XX
+ - fix double quote problem in .type().
+ - .type() is available with iframe
+
 ## 0.4.2 - 2017-07-30
  - fix regression bug.
 

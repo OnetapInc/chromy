@@ -310,16 +310,6 @@ class Chromy extends Document {
     return result
   }
 
-  async type (expr, value) {
-    await this.evaluate('document.querySelector(\'' + escapeSingleQuote(expr) + '\').focus()')
-    const characters = value.split('')
-    for (let i in characters) {
-      const c = characters[i]
-      await this.client.Input.dispatchKeyEvent({type: 'char', text: c})
-      await this.sleep(this.options.typeInterval)
-    }
-  }
-
   async mouseMoved (x, y, options = {}) {
     const opts = Object.assign({type: 'mouseMoved', x: x, y: y}, options)
     await this.client.Input.dispatchMouseEvent(opts)

@@ -298,6 +298,16 @@ class Document {
     return result
   }
 
+  async type (expr, value) {
+    await this.evaluate('document.querySelector(\'' + escapeSingleQuote(expr) + '\').focus()')
+    const characters = value.split('')
+    for (let i in characters) {
+      const c = characters[i]
+      await this.client.Input.dispatchKeyEvent({type: 'char', text: c})
+      await this.sleep(this.chromy.options.typeInterval)
+    }
+  }
+
   async sleep (msec) {
     await new Promise((resolve, reject) => {
       setTimeout(() => {
