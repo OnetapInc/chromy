@@ -252,9 +252,7 @@ class Document {
               reject(new WaitTimeoutError('wait() timeout'))
               return
             }
-            const result = await this._evaluateWithReplaces(() => {
-              return document.querySelector('?')
-            }, {}, {'?': escapeSingleQuote(selector)})
+            const result = await this.exists(selector)
             if (result) {
               resolve(result)
             } else {
