@@ -1,3 +1,6 @@
+## 0.4.5 - 2017-08-06
+ - fix wait() problem #47 
+
 ## 0.4.4 - 2017-08-06
  - fix a url problem in goto().
 
