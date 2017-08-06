@@ -1,3 +1,6 @@
+## 0.4.4 - 2017-08-06
+ - fix a url problem in goto().
+
 ## 0.4.3 - 2017-08-02
  - fix double quote problem in .type().
  - .type() is available with iframe
