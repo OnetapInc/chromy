@@ -77,7 +77,7 @@ async function createChromeLauncher (startingUrl, options) {
 }
 
 function completeUrl (url) {
-  const reg = new RegExp('^(?:[a-z]+:)?//', 'i')
+  const reg = new RegExp('^(?:[a-z0-9]+:)?', 'i')
   if (reg.test(url) || url.indexOf('about:') === 0) {
     return url
   } else {
