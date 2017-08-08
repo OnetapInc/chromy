@@ -1,3 +1,6 @@
+## 0.4.6 - 2017-08-08
+ - fix regression bugs in .wait() and .goto()
+
 ## 0.4.5 - 2017-08-06
  - fix wait() problem #47 
 
