@@ -11,6 +11,10 @@ describe('wait', function() {
     const chromy = new Chromy()
     chromy.chain()
           .goto('file://' + process.env.PWD + '/test_pages/wait.html')
+          .exists(".block_not_exists")
+          .result(r => assert.equal(false, r))
+          .exists(".block1")
+          .result(r => assert.equal(true, r))
           .wait("div")
           .wait(".block1")
           .wait(".block2")
@@ -54,13 +58,28 @@ describe('wait', function() {
             done(e)
           })
   })
-  it('raise TimeoutError', (done) => {
+  it('raise TimeoutError wait(function)', (done) => {
     const chromy = new Chromy({waitTimeout: 100})
     chromy.chain()
           .goto('file://' + process.env.PWD + '/test_pages/wait.html')
           .wait(function () {
             return document.querySelector('.not-exists')
           })
+          .end()
+          .then(_ => done('timeout doesn\'t be occured'))
+          .catch(e => {
+            if (e instanceof TimeoutError) {
+              done()
+            } else {
+              done(e)
+            }
+          })
+  })
+  it('raise TimeoutError wait(selector)', (done) => {
+    const chromy = new Chromy({waitTimeout: 100})
+    chromy.chain()
+          .goto('file://' + process.env.PWD + '/test_pages/wait.html')
+          .wait('.not-exists')
           .end()
           .then(_ => done('timeout doesn\'t be occured'))
           .catch(e => {
