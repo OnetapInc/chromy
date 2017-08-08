@@ -77,11 +77,14 @@ async function createChromeLauncher (startingUrl, options) {
 }
 
 function completeUrl (url) {
-  const reg = new RegExp('^(?:[a-z0-9]+:)?', 'i')
-  if (reg.test(url) || url.indexOf('about:') === 0) {
+  const reg = new RegExp('^[a-zA-Z0-9]+:', 'i')
+  const regAbbr = new RegExp('^\/\/', 'i')
+  if (reg.test(url)) {
     return url
-  } else {
-    return path.join('file://', process.cwd(), url)
+  } else if (regAbbr.test(url)) {
+    return 'http:' + url
+  }  else {
+    return 'file://' + path.join(process.cwd(), url)
   }
 }
 
