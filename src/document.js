@@ -202,7 +202,7 @@ class Document {
 
   async exists (selector) {
     return this._evaluateWithReplaces(
-      _ => { return document.body.querySelector('?') !== null },
+      _ => { return document.querySelector('?') !== null },
       {}, {'?': escapeSingleQuote(selector)}
     )
   }
@@ -210,7 +210,7 @@ class Document {
   async visible (selector) {
     return this._evaluateWithReplaces(
       _ => {
-        let dom = document.body.querySelector('?')
+        let dom = document.querySelector('?')
         return dom !== null && dom.offsetWidth > 0 && dom.offsetHeight > 0
       },
       {}, {'?': escapeSingleQuote(selector)}
