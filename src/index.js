@@ -42,6 +42,7 @@ class Chromy extends Document {
       userDataDir: null,
       chromeFlags: [],
       chromePath: null,
+      enableExtensions: false,
       activateOnStartUp: true,
       waitTimeout: 30000,
       gotoTimeout: 30000,

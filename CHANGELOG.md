@@ -1,3 +1,6 @@
+## 0.4.7 - 2017-08-09
+ - Add enableExtensions option
+
 ## 0.4.6 - 2017-08-08
  - fix regression bugs in .wait() and .goto()
 

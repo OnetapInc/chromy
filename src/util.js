@@ -62,7 +62,8 @@ async function createChromeLauncher (startingUrl, options) {
     port: options.port,
     chromeFlags: flags,
     startingUrl: startingUrl,
-    logLevel: 'error'
+    logLevel: 'error',
+    enableExtensions: options.enableExtensions
   }
   if (options.chromePath) {
     params.chromePath = options.chromePath
@@ -78,12 +79,12 @@ async function createChromeLauncher (startingUrl, options) {
 
 function completeUrl (url) {
   const reg = new RegExp('^[a-zA-Z0-9]+:', 'i')
-  const regAbbr = new RegExp('^\/\/', 'i')
+  const regAbbr = new RegExp('^//', 'i')
   if (reg.test(url)) {
     return url
   } else if (regAbbr.test(url)) {
     return 'http:' + url
-  }  else {
+  } else {
     return 'file://' + path.join(process.cwd(), url)
   }
 }
