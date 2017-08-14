@@ -237,7 +237,7 @@ wait until selector you specified appear in a DOM tree.
 
 ##### .wait(func)
 
-wait until function you supplied is evaluated as true.
+wait until function you supplied is evaluated as true. func() executes in browser window context.
 
 ##### .sleep(msec)
 
