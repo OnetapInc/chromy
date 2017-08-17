@@ -13,6 +13,7 @@ describe('selector', function() {
           .goto('file://' + process.env.PWD + '/test_pages/index.html')
           .wait("a[class='link1']")
           .wait('a[class="link1"]')
+          .wait('[class="link1"]')
           .getBoundingClientRect('a[class=\'link1\']')
           .select('select[name=\'select\']', 'v1')
           .end()

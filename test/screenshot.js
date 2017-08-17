@@ -31,6 +31,14 @@ describe('screenshot', function() {
           .result(img => {
             assert.ok(img !== null)
           })
+          .screenshotSelector('[data-attr=\'attr\']')
+          .result(img => {
+            assert.ok(img !== null)
+          })
+          .screenshotSelector('[data-attr="attr"]')
+          .result(img => {
+            assert.ok(img !== null)
+          })
           .end()
           .then(_ => done())
           .catch(e => {
@@ -55,7 +63,7 @@ describe('screenshot', function() {
     const chromy = new Chromy()
     chromy.chain()
           .goto(page)
-          .screenshotMultipleSelectors(['a', 'form'], (err, buffer) => {
+          .screenshotMultipleSelectors(['a', 'form', "[data-attr='attr']", "[data-attr=\"attr\"]"], (err, buffer) => {
             assert.ok(err === null)
             assert.ok(buffer !== null)
           })
