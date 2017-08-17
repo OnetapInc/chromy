@@ -1,3 +1,6 @@
+## 0.4.8 - 2017-08-17
+ - Fix signal handler problem.
+
 ## 0.4.7 - 2017-08-09
  - Add enableExtensions option
 

@@ -63,7 +63,8 @@ async function createChromeLauncher (startingUrl, options) {
     chromeFlags: flags,
     startingUrl: startingUrl,
     logLevel: 'error',
-    enableExtensions: options.enableExtensions
+    enableExtensions: options.enableExtensions,
+    handleSIGINT: false
   }
   if (options.chromePath) {
     params.chromePath = options.chromePath
