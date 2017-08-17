@@ -88,8 +88,8 @@ class Chromy extends Document {
       if (this.launcher === null) {
         this.launcher = await createChromeLauncher(completeUrl(startingUrl), this.options)
         this._sigintHandler = async () => {
-          await this.close();
-          process.exit(130);
+          await this.close()
+          process.exit(130)
         }
         process.on('SIGINT', this._sigintHandler)
       }
