@@ -3,8 +3,8 @@ const fs = require('fs')
 const CDP = require('chrome-remote-interface')
 const uuidV4 = require('uuid/v4')
 const devices = require('./devices')
-const sharp = require('sharp')
 const {createFullscreenEmulationManager} = require('./emulation')
+const Jimp = require('jimp')
 
 const Document = require('./document')
 
@@ -108,6 +108,9 @@ class Chromy extends Document {
           await Promise.all([DOM.enable(), Network.enable(), Page.enable(), Runtime.enable(), Console.enable()])
 
           await this._cacheChromeVersion()
+          if (this._chromeVersion < 61) {
+            console.warn('Chromy requires Chrome ver.61 or later. Please install latest version Chrome.')
+          }
 
           // activate first tab
           if (this.options.activateOnStartUp) {
@@ -387,16 +390,35 @@ class Chromy extends Document {
     }
     const captureParams = Object.assign({}, opts)
     delete captureParams.useDeviceResolution
-    const {data} = await this.client.Page.captureScreenshot(captureParams)
-    let image = Buffer.from(data, 'base64')
-    if (opts.useDeviceResolution) {
-      return image
-    } else {
-      const pixelRatio = await this.evaluate(function () {
-        return window.devicePixelRatio
+    let captureResult = await this.client.Page.captureScreenshot(captureParams)
+    let image = Buffer.from(captureResult.data, 'base64')
+    if (!opts.useDeviceResolution) {
+      const screen = await this._getScreenInfo()
+      let promise = new Promise((resolve, reject) => {
+        Jimp.read(image, (err, img) => {
+          if (err) {
+            return reject(err)
+          }
+          let fmt = opts.format === 'png' ? Jimp.MIME_PNG : Jimp.MIME_JPEG
+          let quality = 100
+          if (opts.quality) {
+            quality = opts.quality
+          }
+          // img.scale(Math.floor(screen.width / 2), Math.floor(screen.height / 2))
+          img.scale(1.0 / screen.devicePixelRatio, Jimp.RESIZE_BEZIER)
+             .quality(quality)
+             .getBuffer(fmt, (err, buffer) => {
+               if (err) {
+                 reject(err)
+               } else {
+                 resolve(buffer)
+               }
+             })
+        })
       })
-      return this._resizeToBrowserResolution(pixelRatio, image)
+      image = await promise
     }
+    return image
   }
 
   /*
@@ -441,18 +463,6 @@ class Chromy extends Document {
     return result
   }
 
-  async _resizeToBrowserResolution (devicePixelRatio, image) {
-    if (devicePixelRatio === 1) {
-      return image
-    } else {
-      let s = sharp(image)
-      let m = await s.metadata()
-      const newWidth = parseInt(m.width / devicePixelRatio)
-      const newHeight = parseInt(m.height / devicePixelRatio)
-      return await s.resize(newWidth, newHeight).toBuffer()
-    }
-  }
-
   async screenshotSelector (selector, format = 'png', quality = undefined, fromSurface = true) {
     let opts = {
       format: 'png',
@@ -469,49 +479,7 @@ class Chromy extends Document {
     } else if ((typeof format) === 'object') {
       opts = Object.assign({}, opts, format)
     }
-    if (this._chromeVersion >= 61) {
-      return this._screenshotSelector(selector, opts)
-    } else {
-      return this._screenshotSelectorOld(selector, opts)
-    }
-  }
-
-  // this will be deprecated after chrome61 is released.
-  async _screenshotSelectorOld (selector, opts) {
-    const rect = await this.getBoundingClientRect(selector)
-    if (!rect) {
-      return null
-    }
-    const pixelRatio = await this.evaluate(function () {
-      return window.devicePixelRatio
-    })
-
-    // scroll to element
-    await this.scroll(rect.left, rect.top)
-
-    // capture screenshot and crop it.
-    const actualRect = await this.getBoundingClientRect(selector)
-    if (!actualRect || actualRect.width === 0 || actualRect.height === 0) {
-      return null
-    }
-    let clipRect = actualRect
-    if (opts.useDeviceResolution) {
-      clipRect = {
-        top: Math.floor(actualRect.top * pixelRatio),
-        left: Math.floor(actualRect.left * pixelRatio),
-        width: Math.floor(actualRect.width * pixelRatio),
-        height: Math.floor(actualRect.height * pixelRatio)
-      }
-    }
-    const buffer = await this.screenshot(opts)
-    const meta = await sharp(buffer).metadata()
-    if (meta.width < clipRect.left + clipRect.width) {
-      clipRect.width = meta.width - clipRect.left
-    }
-    if (meta.height < clipRect.top + clipRect.height) {
-      clipRect.height = meta.height - clipRect.top
-    }
-    return sharp(buffer).extract(clipRect).toBuffer()
+    return this._screenshotSelector(selector, opts)
   }
 
   async _screenshotSelector (selector, opts) {
@@ -550,11 +518,7 @@ class Chromy extends Document {
   }
 
   async screenshotMultipleSelectors (selectors, callback, options = {}) {
-    if (this._chromeVersion >= 61) {
-      return this._screenshotMultipleSelectors(selectors, callback, options)
-    } else {
-      return this._screenshotMultipleSelectorsOld(selectors, callback, options)
-    }
+    return this._screenshotMultipleSelectors(selectors, callback, options)
   }
 
   async _screenshotMultipleSelectors (selectors, callback, options = {}) {
@@ -603,85 +567,6 @@ class Chromy extends Document {
             let screenshotOpts = Object.assign({format: opts.format, quality: opts.quality, fromSurface: opts.fromSurface, clip})
             const {data} = await this.client.Page.captureScreenshot(screenshotOpts)
             let buffer = Buffer.from(data, 'base64')
-            await callback.apply(this, [null, buffer, selIdx, selectors, rectIdx])
-          }
-        } catch (e) {
-          await callback.apply(this, [e, null, selIdx, selectors])
-        }
-      }
-    } finally {
-      await emulation.reset()
-    }
-  }
-
-  async _screenshotMultipleSelectorsOld (selectors, callback, options = {}) {
-    const defaults = {
-      model: 'scroll',
-      format: 'png',
-      quality: undefined,
-      fromSurface: true,
-      useDeviceResolution: false,
-      useQuerySelectorAll: false
-    }
-    const opts = Object.assign({}, defaults, options)
-    const screenshotDocumentParams = Object.assign({}, opts)
-    delete screenshotDocumentParams.useQuerySelectorAll
-    const fullscreenBuffer = await this.screenshotDocument(screenshotDocumentParams)
-    const meta = await sharp(fullscreenBuffer).metadata()
-    const emulation = await createFullscreenEmulationManager(this, 'scroll')
-    await emulation.emulate()
-    try {
-      for (let selIdx = 0; selIdx < selectors.length; selIdx++) {
-        let selector = selectors[selIdx]
-        try {
-          let rects = null
-          if (opts.useQuerySelectorAll) {
-            rects = await this.rectAll(selector)
-            // remove elements that has 'display: none'
-            rects = rects.filter(rect => rect.width !== 0 && rect.height !== 0)
-          } else {
-            const r = await this.getBoundingClientRect(selector)
-            if (r && r.width !== 0 && r.height !== 0) {
-              rects = [r]
-            }
-          }
-          if (rects.length === 0) {
-            const err = {reason: 'notfound', message: `selector is not found. selector=${selector}`}
-            await callback.apply(this, [err, null, selIdx, selectors])
-            continue
-          }
-          if (opts.useDeviceResolution) {
-            const pixelRatio = await this.evaluate(function () {
-              return window.devicePixelRatio
-            })
-            rects = rects.map(r => {
-              return {
-                top: Math.floor(r.top * pixelRatio),
-                left: Math.floor(r.left * pixelRatio),
-                width: Math.floor(r.width * pixelRatio),
-                height: Math.floor(r.height * pixelRatio)
-              }
-            })
-          }
-          for (let rectIdx = 0; rectIdx < rects.length; rectIdx++) {
-            const rect = rects[rectIdx]
-
-            if (rect.top >= meta.height || rect.left >= meta.width) {
-              const err = {
-                reason: 'limitation',
-                message: `top of selector is over the limitation of height. selector=${selector}`
-              }
-              await callback.apply(this, [err, null, selIdx, selectors])
-              continue
-            }
-            if (meta.width < rect.left + rect.width) {
-              rect.width = meta.width - rect.left
-            }
-            if (meta.height < rect.top + rect.height) {
-              rect.height = meta.height - rect.top
-            }
-
-            const buffer = await sharp(fullscreenBuffer).extract(rect).toBuffer()
             await callback.apply(this, [null, buffer, selIdx, selectors, rectIdx])
           }
         } catch (e) {
