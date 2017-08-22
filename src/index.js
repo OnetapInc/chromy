@@ -661,6 +661,10 @@ class Chromy extends Document {
   }
 
   async setDeviceScaleFactor (deviceScaleFactor) {
+    const screen = await this._getScreenInfo()
+    if (screen.devicePixelRatio === deviceScaleFactor) {
+      return
+    }
     this.currentDeviceScaleFactor = deviceScaleFactor
     return this.client.Emulation.setDeviceMetricsOverride({
       width: 0, height: 0, deviceScaleFactor: deviceScaleFactor, mobile: false
