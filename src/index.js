@@ -63,6 +63,7 @@ class Chromy extends Document {
     this.messagePrefix = null
     this.emulateMode = false
     this.currentEmulateDeviceName = null
+    this.currentDeviceScaleFactor = null
     this.userAgentBeforeEmulate = null
     this.instanceId = instanceId++
   }
@@ -394,29 +395,30 @@ class Chromy extends Document {
     let image = Buffer.from(captureResult.data, 'base64')
     if (!opts.useDeviceResolution) {
       const screen = await this._getScreenInfo()
-      let promise = new Promise((resolve, reject) => {
-        Jimp.read(image, (err, img) => {
-          if (err) {
-            return reject(err)
-          }
-          let fmt = opts.format === 'png' ? Jimp.MIME_PNG : Jimp.MIME_JPEG
-          let quality = 100
-          if (opts.quality) {
-            quality = opts.quality
-          }
-          // img.scale(Math.floor(screen.width / 2), Math.floor(screen.height / 2))
-          img.scale(1.0 / screen.devicePixelRatio, Jimp.RESIZE_BEZIER)
-             .quality(quality)
-             .getBuffer(fmt, (err, buffer) => {
-               if (err) {
-                 reject(err)
-               } else {
-                 resolve(buffer)
-               }
-             })
+      if (screen.devicePixelRatio !== 1) {
+        let promise = new Promise((resolve, reject) => {
+          Jimp.read(image, (err, img) => {
+            if (err) {
+              return reject(err)
+            }
+            let fmt = opts.format === 'png' ? Jimp.MIME_PNG : Jimp.MIME_JPEG
+            let quality = 100
+            if (opts.quality) {
+              quality = opts.quality
+            }
+            img.scale(1.0 / screen.devicePixelRatio, Jimp.RESIZE_BEZIER)
+               .quality(quality)
+               .getBuffer(fmt, (err, buffer) => {
+                 if (err) {
+                   reject(err)
+                 } else {
+                   resolve(buffer)
+                 }
+               })
+          })
         })
-      })
-      image = await promise
+        image = await promise
+      }
     }
     return image
   }
@@ -456,9 +458,7 @@ class Chromy extends Document {
     } finally {
       await emulation.reset()
       // restore emulation mode
-      if (this.currentEmulateDeviceName !== null) {
-        await this.emulate(this.currentEmulateDeviceName)
-      }
+      await this._restoreEmulationSetting()
     }
     return result
   }
@@ -575,6 +575,7 @@ class Chromy extends Document {
       }
     } finally {
       await emulation.reset()
+      await this._restoreEmulationSetting()
     }
   }
 
@@ -659,6 +660,13 @@ class Chromy extends Document {
     }
   }
 
+  async setDeviceScaleFactor (deviceScaleFactor) {
+    this.currentDeviceScaleFactor = deviceScaleFactor
+    return this.client.Emulation.setDeviceMetricsOverride({
+      width: 0, height: 0, deviceScaleFactor: deviceScaleFactor, mobile: false
+    })
+  }
+
   async emulate (deviceName) {
     await this._checkStart()
 
@@ -689,6 +697,16 @@ class Chromy extends Document {
     }
     this.emulateMode = false
     this.currentEmulateDeviceName = null
+  }
+
+  async _restoreEmulationSetting () {
+    // restore emulation mode
+    if (this.currentEmulateDeviceName !== null) {
+      await this.emulate(this.currentEmulateDeviceName)
+    }
+    if (this.currentDeviceScaleFactor) {
+      await this.setDeviceScaleFactor(this.currentDeviceScaleFactor)
+    }
   }
 
   async blockUrls (urls) {
