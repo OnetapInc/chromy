@@ -147,7 +147,7 @@ chromy.chain()
  - host(default: localhost): host address
  - port(default: 9222): --remote-debugging-port  
  - userDataDir(default: null): Chrome profile path. This option can be used to persist an user profile.
- - launchBrowser(default: true): If you want chromy to attach to Chrome that is already launched, set to true.
+ - launchBrowser(default: true): If you want chromy to attach to the Chrome instance that is already launched, set to false.
  - visible(default: false): If set to true, chrome is launched in visible mode. This option is not used if launchBrowser is false.
  - chromePath(default: null): This option is used to find out an executable of Chrome. If set to null, executable is selected automatically. This option is not used if launchBrowser is false.
  - enableExtensions(default: false): Enable extension loading. (Generally, this options is used with userDataDir option)
