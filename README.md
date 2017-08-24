@@ -176,6 +176,10 @@ Goes to url. If you have not called start(), this method calls start(url) automa
 
 waitLoadEvent(default: true): If set to false, goto() doesn't wait until load event is fired.
 
+###### returns
+
+Returns [Response object](https://chromedevtools.github.io/devtools-protocol/tot/Network/#type-Response)
+
 ##### .waitLoadEvent()
 
 wait until a load event is fired.

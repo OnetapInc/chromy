@@ -11,6 +11,9 @@ describe('goto', function() {
     const chromy = new Chromy()
     chromy.chain()
           .goto('file://' + process.env.PWD + '/test_pages/wait.html')
+          .result(e => {
+            assert.ok(e != null)
+          })
           .evaluate(_ => { console.log('test') })
           .wait("div")
           .goto('file://' + process.env.PWD + '/test_pages/index.html')

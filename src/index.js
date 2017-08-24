@@ -246,6 +246,14 @@ class Chromy extends Document {
     }
     options = Object.assign({}, defaultOptions, options)
     await this._checkStart(url)
+    let response = null
+    let listener = (payload) => {
+      if (payload.response.url === url) {
+        response = payload.response
+      }
+    }
+    const eventName = 'Network.responseReceived'
+    await this.on(eventName, listener)
     try {
       await this._waitFinish(this.options.gotoTimeout, async () => {
         await this.client.Page.navigate({url: completeUrl(url)})
@@ -259,7 +267,10 @@ class Chromy extends Document {
       } else {
         throw e
       }
+    } finally {
+      await this.removeListener(eventName, listener)
     }
+    return response
   }
 
   async waitLoadEvent () {
