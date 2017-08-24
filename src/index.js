@@ -10,11 +10,11 @@ const Document = require('./document')
 
 const {
   TimeoutError,
-  GotoTimeoutError
+  GotoTimeoutError,
 } = require('./error')
 const {
   createChromeLauncher,
-  completeUrl
+  completeUrl,
 } = require('./util')
 
 let instances = []
@@ -50,13 +50,13 @@ class Chromy extends Document {
       evaluateTimeout: 30000,
       waitFunctionPollingInterval: 100,
       typeInterval: 20,
-      target: defaultTargetFunction
+      target: defaultTargetFunction,
     }
     this.options = Object.assign({}, defaults, options)
     this.cdpOptions = {
       host: this.options.host,
       port: this.options.port,
-      target: this.options.target
+      target: this.options.target,
     }
     this.client = null
     this.launcher = null
@@ -199,7 +199,7 @@ class Chromy extends Document {
     await this.client.Security.certificateError(({eventId}) => {
       this.client.Security.handleCertificateError({
         eventId,
-        action: 'continue'
+        action: 'continue',
       })
     })
   }
@@ -242,7 +242,7 @@ class Chromy extends Document {
 
   async goto (url, options) {
     const defaultOptions = {
-      waitLoadEvent: true
+      waitLoadEvent: true,
     }
     options = Object.assign({}, defaultOptions, options)
     await this._checkStart(url)
@@ -358,14 +358,14 @@ class Chromy extends Document {
     const {root} = await this.client.DOM.getDocument()
     const {nodeId: fileNodeId} = await this.client.DOM.querySelector({
       nodeId: root.nodeId,
-      selector: selector
+      selector: selector,
     })
     if (!fileNodeId) {
       return
     }
     await this.client.DOM.setFileInputFiles({
       nodeId: fileNodeId,
-      files: paramFiles
+      files: paramFiles,
     })
   }
 
@@ -373,14 +373,14 @@ class Chromy extends Document {
     let opts = {
       format: 'png',
       fromSurface: true,
-      useDeviceResolution: false
+      useDeviceResolution: false,
     }
     if ((typeof format) === 'string') {
       // deprecated arguments style
       const params = {
         format: format,
         quality: quality,
-        fromSurface: fromSurface
+        fromSurface: fromSurface,
       }
       opts = Object.assign({}, opts, params)
     } else if ((typeof format) === 'object') {
@@ -407,14 +407,14 @@ class Chromy extends Document {
               quality = opts.quality
             }
             img.scale(1.0 / screen.devicePixelRatio, Jimp.RESIZE_BEZIER)
-               .quality(quality)
-               .getBuffer(fmt, (err, buffer) => {
-                 if (err) {
-                   reject(err)
-                 } else {
-                   resolve(buffer)
-                 }
-               })
+              .quality(quality)
+              .getBuffer(fmt, (err, buffer) => {
+                if (err) {
+                  reject(err)
+                } else {
+                  resolve(buffer)
+                }
+              })
           })
         })
         image = await promise
@@ -434,14 +434,14 @@ class Chromy extends Document {
       model: 'scroll',
       format: 'png',
       fromSurface: true,
-      useDeviceResolution: false
+      useDeviceResolution: false,
     }
     if ((typeof model) === 'string') {
       const params = {
         model: model,
         format: format,
         quality: quality,
-        fromSurface: fromSurface
+        fromSurface: fromSurface,
       }
       opts = Object.assign({}, opts, params)
     } else if ((typeof model) === 'object') {
@@ -467,13 +467,13 @@ class Chromy extends Document {
     let opts = {
       format: 'png',
       fromSurface: true,
-      useDeviceResolution: false
+      useDeviceResolution: false,
     }
     if ((typeof format) === 'string') {
       const params = {
         format: format,
         quality: quality,
-        fromSurface: fromSurface
+        fromSurface: fromSurface,
       }
       opts = Object.assign({}, opts, params)
     } else if ((typeof format) === 'object') {
@@ -528,7 +528,7 @@ class Chromy extends Document {
       quality: undefined,
       fromSurface: true,
       useDeviceResolution: false,
-      useQuerySelectorAll: false
+      useQuerySelectorAll: false,
     }
     const opts = Object.assign({}, defaults, options)
     const screenInfo = await this._getScreenInfo()
@@ -562,9 +562,14 @@ class Chromy extends Document {
               y: rect.top,
               width: rect.width,
               height: rect.height,
-              scale: opts.useDeviceResolution ? 1 : 1.0 / screenInfo.devicePixelRatio
+              scale: opts.useDeviceResolution ? 1 : 1.0 / screenInfo.devicePixelRatio,
             }
-            let screenshotOpts = Object.assign({format: opts.format, quality: opts.quality, fromSurface: opts.fromSurface, clip})
+            let screenshotOpts = Object.assign({
+              format: opts.format,
+              quality: opts.quality,
+              fromSurface: opts.fromSurface,
+              clip,
+            })
             const {data} = await this.client.Page.captureScreenshot(screenshotOpts)
             let buffer = Buffer.from(data, 'base64')
             await callback.apply(this, [null, buffer, selIdx, selectors, rectIdx])
@@ -667,7 +672,7 @@ class Chromy extends Document {
     }
     this.currentDeviceScaleFactor = deviceScaleFactor
     return this.client.Emulation.setDeviceMetricsOverride({
-      width: 0, height: 0, deviceScaleFactor: deviceScaleFactor, mobile: false
+      width: 0, height: 0, deviceScaleFactor: deviceScaleFactor, mobile: false,
     })
   }
 
@@ -684,7 +689,7 @@ class Chromy extends Document {
       deviceScaleFactor: device.deviceScaleFactor,
       mobile: device.mobile,
       fitWindow: false,
-      scale: device.pageScaleFactor
+      scale: device.pageScaleFactor,
     })
     const platform = device.mobile ? 'mobile' : 'desktop'
     await this.client.Emulation.setTouchEmulationEnabled({enabled: true, configuration: platform})

@@ -4,11 +4,11 @@ const {
   TimeoutError,
   WaitTimeoutError,
   EvaluateTimeoutError,
-  EvaluateError
+  EvaluateError,
 } = require('./error')
 const {
   wrapFunctionForEvaluation,
-  wrapFunctionForCallFunction
+  wrapFunctionForCallFunction,
 } = require('./functionToSource')
 const {
   escapeHtml,
@@ -118,7 +118,7 @@ class Document {
     return this.evaluate(_ => {
       return {
         x: window.pageXOffset,
-        y: window.pageYOffset
+        y: window.pageYOffset,
       }
     })
   }
@@ -158,7 +158,7 @@ class Document {
         // adjust to after process
         result.result.value = JSON.stringify({
           type: (typeof result.result.value),
-          result: JSON.stringify(result.result.value)
+          result: JSON.stringify(result.result.value),
         })
       }
       if (result.result.subtype === 'error') {
@@ -194,7 +194,7 @@ class Document {
     }`
     const params = {
       objectId,
-      functionDeclaration
+      functionDeclaration,
     }
     await this.client.Runtime.enable()
     await this.client.Runtime.callFunctionOn(params)
@@ -203,7 +203,7 @@ class Document {
   async exists (selector) {
     return this._evaluateWithReplaces(
       _ => { return document.querySelector('?') !== null },
-      {}, {'?': escapeSingleQuote(selector)}
+      {}, {'?': escapeSingleQuote(selector)},
     )
   }
 
@@ -213,7 +213,7 @@ class Document {
         let dom = document.querySelector('?')
         return dom !== null && dom.offsetWidth > 0 && dom.offsetHeight > 0
       },
-      {}, {'?': escapeSingleQuote(selector)}
+      {}, {'?': escapeSingleQuote(selector)},
     )
   }
 
@@ -335,7 +335,7 @@ class Document {
       top: Math.floor(rect.top),
       left: Math.floor(rect.left),
       width: Math.floor(rect.width),
-      height: Math.floor(rect.height)
+      height: Math.floor(rect.height),
     }
   }
 
@@ -352,7 +352,7 @@ class Document {
         top: Math.floor(rect.top),
         left: Math.floor(rect.left),
         width: Math.floor(rect.width),
-        height: Math.floor(rect.height)
+        height: Math.floor(rect.height),
       }
     })
   }
@@ -387,7 +387,7 @@ class Document {
         width: document.body.scrollWidth,
         height: document.body.scrollHeight,
         viewportWidth: window.innerWidth,
-        viewportHeight: window.innerHeight
+        viewportHeight: window.innerHeight,
       }
     })
   }

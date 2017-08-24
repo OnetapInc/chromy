@@ -15,7 +15,7 @@ function escapeHtml (string) {
       '`': '&#x60;',
       '"': '&quot;',
       '<': '&lt;',
-      '>': '&gt;'
+      '>': '&gt;',
     }[match]
   })
 }
@@ -64,7 +64,7 @@ async function createChromeLauncher (startingUrl, options) {
     startingUrl: startingUrl,
     logLevel: 'error',
     enableExtensions: options.enableExtensions,
-    handleSIGINT: false
+    handleSIGINT: false,
   }
   if (options.chromePath) {
     params.chromePath = options.chromePath
