@@ -458,12 +458,13 @@ class Chromy extends Document {
     } else if ((typeof model) === 'object') {
       opts = Object.assign({}, opts, model)
     }
-    const emulation = await createFullscreenEmulationManager(this, opts.model)
+    const emulation = await createFullscreenEmulationManager(this, opts.model, false, opts.useDeviceResolution)
 
     let result = null
     try {
       await emulation.emulate()
-      const screenshotParams = Object.assign({}, opts)
+      // device resolution is already emulated by emulation manager, so useDeviceResotion must be set true
+      const screenshotParams = Object.assign({}, opts, {useDeviceResolution: true})
       delete screenshotParams.model
       result = await this.screenshot(screenshotParams)
     } finally {
@@ -503,7 +504,7 @@ class Chromy extends Document {
       })
       scale = 1.0 / pixelRatio
     }
-    const emulation = await createFullscreenEmulationManager(this, 'scroll', true)
+    const emulation = await createFullscreenEmulationManager(this, 'scroll', true, opts.useDeviceResolution)
     let buffer = null
     try {
       await emulation.emulate()
@@ -517,7 +518,7 @@ class Chromy extends Document {
         y: rect.top,
         width: rect.width,
         height: rect.height,
-        scale: scale,
+        scale: 1,
       }
       let screenshotOpts = Object.assign({}, opts, {clip})
       const {data} = await this.client.Page.captureScreenshot(screenshotOpts)
@@ -542,8 +543,7 @@ class Chromy extends Document {
       useQuerySelectorAll: false,
     }
     const opts = Object.assign({}, defaults, options)
-    const screenInfo = await this._getScreenInfo()
-    const emulation = await createFullscreenEmulationManager(this, 'scroll', true)
+    const emulation = await createFullscreenEmulationManager(this, 'scroll', true, opts.useDeviceResolution)
     await emulation.emulate()
     try {
       for (let selIdx = 0; selIdx < selectors.length; selIdx++) {
@@ -573,7 +573,7 @@ class Chromy extends Document {
               y: rect.top,
               width: rect.width,
               height: rect.height,
-              scale: opts.useDeviceResolution ? 1 : 1.0 / screenInfo.devicePixelRatio,
+              scale: 1,
             }
             let screenshotOpts = Object.assign({
               format: opts.format,

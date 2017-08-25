@@ -1,9 +1,10 @@
 class FullscreenEmulationManager {
-  constructor (chromy, model, captureSelector) {
+  constructor (chromy, model, captureSelector, useDeviceResolution) {
     this._chromy = chromy
     this._client = chromy.client
     this._model = model
     this._captureSelector = captureSelector
+    this._useDeviceResolution = useDeviceResolution
     this.browserInfo = null
   }
 
@@ -37,7 +38,11 @@ class FullscreenEmulationManager {
       this._deviceMetrics.height = 10000
     }
     if (this._chromy._chromeVersion >= 61) {
-      this._deviceMetrics.deviceScaleFactor = info.devicePixelRatio
+      if (this._useDeviceResolution) {
+        this._deviceMetrics.deviceScaleFactor = info.devicePixelRatio
+      } else {
+        this._deviceMetrics.deviceScaleFactor = 1
+      }
     }
   }
 
@@ -66,8 +71,8 @@ class FullscreenEmulationManager {
   }
 }
 
-async function createFullscreenEmulationManager (chromy, model, captureSelector = false) {
-  const manager = new FullscreenEmulationManager(chromy, model, captureSelector)
+async function createFullscreenEmulationManager (chromy, model, captureSelector = false, useDeviceResolution = false,) {
+  const manager = new FullscreenEmulationManager(chromy, model, captureSelector, useDeviceResolution)
   await manager.init()
   return manager
 }
