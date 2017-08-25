@@ -3,6 +3,8 @@
 const chromeLauncher = require('chrome-launcher')
 const path = require('path')
 
+// Borrow from here:
+// https://github.com/GoogleChrome/puppeteer/blob/master/lib/Launcher.js#L30
 const DEFAULT_ARGS = [
   '--disable-background-networking',
   '--disable-background-timer-throttling',
