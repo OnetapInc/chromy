@@ -3,6 +3,24 @@
 const chromeLauncher = require('chrome-launcher')
 const path = require('path')
 
+const DEFAULT_ARGS = [
+  '--disable-background-networking',
+  '--disable-background-timer-throttling',
+  '--disable-client-side-phishing-detection',
+  '--disable-default-apps',
+  '--disable-hang-monitor',
+  '--disable-popup-blocking',
+  '--disable-prompt-on-repost',
+  '--disable-sync',
+  '--enable-automation',
+  '--enable-devtools-experiments',
+  '--metrics-recording-only',
+  '--no-first-run',
+  '--password-store=basic',
+  '--safebrowsing-disable-auto-update',
+  '--use-mock-keychain',
+];
+
 // borrow from: http://qiita.com/saekis/items/c2b41cd8940923863791
 function escapeHtml (string) {
   if (typeof string !== 'string') {
@@ -28,7 +46,7 @@ function escapeSingleQuote (string) {
 }
 
 async function createChromeLauncher (startingUrl, options) {
-  const flags = []
+  const flags = [].concat(DEFAULT_ARGS)
   let chromeInstance
 
   // Lighthouse adds '--disable-setuid-sandbox' flag automatically.
@@ -40,6 +58,7 @@ async function createChromeLauncher (startingUrl, options) {
   if (!options.visible) {
     flags.push('--headless')
     flags.push('--hide-scrollbars')
+    flags.push('--mute-audio')
   }
   if (options.chromeFlags && Array.isArray(options.chromeFlags)) {
     options.chromeFlags.forEach(f => {
