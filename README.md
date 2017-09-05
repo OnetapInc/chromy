@@ -323,6 +323,10 @@ chromy.chain()
       .end()
 ```
 
+##### .send(eventName, parameter)
+
+Calls DevTools protocol directly.
+
 ##### .on(eventName, listener)
 
 Adds the listener function.

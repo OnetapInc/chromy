@@ -618,6 +618,11 @@ class Chromy extends Document {
     await this.client.Network.requestWillBeSent(callback)
   }
 
+  async send (event, parameter) {
+    await this._checkStart()
+    return this.client.send(event, parameter)
+  }
+
   async on (event, callback) {
     await this._checkStart()
     this.client.on(event, callback)
