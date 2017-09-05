@@ -1,3 +1,11 @@
+## 0.5.3 - 2017-09-6
+ - Add .send()
+ - Add .setDeviceScaleFactor()
+ - Change default startup flags to the flags based on puppeteer.
+ - Replace sharp with jimp.
+ - Remove compatibility to chrome60 or before version.
+ - Fix signal handler problem.
+
 ## 0.4.8 - 2017-08-17
  - Fix signal handler problem.
 
