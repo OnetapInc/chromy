@@ -1,4 +1,7 @@
-## 0.5.3 - 2017-09-6
+## 0.5.4 - 2017-09-13
+ - Supports CHROME_PATH enviroment variable to spcify an executable file path
+
+## 0.5.3 - 2017-09-06
  - Add .send()
  - Add .setDeviceScaleFactor()
  - Change default startup flags to the flags based on puppeteer.
