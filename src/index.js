@@ -35,13 +35,19 @@ function defaultTargetFunction (targets) {
 class Chromy extends Document {
   constructor (options = {}) {
     super(null, null, null)
+    let chromePath =  null
+    if (options.chromePath) {
+      chromePath = options.chromePath
+    } else if (process.env.CHROME_PATH) {
+      chromePath = process.env.CHROME_PATH
+    }
     const defaults = {
       host: 'localhost',
       port: 9222,
       launchBrowser: true,
       userDataDir: null,
       chromeFlags: [],
-      chromePath: null,
+      chromePath: chromePath,
       enableExtensions: false,
       activateOnStartUp: true,
       waitTimeout: 30000,
