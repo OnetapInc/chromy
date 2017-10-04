@@ -47,6 +47,10 @@ function escapeSingleQuote (string) {
   return string.replace(/'/g, '\\\'')
 }
 
+function escapeNewLine (string) {
+  return string.replace(/\r?\n/g, '\\n')
+}
+
 async function createChromeLauncher (startingUrl, options) {
   const flags = [].concat(DEFAULT_ARGS)
   let chromeInstance
@@ -113,6 +117,7 @@ function completeUrl (url) {
 
 exports.escapeHtml = escapeHtml
 exports.escapeSingleQuote = escapeSingleQuote
+exports.escapeNewLine = escapeNewLine
 exports.createChromeLauncher = createChromeLauncher
 exports.completeUrl = completeUrl
 

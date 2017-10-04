@@ -12,6 +12,7 @@ const {
 } = require('./functionToSource')
 const {
   escapeHtml,
+  escapeNewLine,
   escapeSingleQuote,
 } = require('./util')
 
@@ -77,7 +78,7 @@ class Document {
   async insert (expr, value) {
     expr = escapeSingleQuote(expr)
     await this.evaluate('document.querySelector(\'' + expr + '\').focus()')
-    await this.evaluate('document.querySelector(\'' + expr + '\').value = "' + escapeHtml(value) + '"')
+    await this.evaluate('document.querySelector(\'' + expr + '\').value = "' + escapeNewLine(escapeHtml(value)) + '"')
   }
 
   async check (selector) {
