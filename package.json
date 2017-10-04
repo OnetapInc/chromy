@@ -21,6 +21,7 @@
   "license": "MIT",
   "dependencies": {
     "async-chain-proxy": "^0.1.5",
+    "babel-runtime": "^6.26.0",
     "chrome-launcher": "^0.4.0",
     "chrome-remote-interface": "^0.23.2",
     "jimp": "^0.2.28",
