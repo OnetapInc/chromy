@@ -1,3 +1,8 @@
+## 0.5.5 - 2017-10-05
+ - add babel-runtime dependency explicitly. #76
+ - fix newline problem in .insert() #74
+ - inject buffer content into page. #71
+
 ## 0.5.4 - 2017-09-13
  - Supports CHROME_PATH enviroment variable to spcify an executable file path
 
