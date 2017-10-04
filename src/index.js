@@ -653,7 +653,7 @@ class Chromy extends Document {
     const data = file_or_buffer instanceof Buffer ?
       file_or_buffer.toString('utf8') :
       await new Promise((resolve, reject) => {
-      fs.readFile(file, {encoding: 'utf-8'}, (err, data) => {
+      fs.readFile(file_or_buffer, {encoding: 'utf-8'}, (err, data) => {
         if (err) reject(err)
         resolve(data)
       })
