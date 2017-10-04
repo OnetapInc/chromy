@@ -649,8 +649,10 @@ class Chromy extends Document {
     this.client.removeAllListeners(event)
   }
 
-  async inject (type, file) {
-    const data = await new Promise((resolve, reject) => {
+  async inject (type, file_or_buffer) {
+    const data = file_or_buffer instanceof Buffer ?
+      file_or_buffer.toString('utf8') :
+      await new Promise((resolve, reject) => {
       fs.readFile(file, {encoding: 'utf-8'}, (err, data) => {
         if (err) reject(err)
         resolve(data)
