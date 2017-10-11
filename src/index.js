@@ -1,4 +1,5 @@
 const fs = require('fs')
+const nodeUrl = require('url')
 
 const CDP = require('chrome-remote-interface')
 const uuidV4 = require('uuid/v4')
@@ -247,12 +248,22 @@ class Chromy extends Document {
   }
 
   async goto (url, options) {
+    // correct url form.
+    url = nodeUrl.format(nodeUrl.parse(url))
     const defaultOptions = {
       waitLoadEvent: true,
     }
     options = Object.assign({}, defaultOptions, options)
     await this._checkStart(url)
     let response = null
+    // truck redirects.
+    let requestListener = (payload) => {
+      if (payload.redirectResponse && payload.redirectResponse.url === url) {
+        url = payload.redirectResponse.headers.location
+      }
+    }
+    const requestEventName = 'Network.requestWillBeSent'
+    await this.on(requestEventName, requestListener)
     let listener = (payload) => {
       if (payload.response.url === url) {
         response = payload.response
@@ -275,6 +286,7 @@ class Chromy extends Document {
       }
     } finally {
       await this.removeListener(eventName, listener)
+      await this.removeListener(requestEventName, requestListener)
     }
     return response
   }

@@ -1,3 +1,7 @@
+## 0.5.6 - 2017-10-XX
+ - fix a redirect issue in .goto() #78
+ - fix a url format issue in .goto() #78
+
 ## 0.5.5 - 2017-10-05
  - add babel-runtime dependency explicitly. #76
  - fix newline problem in .insert() #74
