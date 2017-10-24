@@ -1,4 +1,5 @@
 ## 0.5.6 - 2017-10-XX
+ - fix a custom user agent problem #81
  - fix a redirect issue in .goto() #78
  - fix a url format issue in .goto() #78
 
