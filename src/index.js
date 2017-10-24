@@ -832,10 +832,20 @@ class Chromy extends Document {
   }
 
   async _getChromeVersion () {
-    return this.evaluate(_ => {
-      let v = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)
-      return v ? parseInt(v[2], 10) : false
-    })
+    let userAgent = null
+    try {
+      const result = await this.client.send('Browser.getVersion')
+      userAgent = result.product
+    } catch (_) {
+      // ignore
+    }
+    if (userAgent === null) {
+      userAgent = await this.evaluate(_ => {
+        return navigator.userAgent
+      })
+    }
+    let v = userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)
+    return v ? parseInt(v[2], 10) : false
   }
 }
 
