@@ -36,7 +36,7 @@ function defaultTargetFunction (targets) {
 class Chromy extends Document {
   constructor (options = {}) {
     super(null, null, null)
-    let chromePath =  null
+    let chromePath = null
     if (options.chromePath) {
       chromePath = options.chromePath
     } else if (process.env.CHROME_PATH) {
@@ -513,15 +513,6 @@ class Chromy extends Document {
   }
 
   async _screenshotSelector (selector, opts) {
-    let scale = null
-    if (opts.useDeviceResolution) {
-      scale = 1
-    } else {
-      const pixelRatio = await this.evaluate(function () {
-        return window.devicePixelRatio
-      })
-      scale = 1.0 / pixelRatio
-    }
     const emulation = await createFullscreenEmulationManager(this, 'scroll', true, opts.useDeviceResolution)
     let buffer = null
     try {
@@ -661,11 +652,9 @@ class Chromy extends Document {
     this.client.removeAllListeners(event)
   }
 
-  async inject (type, file_or_buffer) {
-    const data = file_or_buffer instanceof Buffer ?
-      file_or_buffer.toString('utf8') :
-      await new Promise((resolve, reject) => {
-      fs.readFile(file_or_buffer, {encoding: 'utf-8'}, (err, data) => {
+  async inject (type, fileOrBuffer) {
+    const data = fileOrBuffer instanceof Buffer ? fileOrBuffer.toString('utf8') : await new Promise((resolve, reject) => {
+      fs.readFile(fileOrBuffer, {encoding: 'utf-8'}, (err, data) => {
         if (err) reject(err)
         resolve(data)
       })

@@ -71,7 +71,7 @@ class FullscreenEmulationManager {
   }
 }
 
-async function createFullscreenEmulationManager (chromy, model, captureSelector = false, useDeviceResolution = false,) {
+async function createFullscreenEmulationManager (chromy, model, captureSelector = false, useDeviceResolution = false) {
   const manager = new FullscreenEmulationManager(chromy, model, captureSelector, useDeviceResolution)
   await manager.init()
   return manager

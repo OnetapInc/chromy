@@ -21,7 +21,7 @@ const DEFAULT_ARGS = [
   '--password-store=basic',
   '--safebrowsing-disable-auto-update',
   '--use-mock-keychain',
-];
+]
 
 // borrow from: http://qiita.com/saekis/items/c2b41cd8940923863791
 function escapeHtml (string) {
