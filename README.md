@@ -88,7 +88,7 @@ chromy.chain()
     * [.start(startingUrl = null)](#startstartingurl--null)
     * [.goto(url, options = {})](#gotourl-options--)
     * [.waitLoadEvent()](#waitloadevent)
-    * [.userAgent()](#useragent)
+    * [.userAgent(ua)](#useragentua)
     * [Chromy.addCustomDevice(device)](#chromyaddcustomdevicedevice)
     * [.emulate(deviceName)](#emulatedevicename)
     * [.forward()](#forward)
@@ -193,7 +193,7 @@ set a useragent.
 
 ua: new user agent.
 
-##### Chromy.addCustomDevice(devices)
+##### Chromy.addCustomDevice(device)
 
 add custom device definitions to emulate it.
 
