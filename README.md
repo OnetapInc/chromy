@@ -88,6 +88,9 @@ chromy.chain()
     * [.start(startingUrl = null)](#startstartingurl--null)
     * [.goto(url, options = {})](#gotourl-options--)
     * [.waitLoadEvent()](#waitloadevent)
+    * [.userAgent()](#useragent)
+    * [Chromy.addCustomDevice(device)](#chromyaddcustomdevicedevice)
+    * [.emulate(deviceName)](#emulatedevicename)
     * [.forward()](#forward)
     * [.back()](#back)
     * [.inject(type, file)](#injecttype-file)
@@ -183,6 +186,22 @@ Returns [Response object](https://chromedevtools.github.io/devtools-protocol/tot
 ##### .waitLoadEvent()
 
 wait until a load event is fired.
+
+##### .userAgent(ua)
+
+set a useragent.
+
+ua: new user agent.
+
+##### Chromy.addCustomDevice(devices)
+
+add custom device definitions to emulate it.
+
+See [src](src/devices.js).
+
+##### .emulate(deviceName)
+
+emulate a device that is defined by `Chromy.addCustomDevice()`.
 
 ##### .forward()
 
