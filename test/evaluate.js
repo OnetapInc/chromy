@@ -49,7 +49,21 @@ describe('evaluate', function() {
             })
     })
   }
-
+  it('can accept any arguments', (done) => {
+    const chromy = new Chromy()
+    chromy.chain()
+          .goto('file://' + process.env.PWD + '/test_pages/index.html')
+          .evaluate(a => a, ['abc'])
+          .result(r => assert.equal('abc', r))
+          .evaluate((a, b) => a + b, ['abc', 123])
+          .result(r => assert.equal('abc123', r))
+          .evaluate(_ => Promise.resolve(100))
+          .evaluate((r, a) => r + a, ['abc'])
+          .result(r => assert.equal('100abc', r))
+          .end()
+          .then(_ => done())
+          .catch(e => {
+            done(e)
+          })
+  })
 })
-
-

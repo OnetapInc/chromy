@@ -1,0 +1,13 @@
+{
+    "opts":        {
+        "recurse":        true,
+        "readme":         "README.md",
+        "template":       "node_modules/docdash",
+        "destination":    "docs/",
+        "verbose":        true
+    },
+    "plugins":     ["plugins/markdown"],
+    "markdown":    {
+        "hardwrap":    true
+    }
+}

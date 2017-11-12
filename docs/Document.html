@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Document - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Document.html">Document</a><ul class='methods'><li data-type='method'><a href="Document.html#evaluate">evaluate</a></li></ul></li></ul><h3>Externals</h3><ul><li><a href="external-CDP.html">CDP</a></li></ul>
+</nav>
+
+<div id="main">
+
+    <h1 class="page-title">Document</h1>
+
+<section>
+
+<header>
+
+        <h2>
+        Document
+        </h2>
+
+            <div class="class-description"><p>Document class</p></div>
+
+</header>
+
+<article>
+    <div class="container-overview">
+
+    <h2>Constructor</h2>
+
+    <h4 class="name" id="Document"><span class="type-signature"></span>new Document<span class="signature">(chromy<span class="signature-attributes">opt</span>, client<span class="signature-attributes">opt</span>, nodeId<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
+<dl class="details">
+
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="document.js.html">document.js</a>, <a href="document.js.html#line29">line 29</a>
+    </li></ul></dd>
+
+</dl>
+
+    <h5>Parameters:</h5>
+
+<table class="params">
+    <thead>
+    <tr>
+
+        <th>Name</th>
+
+        <th>Type</th>
+
+        <th>Attributes</th>
+
+        <th>Default</th>
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+        <tr>
+
+                <td class="name"><code>chromy</code></td>
+
+            <td class="type">
+
+<span class="param-type"><a href="Document.html">Document</a></span>
+
+            </td>
+
+                <td class="attributes">
+
+                    &lt;optional><br>
+
+                </td>
+
+                <td class="default">
+
+                </td>
+
+            <td class="description last"><p>Chromy instance</p></td>
+        </tr>
+
+        <tr>
+
+                <td class="name"><code>client</code></td>
+
+            <td class="type">
+
+<span class="param-type">CDP</span>
+
+            </td>
+
+                <td class="attributes">
+
+                    &lt;optional><br>
+
+                </td>
+
+                <td class="default">
+
+                </td>
+
+            <td class="description last"><p>CDP instance</p></td>
+        </tr>
+
+        <tr>
+
+                <td class="name"><code>nodeId</code></td>
+
+            <td class="type">
+
+<span class="param-type">number</span>
+
+            </td>
+
+                <td class="attributes">
+
+                    &lt;optional><br>
+
+                </td>
+
+                <td class="default">
+
+                    <code>null</code>
+
+                </td>
+
+            <td class="description last"></td>
+        </tr>
+
+    </tbody>
+</table>
+
+    </div>
+
+        <h3 class="subsection-title">Members</h3>
+
+<h4 class="name" id="chromy"><span class="type-signature"></span>chromy<span class="type-signature"> :<a href="Document.html">Document</a></span></h4>
+
+<dl class="details">
+
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="document.js.html">document.js</a>, <a href="document.js.html#line31">line 31</a>
+    </li></ul></dd>
+
+</dl>
+
+<div class="description">
+    <p>Chromy instance</p>
+</div>
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+
+<span class="param-type"><a href="Document.html">Document</a></span>
+
+        </li>
+    </ul>
+
+<h4 class="name" id="client"><span class="type-signature"></span>client<span class="type-signature"> :CDP</span></h4>
+
+<dl class="details">
+
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="document.js.html">document.js</a>, <a href="document.js.html#line45">line 45</a>
+    </li></ul></dd>
+
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://www.npmjs.com/package/chrome-remote-interface#event-connect">https://www.npmjs.com/package/chrome-remote-interface#event-connect</a></li>
+        </ul>
+    </dd>
+
+</dl>
+
+<div class="description">
+    <p>CDP client instance</p>
+</div>
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+
+<span class="param-type">CDP</span>
+
+        </li>
+    </ul>
+
+        <h3 class="subsection-title">Methods</h3>
+
+    <h4 class="name" id="evaluate"><span class="type-signature">(async) </span>evaluate<span class="signature">(expr, options)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+<dl class="details">
+
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="document.js.html">document.js</a>, <a href="document.js.html#line172">line 172</a>
+    </li></ul></dd>
+
+</dl>
+
+<div class="description">
+    <p>Evaluates a expression in the browser context</p>
+</div>
+
+    <h5>Parameters:</h5>
+
+<table class="params">
+    <thead>
+    <tr>
+
+        <th>Name</th>
+
+        <th>Type</th>
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+        <tr>
+
+                <td class="name"><code>expr</code></td>
+
+            <td class="type">
+
+<span class="param-type">function</span>
+|
+
+<span class="param-type">string</span>
+
+            </td>
+
+            <td class="description last"><p>JS expression<br>                                     If the expression returns a Promise object,<br>                                     the promise is resolved automatically.</p></td>
+        </tr>
+
+        <tr>
+
+                <td class="name"><code>options</code></td>
+
+            <td class="type">
+
+<span class="param-type">object</span>
+|
+
+<span class="param-type">array</span>
+
+            </td>
+
+            <td class="description last"><p>Parameter array of <code>expr</code> function or<br>                                     Option object</p></td>
+        </tr>
+
+    </tbody>
+</table>
+
+<h5>Returns:</h5>
+
+<div class="param-desc">
+    <p>Returned value of <code>expr</code> function</p>
+</div>
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+
+<span class="param-type">Promise</span>
+
+    </dd>
+</dl>
+
+</article>
+
+</section>
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Nov 13 2017 02:37:53 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
