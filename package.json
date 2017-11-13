@@ -8,7 +8,7 @@
   },
   "scripts": {
     "pretest": "babel test --source-maps --out-dir dist_test",
-    "test": "WITH_BABEL=1 mocha dist_test --compilers js:babel-core/register --require babel-polyfill",
+    "test": "set WITH_BABEL=1 && mocha dist_test --compilers js:babel-core/register --require babel-polyfill",
     "document": "jsdoc ./src/ -c ./build/document.json",
     "clean": "reduce-blank ./docs/",
     "compile": "babel src --source-maps --out-dir dist --ignore '**/*.test.js'",

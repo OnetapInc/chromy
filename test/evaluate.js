@@ -57,9 +57,6 @@ describe('evaluate', function() {
           .result(r => assert.equal('abc', r))
           .evaluate((a, b) => a + b, ['abc', 123])
           .result(r => assert.equal('abc123', r))
-          .evaluate(_ => Promise.resolve(100))
-          .evaluate((r, a) => r + a, ['abc'])
-          .result(r => assert.equal('100abc', r))
           .end()
           .then(_ => done())
           .catch(e => {

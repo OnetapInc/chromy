@@ -172,13 +172,13 @@ class Document {
   async evaluate (expr, options = {}) {
     if ((expr instanceof Function) && (options instanceof Array)) {
       options = options.map(function (parameter) {
-        return JSON.stringify(parameter);
+        return JSON.stringify(JSON.stringify(parameter));
       });
-      expr = `function () {
-        (${expr}).apply(this, Array.from(arguments).concat([${options}].map(function (parameter) {
+      expr = new Function(`
+        return (${expr}).apply(this, Array.from(arguments).concat([${options}].map(function (parameter) {
           return JSON.parse(parameter);
         })));
-      }`;
+      `);
       options = {};
     }
     return await this._evaluateWithReplaces(expr, options)
