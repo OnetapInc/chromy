@@ -94,7 +94,7 @@ chromy.chain()
     * [.forward()](#forward)
     * [.back()](#back)
     * [.inject(type, file)](#injecttype-file)
-    * [.evaluate(func|source)](#evaluatefuncsource)
+    * [.evaluate(func|source)](#evaluatefuncsourceargs)
     * [.result(func)](#resultfunc)
     * [.end()](#end)
     * [.exists(selector)](#existsselector)
@@ -218,7 +218,7 @@ Injects a file into browser as a javascript or a css.
 type: must be 'js' or 'css'
 file: injected file.
 
-##### .evaluate(func|source)
+##### .evaluate(func|source, args)
 
 Evaluates a expression in the browser context.  
 If the expression returns a Promise object, the promise is resolved automatically.

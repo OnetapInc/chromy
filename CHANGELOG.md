@@ -1,4 +1,7 @@
-## 0.5.6 - 2017-10-XX
+## 0.5.7 - 2017-11-24
+ - evaluate method can accept arguments #86
+
+## 0.5.6 - 2017-10-25
  - fix a custom user agent problem #81
  - fix a redirect issue in .goto() #78
  - fix a url format issue in .goto() #78
