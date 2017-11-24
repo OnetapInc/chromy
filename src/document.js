@@ -25,7 +25,6 @@ const {
  * @param {CDP}      [client]      CDP instance
  * @param {number}   [nodeId=null]
  */
-
 class Document {
   constructor (chromy, client, nodeId = null) {
     /**
@@ -168,18 +167,18 @@ class Document {
    *
    * @return {Promise}          Returned value of `expr` function
    */
-
   async evaluate (expr, options = {}) {
     if ((expr instanceof Function) && (options instanceof Array)) {
       options = options.map(function (parameter) {
-        return JSON.stringify(JSON.stringify(parameter));
-      });
+        return JSON.stringify(JSON.stringify(parameter))
+      })
+      // eslint-disable-next-line no-new-func
       expr = new Function(`
         return (${expr}).apply(this, Array.from(arguments).concat([${options}].map(function (parameter) {
-          return JSON.parse(parameter);
-        })));
-      `);
-      options = {};
+          return JSON.parse(parameter)
+        })))
+      `)
+      options = {}
     }
     return await this._evaluateWithReplaces(expr, options)
   }
