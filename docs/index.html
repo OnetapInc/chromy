@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Home - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Document.html">Document</a><ul class='methods'><li data-type='method'><a href="Document.html#evaluate">evaluate</a></li></ul></li></ul><h3>Externals</h3><ul><li><a href="external-CDP.html">CDP</a></li></ul>
+</nav>
+
+<div id="main">
+
+    <section class="readme">
+        <article><h1>Chromy</h1><p>Chromy is a library for operating headless chrome.</p>
+<p>Chromy is similar to Nightmare.js but has some differences:</p>
+<ul>
+<li>Controlling Chrome via Chrome DevTools Protocol.</li>
+<li>Supports mobile emulation.</li>
+<li>No need to prepare a screen such as xvfb.</li>
+</ul>
+<h2>Requirements</h2><ul>
+<li>Node 6 or later</li>
+<li>Install Chrome60 or later to your machine before use Chromy.</li>
+</ul>
+<p>headless mode is supported by Chrome59 or later.</p>
+<h2>Installation</h2><pre class="prettyprint source lang-bash"><code>npm i chromy</code></pre><h2>Usage</h2><pre class="prettyprint source lang-js"><code>const Chromy = require('chromy')
+
+// not headless
+// let chromy = new Chromy({visible:true})
+let chromy = new Chromy()
+chromy.chain()
+      .goto('http://example.com/')
+      .evaluate(() => {
+        return document.querySelectorAll('*').length
+      })
+      .result((r) => console.log(r))
+      .end()
+      .then(() => chromy.close())</code></pre><p>You can also use async/await interfaces like this:</p>
+<pre class="prettyprint source lang-js"><code>const Chromy = require('chromy')
+
+async function main () {
+  let chromy = new Chromy()
+  await chromy.goto('http://example.com/')
+  const result = await chromy.evaluate(() => {
+          return document.querySelectorAll('*').length
+        })
+  console.log(result)
+  await chromy.close()
+}
+
+main()</code></pre><h3>Mobile Emulation</h3><p>Chromy provides mobile emulation.<br>The emulation changes a screen resolution, density, userAgent and provides touch emulation.</p>
+<pre class="prettyprint source lang-js"><code>const Chromy = require('chromy')
+
+let chromy = new Chromy()
+chromy.chain()
+      .emulate('iPhone6')
+      .goto('http://example.com/')
+      .tap(100, 100) // emulate tap action by synthesizing touch events.
+      .evaluate(() => {
+        return navigator.userAgent
+      })
+      .result(console.log)
+      .end()
+      .then(() => chromy.close())</code></pre><h2>FAQ</h2><p><a href="https://github.com/OnetapInc/chromy/wiki/FAQ">FAQ</a></p>
+<h2>API</h2><ul>
+<li><a href="#chromyoptions">Chromy(options)</a><ul>
+<li><a href="#startstartingurl--null">.start(startingUrl = null)</a></li>
+<li><a href="#gotourl-options--">.goto(url, options = {})</a></li>
+<li><a href="#waitloadevent">.waitLoadEvent()</a></li>
+<li><a href="#useragentua">.userAgent(ua)</a></li>
+<li><a href="#chromyaddcustomdevicedevice">Chromy.addCustomDevice(device)</a></li>
+<li><a href="#emulatedevicename">.emulate(deviceName)</a></li>
+<li><a href="#forward">.forward()</a></li>
+<li><a href="#back">.back()</a></li>
+<li><a href="#injecttype-file">.inject(type, file)</a></li>
+<li><a href="#evaluatefuncsource">.evaluate(func|source)</a></li>
+<li><a href="#resultfunc">.result(func)</a></li>
+<li><a href="#end">.end()</a></li>
+<li><a href="#existsselector">.exists(selector)</a></li>
+<li><a href="#visibleselector">.visible(selector)</a></li>
+<li><a href="#waitmsec">.wait(msec)</a></li>
+<li><a href="#waitselector">.wait(selector)</a></li>
+<li><a href="#waitfunc">.wait(func)</a></li>
+<li><a href="#sleepmsec">.sleep(msec)</a></li>
+<li><a href="#typeselector-text">.type(selector, text)</a></li>
+<li><a href="#insertselector-text">.insert(selector, text)</a></li>
+<li><a href="#checkselector">.check(selector)</a></li>
+<li><a href="#uncheckselector">.uncheck(selector)</a></li>
+<li><a href="#selectselector-value">.select(selector, value)</a></li>
+<li><a href="#setfileselector-files">.setFile(selector, files)</a></li>
+<li><a href="#clickselector-options">.click(selector, options)</a></li>
+<li><a href="#mousemovedx-y-options--">.mouseMoved(x, y, options = {})</a></li>
+<li><a href="#mousepressedx-y-options--">.mousePressed(x, y, options = {})</a></li>
+<li><a href="#mousereleasedx-y-options--">.mouseReleased(x, y, options = {})</a></li>
+<li><a href="#tapx-y-options--">.tap(x, y, options = {})</a></li>
+<li><a href="#doubletapx-y-options--">.doubleTap(x, y, options = {})</a></li>
+<li><a href="#scrollx-y">.scroll(x, y)</a></li>
+<li><a href="#scrolltox-y">.scrollTo(x, y)</a></li>
+<li><a href="#rectselector">.rect(selector)</a></li>
+<li><a href="#rectallselector">.rectAll(selector)</a></li>
+<li><a href="#definefunctionfunc">.defineFunction(func)</a></li>
+<li><a href="#oneventname-listener">.on(eventName, listener)</a></li>
+<li><a href="#onceeventname-listener">.once(eventName, listener)</a></li>
+<li><a href="#removelistenereventname-listener">.removeListener(eventName, listener)</a></li>
+<li><a href="#removealllistenerseventname">.removeAllListeners(eventName)</a></li>
+<li><a href="#screenshotoptions-">.screenshot(options= {})</a></li>
+<li><a href="#screenshotselectorselector-options">.screenshotSelector(selector, options={})</a></li>
+<li><a href="#screenshotmultipleselectorsselectors-callback-options--">.screenshotMultipleSelectors(selectors, callback, options = {})</a></li>
+<li><a href="#screenshotdocumentoptions--">.screenshotDocument(options = {})</a></li>
+<li><a href="#pdfoptions">.pdf(options={})</a></li>
+<li><a href="#startscreencastcallback-options--">.startScreencast(callback, options = {})</a></li>
+<li><a href="#stopscreencast">.stopScreencast()</a></li>
+<li><a href="#consolefunc">.console(func)</a></li>
+<li><a href="#receivemessagefunc">.receiveMessage(func)</a></li>
+<li><a href="#ignorecertificateerrors">.ignoreCertificateErrors()</a></li>
+<li><a href="#blockurlsurls">.blockUrls(urls)</a></li>
+<li><a href="#clearbrowsercache">.clearBrowserCache()</a></li>
+<li><a href="#setcookieparams">.setCookie(params)</a></li>
+<li><a href="#deletecookiename-url--null">.deleteCookie(name, url = null)</a></li>
+<li><a href="#clearallcookies">.clearAllCookies()</a></li>
+<li><a href="#cleardatafororigin-origin--null-type--all">.clearDataForOrigin (origin = null, type = 'all')</a></li>
+<li><a href="#getdomcounters">.getDOMCounters()</a></li>
+<li><a href="#static-cleanup">.static cleanup()</a></li>
+</ul>
+</li>
+</ul>
+<h5>Chromy(options)</h5><h6>options</h6><ul>
+<li>host(default: localhost): host address</li>
+<li>port(default: 9222): --remote-debugging-port  </li>
+<li>userDataDir(default: null): Chrome profile path. This option can be used to persist an user profile.</li>
+<li>launchBrowser(default: true): If you want chromy to attach to the Chrome instance that is already launched, set to false.</li>
+<li>visible(default: false): If set to true, chrome is launched in visible mode. This option is not used if launchBrowser is false.</li>
+<li>chromePath(default: null): This option is used to find out an executable of Chrome. If set to null, executable is selected automatically. This option is not used if launchBrowser is false.</li>
+<li>enableExtensions(default: false): Enable extension loading. (Generally, this options is used with userDataDir option)</li>
+<li>chromeFlags(default: []): These flags is passed to Chrome. Each flag must have a prefix string &quot;--&quot;. This option is not used if launchBrowser is false.</li>
+<li>waitTimeout(default: 30000): If wait() doesn't finish in the specified time WaitTimeoutError will be thrown.</li>
+<li>gotoTimeout(default: 30000): If goto() doesn't finish in the specified time GotoTimeoutError will be thrown.</li>
+<li>evaluateTimeout(default: 30000): If evaluate() doesn't finish in the specified time EvaluateTimeError will be thrown.</li>
+<li>waitFunctionPollingInterval(default: 100): polling interval for wait().</li>
+<li>typeInterval(default: 20): This option is used only in type() method.</li>
+<li>activateOnStartUp(default: true): activate a first tab on startup. this option is enable only in visible mode.</li>
+</ul>
+<h5>.start(startingUrl = null)</h5><p>Launches Chrome browser.</p>
+<h6>options</h6><p>startingUrl: a staring url. If you set to null 'about:blank' is used as a starting url.</p>
+<h5>.goto(url, options = {})</h5><p>Goes to url. If you have not called start(), this method calls start(url) automatically.</p>
+<h6>options</h6><p>waitLoadEvent(default: true): If set to false, goto() doesn't wait until load event is fired.</p>
+<h6>returns</h6><p>Returns <a href="https://chromedevtools.github.io/devtools-protocol/tot/Network/#type-Response">Response object</a></p>
+<h5>.waitLoadEvent()</h5><p>wait until a load event is fired.</p>
+<h5>.userAgent(ua)</h5><p>set a useragent.</p>
+<p>ua: new user agent.</p>
+<h5>Chromy.addCustomDevice(device)</h5><p>add custom device definitions to emulate it.</p>
+<p>See <a href="src/devices.js">src</a>.</p>
+<h5>.emulate(deviceName)</h5><p>emulate a device that is defined by <code>Chromy.addCustomDevice()</code>.</p>
+<h5>.forward()</h5><p>go forward to the next page and wait until load event is fired.</p>
+<h5>.back()</h5><p>go back to the previous page and wait until load event is fired.</p>
+<h5>.inject(type, file)</h5><p>Injects a file into browser as a javascript or a css.</p>
+<p>type: must be 'js' or 'css'<br>file: injected file.</p>
+<h5>.evaluate(func|source)</h5><p>Evaluates a expression in the browser context.<br>If the expression returns a Promise object, the promise is resolved automatically.</p>
+<h5>.result(func)</h5><p>result() receives a result of previous directive.</p>
+<pre class="prettyprint source lang-js"><code>chromy.chain()
+      .goto('http://example.com')
+      .evaluate(() => {
+        return document.querySelectorAll('*').length
+      })
+      .result((length) => {
+        // length is a result of evaluate() directive.
+        console.log(length)
+      }
+      .end()</code></pre><h5>.end()</h5><h5>.exists(selector)</h5><p>Returns whether an node matched with the selector is exists.</p>
+<h5>.visible(selector)</h5><p>Returns whether an node matched with the selector is exists and visible.</p>
+<h5>.wait(msec)</h5><p>alias for .sleep(msec)</p>
+<h5>.wait(selector)</h5><p>wait until selector you specified appear in a DOM tree.</p>
+<h5>.wait(func)</h5><p>wait until function you supplied is evaluated as true. func() executes in browser window context.</p>
+<h5>.sleep(msec)</h5><p>wait for milli seconds you specified.</p>
+<h5>.type(selector, text)</h5><h5>.insert(selector, text)</h5><h5>.check(selector)</h5><h5>.uncheck(selector)</h5><h5>.select(selector, value)</h5><h5>.setFile(selector, files)</h5><p>Sets the files to a file field that matches the selector.</p>
+<ul>
+<li>selector: selector for specifying the file field.</li>
+<li>files: The array or string value that represents a local file path.</li>
+</ul>
+<h5>.click(selector, options)</h5><h6>options</h6><p>waitLoadEvent(default: false): If set to true, wait until load event is fired after click event is fired.</p>
+<h5>.mouseMoved(x, y, options = {})</h5><p>Dispatch mousemoved event.</p>
+<h5>.mousePressed(x, y, options = {})</h5><p>Dispatch mousedown event.</p>
+<h5>.mouseReleased(x, y, options = {})</h5><p>Dispatch mouseup event.</p>
+<h5>.tap(x, y, options = {})</h5><p>Synthesize tap by dispatching touch events.<br>(NOTE: To dispatch touch events you need to enable a mobile emulation before.)</p>
+<h5>.doubleTap(x, y, options = {})</h5><p>Synthesize double tap by dispatching touch events.<br>(NOTE: To dispatch touch events you need to enable a mobile emulation before.)</p>
+<h5>.scroll(x, y)</h5><p>Scrolls to the position. x and y means relative position.</p>
+<h5>.scrollTo(x, y)</h5><p>Scrolls to the position. x and y means absolute position.</p>
+<h5>.rect(selector)</h5><p>Returns a rect of the element specified by selector.</p>
+<h5>.rectAll(selector)</h5><p>Returns an array of rects that is specified by selector.</p>
+<h5>.defineFunction(func)</h5><pre class="prettyprint source lang-js"><code>function outerFunc () {
+  return 'VALUE'
+}
+chromy.chain()
+      .goto('http://example.com')
+      .defineFunction(outerFunc)
+      .evaluate(() => {
+        outerFunc()
+      })
+      .end()</code></pre><h5>.send(eventName, parameter)</h5><p>Calls DevTools protocol directly.</p>
+<h5>.on(eventName, listener)</h5><p>Adds the listener function.</p>
+<h5>.once(eventName, listener)</h5><p>Adds one time listener function.</p>
+<h5>.removeListener(eventName, listener)</h5><p>Removes the listener function.</p>
+<h5>.removeAllListeners(eventName)</h5><p>Removes all listener function.</p>
+<h5>.screenshot(options= {})</h5><p>Exports a current screen as an image data.</p>
+<p>See examples: <a href="examples/screenshot.js">examples/screenshot.js</a></p>
+<h6>options</h6><ul>
+<li>format(default: 'png'): must be either 'png' or 'jpeg'</li>
+<li>quality(default: 100): quality of image.</li>
+<li>fromSurface(default: true): if set to true, take screenshot from surface.</li>
+<li>useDeviceResolution(default: false): if set to true, the image will have same resolution with device.</li>
+</ul>
+<h5>.screenshotSelector(selector, options={})</h5><p>Exports an area of selector you specified as an image data.</p>
+<p>See examples: <a href="examples/screenshot.js">examples/screenshot.js</a></p>
+<p>Note:</p>
+<ul>
+<li>The size of target specified by selector must be smaller than viewport size. If not, image gets cropped.</li>
+<li>It has a side-effect. After this api is called, scroll position is moved to target position.</li>
+</ul>
+<h6>options</h6><p>See screenshot()</p>
+<h5>.screenshotMultipleSelectors(selectors, callback, options = {})</h5><p>Takes multiple screenshot specified by selector at once.<br>Each image can be received by callback.</p>
+<p>Limitation:</p>
+<ul>
+<li>It is impossible that taking a screenshot of the element positioned at below of 16384px because of limitation of chrome.<br>Detail: https://groups.google.com/a/chromium.org/d/msg/headless-dev/DqaAEXyzvR0/P9zmTLMvDQAJ</li>
+</ul>
+<h6>Parameter</h6><ul>
+<li>selectors: An array of selector</li>
+<li>callback: function(error, image, index, selectors, subIndex)<ul>
+<li>error: error information.</li>
+<li>image: image data</li>
+<li>index: index of selectors.</li>
+<li>subIndex: this value is used only if useQuerySelecotrAll is true.</li>
+</ul>
+</li>
+<li>options:  <ul>
+<li>model: see explanation of screenDocument()</li>
+<li>format: see explanation of screenshot()</li>
+<li>quality: see explanation of screenshot()</li>
+<li>fromSurface: see explanation of screenshot()</li>
+<li>useQuerySelectorAll(default: false): If set to true, take all the screenshot of elements returned from document.querySelectorAll() (Since v 0.2.13)</li>
+</ul>
+</li>
+</ul>
+<h5>.screenshotDocument(options = {})</h5><p>Exports a entire document as an image data.</p>
+<p>See examples: <a href="examples/screenshot.js">examples/screenshot.js</a></p>
+<p>Limitation:</p>
+<ul>
+<li>Cannot take a screenshot of an area under 16384px.<br>Detail: https://groups.google.com/a/chromium.org/d/msg/headless-dev/DqaAEXyzvR0/P9zmTLMvDQAJ</li>
+</ul>
+<p>Known Issue:</p>
+<ul>
+<li>When this api is called to take large page sometimes strange white area is appeared. This result is caused by --disable-flag option passed to Chrome. After chrome 60 is officially released I remove --disable-flag option to fix this problem.</li>
+</ul>
+<h6>options</h6><ul>
+<li>model: this parameter affect page size. must be which one of: 'box', 'scroll'. 'box' means box model of body element. 'scroll' means size of scroll area.</li>
+<li>format: see explanation of screenshot()</li>
+<li>quality: see explanation of screenshot()</li>
+<li>fromSurface: see explanation of screenshot()</li>
+</ul>
+<h5>.pdf(options={})</h5><p>Exports a current page's printing image as a PDF data.<br>This function is supported only in headless mode (since Chrome60).</p>
+<p>See examples: <a href="examples/screenshot.js">examples/screenshot.js</a></p>
+<h6>Parameters</h6><ul>
+<li>options: See <a href="https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF">devtools protocol</a></li>
+</ul>
+<h5>.startScreencast(callback, options = {})</h5><p>Starts screencast to take screenshots by every frame.</p>
+<p>See examples: <a href="examples/screenshot.js">examples/screencast.js</a></p>
+<h6>Parameter</h6><p>callback: callback function for receiving parameters of screencastFrame event. See details <a href="https://chromedevtools.github.io/devtools-protocol/tot/Page/#event-screencastFrame">here</a><br>options: See details <a href="https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-startScreencast">here</a>.</p>
+<h5>.stopScreencast()</h5><p>Stops screencast.</p>
+<h5>.console(func)</h5><pre class="prettyprint source lang-js"><code>chromy.chain()
+      .goto('http://example.com')
+      .console((text) => {
+        console.log(text)
+      })
+      .evaluate(() => {
+        console.log('HEY')
+      })
+      .end()</code></pre><h5>.receiveMessage(func)</h5><p>receive a message from browser.  </p>
+<p>You can communicate with a browser by using receiveMessage() and sendToChromy().<br>sendToChromy() is a special function to communicate with Chromy.<br>When you call receiveMessage() at the first time, sendToChromy() is defined in a browser automatically.<br>A listener function passed to receiveMessage() receives parameters when sendToChromy() is executed in a browser.</p>
+<pre class="prettyprint source lang-js"><code>chromy.chain()
+      .goto('http://example.com')
+      .receiveMessage((msg) => {
+        console.log(msg[0].value)
+      })
+      .evaluate(() => {
+        sendToChromy({value: 'foo'})
+      })</code></pre><h5>.ignoreCertificateErrors()</h5><p>Ignores all certificate errors.</p>
+<pre class="prettyprint source lang-js"><code>chromy.chain()
+      .ignoreCertificateErrors()
+      .goto('https://xxxxx/')
+      .end()</code></pre><h5>.blockUrls(urls)</h5><p>blocks urls from loading.  </p>
+<h6>Parameter</h6><p>urls: array[string]<br>Wildcard('*') is allowed in url string.</p>
+<h5>.clearBrowserCache()</h5><p>Removes all browser caches.</p>
+<h5>.setCookie(params)</h5><h6>Parameters</h6><p>params: object or array</p>
+<p>See <a href="https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setCookie">chrome document</a><br>If url parameter is not set, current url(location.href) is used as default value.</p>
+<h5>.deleteCookie(name, url = null)</h5><p>Remove a cookie.</p>
+<h6>Parameters</h6><p>name: string or array of string<br>url: url associated with cookie. If url is not set, current url(location.href) is used as default value.</p>
+<h5>.clearAllCookies()</h5><p>Removes all browser cookies.</p>
+<h5>.clearDataForOrigin (origin = null, type = 'all')</h5><p>Clear data for origin.(cookies, local_storage, indexedDb, etc...)</p>
+<p>See details <a href="https://chromedevtools.github.io/devtools-protocol/tot/Storage/#method-clearDataForOrigin">here</a>.</p>
+<h5>.getDOMCounters()</h5><p>Get count of these item: document, node, jsEventListeners</p>
+<p>See details <a href="https://chromedevtools.github.io/devtools-protocol/tot/Memory/#method-getDOMCounters">here</a>.</p>
+<h5>.static cleanup()</h5><p>close all browsers.</p>
+<pre class="prettyprint source lang-js"><code>process.on('SIGINT', async () => {
+  await Chromy.cleanup()
+  process.exit(1)
+})</code></pre><h2>Contributing</h2><p>Bug reports and pull requests are welcome on GitHub at https://github.com/OnetapInc/chromy</p></article>
+    </section>
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Nov 13 2017 02:37:53 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
