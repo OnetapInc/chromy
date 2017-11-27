@@ -137,6 +137,7 @@ chromy.chain()
     * [.blockUrls(urls)](#blockurlsurls)
     * [.clearBrowserCache()](#clearbrowsercache)
     * [.setCookie(params)](#setcookieparams)
+    * [.getCookies(params)](#getcookieparams)
     * [.deleteCookie(name, url = null)](#deletecookiename-url--null)
     * [.clearAllCookies()](#clearallcookies)
     * [.clearDataForOrigin (origin = null, type = 'all')](#cleardatafororigin-origin--null-type--all)
@@ -528,6 +529,14 @@ params: object or array
 
 See [chrome document](https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setCookie)
 If url parameter is not set, current url(location.href) is used as default value.
+
+##### .getCookies(name = null)
+
+###### Parameters
+
+name: string or array of string
+
+See [chrome document](https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-getCookies)
 
 ##### .deleteCookie(name, url = null)
 
