@@ -783,6 +783,20 @@ class Chromy extends Document {
     }
   }
 
+  async getCookies (name = null) {
+    await this._checkStart()
+    const ck = await this.client.Network.getCookies()
+
+    if (name !== null) {
+      for(let i in ck.cookies) {
+        if(ck.cookies[i].name == name ) return ck.cookies[i];
+      }
+    } else {
+      return ck.cookies;
+    }
+
+  }
+
   async deleteCookie (name, url = null) {
     await this._checkStart()
     let nameArray = null
