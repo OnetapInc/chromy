@@ -121,7 +121,7 @@ class Document {
   async select (selector, value) {
     let sel = escapeSingleQuote(selector)
     const src = `
-      document.querySelectorAll('${sel} > option').forEach(n => {
+      document.querySelectorAll('${sel} option').forEach(n => {
         if (n.value === "${value}") {
           n.selected = true
         }
