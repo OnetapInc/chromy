@@ -1,3 +1,7 @@
+## 0.5.8 - 2017-01-11
+ - fix .select() #94
+ - remove insecure dependency. 
+
 ## 0.5.7 - 2017-11-24
  - evaluate method can accept arguments #86
 
