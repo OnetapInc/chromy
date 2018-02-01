@@ -1,3 +1,6 @@
+## 0.5.9 - 2017-02-01
+ - update dependency packages to fix security problem. #100
+
 ## 0.5.8 - 2017-01-11
  - fix .select() #94
  - remove insecure dependency. 
