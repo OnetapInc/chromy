@@ -13,9 +13,10 @@ class GotoTimeoutError extends TimeoutError {
 }
 
 class WaitTimeoutError extends TimeoutError {
-  constructor (message) {
+  constructor (message, selector) {
     super(message)
     this.name = 'WaitTimeoutError'
+    this.selector = selector
   }
 }
 
@@ -38,4 +39,3 @@ exports.GotoTimeoutError = GotoTimeoutError
 exports.WaitTimeoutError = WaitTimeoutError
 exports.EvaluateTimeoutError = EvaluateTimeoutError
 exports.EvaluateError = EvaluateError
-
