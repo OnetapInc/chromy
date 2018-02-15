@@ -1,3 +1,7 @@
+## 0.5.10 - 2017-02-16
+ - update dist files. #103
+ - Add selector as part of WaitTimeoutError. #102
+
 ## 0.5.9 - 2017-02-01
  - update dependency packages to fix security problem. #100
 
