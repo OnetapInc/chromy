@@ -305,7 +305,7 @@ class Document {
           try {
             const now = Date.now()
             if (now - startTime > this.chromy.options.waitTimeout) {
-              reject(new WaitTimeoutError('wait() timeout'))
+              reject(new WaitTimeoutError('wait() timeout', selector))
               return
             }
             const result = await this.exists(selector)

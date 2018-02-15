@@ -788,13 +788,12 @@ class Chromy extends Document {
     const ck = await this.client.Network.getCookies()
 
     if (name !== null) {
-      for(let i in ck.cookies) {
-        if(ck.cookies[i].name == name ) return ck.cookies[i];
+      for (let i in ck.cookies) {
+        if (ck.cookies[i].name === name) return ck.cookies[i]
       }
     } else {
-      return ck.cookies;
+      return ck.cookies
     }
-
   }
 
   async deleteCookie (name, url = null) {
@@ -860,4 +859,3 @@ class Chromy extends Document {
 }
 
 module.exports = Chromy
-
