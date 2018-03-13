@@ -58,6 +58,25 @@ describe('wait', function() {
             done(e)
           })
   })
+  it('wait until visible', (done) => {
+    const chromy = new Chromy()
+    chromy.chain()
+          .goto('file://' + process.env.PWD + '/test_pages/wait.html')
+          .evaluate(() => {
+            setTimeout(() => {
+              let div = document.createElement('div')
+              div.innerText = 'text'
+              div.classList.add('newdiv')
+              document.body.appendChild(div)
+            }, 500)
+          })
+          .waitUntilVisible("div.newdiv")
+          .end()
+          .then(_ => done())
+          .catch(e => {
+            done(e)
+          })
+  })
   it('raise TimeoutError wait(function)', (done) => {
     const chromy = new Chromy({waitTimeout: 100})
     chromy.chain()

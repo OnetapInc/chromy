@@ -352,6 +352,33 @@ class Document {
     return result
   }
 
+  async waitUntilVisible (selector) {
+    let check = null
+    let startTime = Date.now()
+    await new Promise((resolve, reject) => {
+      check = () => {
+        setTimeout(async () => {
+          try {
+            const now = Date.now()
+            if (now - startTime > this.chromy.options.waitTimeout) {
+              reject(new WaitTimeoutError('waitUntilVisible() timeout', selector))
+              return
+            }
+            const result = await this.visible(selector)
+            if (result) {
+              resolve(result)
+            } else {
+              check()
+            }
+          } catch (e) {
+            reject(e)
+          }
+        }, this.chromy.options.waitFunctionPollingInterval)
+      }
+      check()
+    })
+  }
+
   async type (expr, value) {
     await this.evaluate('document.querySelector(\'' + escapeSingleQuote(expr) + '\').focus()')
     const characters = value.split('')
