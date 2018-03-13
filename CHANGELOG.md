@@ -1,3 +1,6 @@
+## 0.5.11 - 2017-03-14
+ - Add .waitUntilVisible()
+
 ## 0.5.10 - 2017-02-16
  - update dist files. #103
  - Add selector as part of WaitTimeoutError. #102
