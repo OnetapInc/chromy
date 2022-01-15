@@ -43,7 +43,7 @@
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^2.0.1",
     "jsdoc": "^3.5.5",
-    "marked": "^0.3.9",
+    "marked": "^4.0.10",
     "mocha": "^3.3.0",
     "reduce-blank": "^0.2.0"
   }
